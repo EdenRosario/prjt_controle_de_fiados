@@ -1,0 +1,32 @@
+POST http://localhost:3000/produtos
+Content-Type: application/json
+
+{           "codigoBarras": "2225554455",   
+            "nome" : "Asa de frango",
+            "preco" :14.50,
+            "setor": "Alimentação"
+}
+
+###
+GET http://localhost:3000/produtos/listarprodutos
+
+###
+GET http://localhost:3000/produtos/estoquebaixo
+
+###
+GET http://localhost:3000/produtos/buscarproduto/37
+
+###
+GET http://localhost:3000/produtos/codigo-barras/2000000000016
+
+###
+PUT  http://localhost:3000/produtos/atualizarestoque
+Content-Type: application/json
+
+{
+            "produtoId" : 37,
+            "quantidade" :4
+}
+
+###
+DELETE http://localhost:3000/produtos/excluirproduto/37

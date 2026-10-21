@@ -1,0 +1,40 @@
+ POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "name":"Exemplo 004",
+    "date": "2001-5-1",
+    "user": "@Exemplo004",
+    "senha": "Exemplo444",
+    "email": "exemplo04.com.br7@gmail.com"
+}
+
+###
+
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+   "user": "@Exemplo",
+   "senha": "Exemplo123"
+}
+
+###
+
+POST http://localhost:3000/auth/recover
+Content-Type: application/json
+
+{
+  "user": "@Exemplo",
+  "email": "exemplo.com.br7@gmail.com",
+  "date": "2004-05-01"
+}
+
+###
+
+PUT http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+        "newSenha": "Es82250361#"
+}

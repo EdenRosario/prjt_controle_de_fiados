@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Sistema de Gestão</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../estilos/dashboard.css">
+    <link rel="stylesheet" href="../estilos/modais.css">
+    <link rel="stylesheet" href="../estilos/historico-pagamentos.css">
+    <link rel="stylesheet" href="../estilos/detalhes-compra.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR (MENU LATERAL) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-layer-group"></i> SisGestão
+        </div>
+        <ul class="sidebar-nav">
+            <li class="nav-item active" onclick="navegar('secao-home', this)">
+                <i class="fa-solid fa-house"></i> Início
+            </li>
+            <li class="nav-item" onclick="navegar('secao-contas', this)">
+                <i class="fa-solid fa-user-pen"></i> Gestão de Contas
+            </li>
+            <li class="nav-item" onclick="navegar('secao-criar-acesso', this)">
+                <i class="fa-solid fa-key"></i> Criar Acesso
+            </li>
+            <li class="nav-item" onclick="navegar('secao-pagamentos', this)">
+                <i class="fa-solid fa-clock-rotate-left"></i> Histórico de pagamentos
+            </li>
+            <li class="nav-item" onclick="navegar('secao-detalhes-compra', this)">
+                <i class="fa-solid fa-receipt"></i> Detalhes da compra
+            </li>
+        </ul>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+
+        <!-- 1. SEÇÃO HOME / DASHBOARD -->
+        <section id="secao-home" class="secao active">
+            <h2 class="page-title">Dashboard Geral</h2>
+
+            <!-- Cards de Resumo -->
+            <div class="dashboard-cards">
+                <div class="dash-card">
+                    <i class="fa-solid fa-users dash-icon"></i>
+                    <div class="dash-info">
+                        <h4>Total de Clientes</h4>
+                        <h2>1.245</h2>
+                    </div>
+                </div>
+                <div class="dash-card warning">
+                    <i class="fa-solid fa-file-invoice-dollar dash-icon" style="color: #f59e0b;"></i>
+                    <div class="dash-info">
+                        <h4>Total em Aberto</h4>
+                        <h2>R$ 4.320,00</h2>
+                    </div>
+                </div>
+                <div class="dash-card success">
+                    <i class="fa-solid fa-hand-holding-dollar dash-icon" style="color: var(--success);"></i>
+                    <div class="dash-info">
+                        <h4>Total Recebido (Mês)</h4>
+                        <h2>R$ 12.850,00</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass" id="btn_pesquisar"></i>
+                        <input type="text" id="busca-cpf-home" placeholder="Buscar cliente por CPF..." maxlength="11"
+                            inputmode="numeric">
+
+
+                        <i class="fa-solid fa-broom" id="btnClear"></i>
+
+                    </div>
+                    <button class="btn btn-primary" onclick="abrirModal()">
+                        <i class="fa-solid fa-plus"></i> Novo Cliente
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tBody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SEÇÃO HISTÓRICO -->
+        <section id="secao-historico" class="secao">
+            <button class="btn btn-secondary" style="margin-bottom: 20px;"
+                onclick="navegar('secao-home', document.querySelectorAll('.nav-item')[0])">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+            </button>
+
+            <div class="card">
+                <h2 class="page-title" id="historico-nome-cliente">Histórico de Compras - Cliente</h2>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Valor</th>
+                                <th>Quantidade</th>
+                                <th>Soma</th>
+                                <th>Data da Compra</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Serviço de Manutenção</td>
+                                <td>R$ 150,00</td>
+                                <td>1</td>
+                                <td>R$ 150,00</td>
+                                <td>15/10/2023</td>
+                            </tr>
+                            <tr>
+                                <td>Peça de Reposição</td>
+                                <td>R$ 50,00</td>
+                                <td>2</td>
+                                <td>R$ 100,00</td>
+                                <td>15/10/2023</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="historico-footer">
+                    <div class="total-valor">Total em aberto: <span style="color: var(--danger);"
+                            id="historico-valor-total">R$ 250,00</span></div>
+                    <button class="btn btn-success" onclick="abrirModalPagamento()">
+                        <i class="fa-brands fa-pix"></i> Pagar Conta
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SEÇÃO HISTÓRICO DE PAGAMENTOS (DEMONSTRAÇÃO) -->
+        <section id="secao-pagamentos" class="secao pagamentos-section">
+            <header class="pagamentos-heading">
+                <h2 class="page-title">
+                    <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                    Histórico de pagamentos
+                </h2>
+                <p class="pagamentos-subtitle">Consulte pagamentos, valores pendentes e comprovantes das compras.</p>
+            </header>
+
+            <div class="card pagamentos-busca-card">
+                <label class="pagamentos-busca-label" for="busca-historico-pagamentos">Buscar compra</label>
+                <div class="pagamentos-busca-controls">
+                    <input class="form-control pagamentos-busca-input" type="text" id="busca-historico-pagamentos"
+                        placeholder="Digite o ID da compra (ex.: 125)">
+                    <button class="btn btn-primary" type="button" disabled aria-describedby="pagamentos-demo-busca">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Buscar
+                    </button>
+                </div>
+                <p class="pagamentos-busca-ajuda">Opcionalmente, permita pesquisar pelo CPF ou nome do cliente.</p>
+                <p class="pagamentos-demo-aviso" id="pagamentos-demo-busca">
+                    Busca demonstrativa; ainda não conectada aos dados do sistema.
+                </p>
+            </div>
+
+            <section class="card pagamentos-resumo" aria-labelledby="pagamentos-resumo-titulo">
+                <div class="pagamentos-resumo-heading">
+                    <div>
+                        <p class="pagamentos-sobretitulo" id="pagamentos-resumo-titulo">
+                            RESUMO DA COMPRA #125 — EXEMPLO VISUAL
+                        </p>
+                        <span class="pagamentos-cliente-label">Cliente</span>
+                        <h3>Maria Oliveira</h3>
+                    </div>
+                    <span class="pagamentos-status">Parcialmente pago</span>
+                </div>
+
+                <div class="pagamentos-valores-grid">
+                    <div class="pagamentos-valor-item">
+                        <span>Total da compra</span>
+                        <strong>R$ 250,00</strong>
+                    </div>
+                    <div class="pagamentos-valor-item">
+                        <span>Total pago</span>
+                        <strong class="pagamentos-valor-pago">R$ 150,00</strong>
+                    </div>
+                    <div class="pagamentos-valor-item">
+                        <span>Valor pendente</span>
+                        <strong class="pagamentos-valor-pendente">R$ 100,00</strong>
+                    </div>
+                </div>
+
+                <div class="pagamentos-progresso">
+                    <div class="pagamentos-progresso-trilho" role="progressbar" aria-label="Valor da compra pago"
+                        aria-valuemin="0" aria-valuemax="100" aria-valuenow="60">
+                        <span class="pagamentos-progresso-preenchido"></span>
+                    </div>
+                    <p>60% do valor da compra foi pago.</p>
+                </div>
+            </section>
+
+            <div class="pagamentos-acoes" data-pagamentos-acoes role="group" aria-label="Ações rápidas de pagamento">
+            </div>
+
+            <p class="pagamentos-disclaimer">
+                Demonstração ilustrativa de como a interface poderia ficar; os valores e botões não estão conectados ao
+                seu banco de dados.
+            </p>
+        </section>
+
+        <!-- 4. SEÇÃO DETALHES DA COMPRA (DEMONSTRAÇÃO) -->
+        <section id="secao-detalhes-compra" class="secao detalhes-compra-section">
+            <h2 class="page-title">
+                <i class="fa-solid fa-receipt" aria-hidden="true"></i>
+                Detalhes da compra #125
+            </h2>
+
+            <div class="card detalhes-cliente-card">
+                <div class="detalhes-cliente-info">
+                    <span class="detalhes-cliente-sobretitulo">CLIENTE</span>
+                    <strong>Maria Oliveira</strong>
+                    <time datetime="2026-10-10">10/10/2026</time>
+                </div>
+                <span class="detalhes-status-pago">Paga</span>
+            </div>
+
+            <section class="card detalhes-itens-card" aria-labelledby="detalhes-itens-titulo">
+                <div class="detalhes-itens-heading">
+                    <h3 id="detalhes-itens-titulo">Itens da compra</h3>
+                    <span>7 unidades · 3 produtos</span>
+                </div>
+
+                <div class="detalhes-itens-scroll" role="region" aria-label="Lista de itens da compra" tabindex="0">
+                    <table class="detalhes-itens-tabela">
+                        <thead>
+                            <tr>
+                                <th scope="col">Produto</th>
+                                <th scope="col">Qtd.</th>
+                                <th scope="col">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Arroz tipo 1 — 5 kg</td>
+                                <td>2</td>
+                                <td>R$ 50,00</td>
+                            </tr>
+                            <tr>
+                                <td>Feijão carioca — 1 kg</td>
+                                <td>3</td>
+                                <td>R$ 24,00</td>
+                            </tr>
+                            <tr>
+                                <td>Óleo de soja — 900 ml</td>
+                                <td>2</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                            <tr>
+                                <td>Arroz tipo 1 — 5 kg</td>
+                                <td>2</td>
+                                <td>R$ 50,00</td>
+                            </tr>
+                            <tr>
+                                <td>Feijão carioca — 1 kg</td>
+                                <td>3</td>
+                                <td>R$ 24,00</td>
+                            </tr>
+                            <tr>
+                                <td>Óleo de soja — 900 ml</td>
+                                <td>2</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                            <tr>
+                                <td>Arroz tipo 1 — 5 kg</td>
+                                <td>2</td>
+                                <td>R$ 50,00</td>
+                            </tr>
+                            <tr>
+                                <td>Feijão carioca — 1 kg</td>
+                                <td>3</td>
+                                <td>R$ 24,00</td>
+                            </tr>
+                            <tr>
+                                <td>Óleo de soja — 900 ml</td>
+                                <td>2</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="detalhes-itens-ajuda">A lista permite rolagem interna quando houver mais itens.</p>
+            </section>
+
+            <section class="card detalhes-total-card" aria-label="Total e cupom da compra">
+                <div class="detalhes-total-cabecalho">
+                    <div>
+                        <span>Total da compra</span>
+                        <strong>R$ 250,00</strong>
+                    </div>
+                </div>
+                <p>O cupom será liberado após a confirmação da quitação integral.</p>
+                <button class="btn btn-primary detalhes-cupom-botao" type="button" data-modal-alvo="modal-cupom-compra">
+                    <i class="fa-solid fa-print" aria-hidden="true"></i>
+                    Visualizar / imprimir cupom
+                </button>
+            </section>
+
+            <p class="detalhes-disclaimer">
+                Exemplo ilustrativo de interface; os dados e o botão não estão conectados ao sistema.
+            </p>
+        </section>
+
+        <!-- 5. SEÇÃO GESTÃO DE CONTAS -->
+        <section id="secao-contas" class="secao">
+            <h2 class="page-title">Gestão de Contas</h2>
+
+            <div class="card">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="busca-cpf-gestao" placeholder="Buscar por CPF para editar...">
+                    </div>
+                    <button class="btn btn-secondary" onclick="buscarDadosConta()">Buscar</button>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--border); margin: 20px 0;">
+
+                <form id="form-gestao">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Nome Completo</label>
+                            <input type="text" class="form-control" placeholder="Nome do cliente">
+                        </div>
+                        <div class="input-group">
+                            <label>CPF</label>
+                            <input type="text" class="form-control" placeholder="000.000.000-00" readonly
+                                style="background: #f8fafc;">
+                        </div>
+                        <div class="input-group">
+                            <label>Telefone</label>
+                            <input type="tel" class="form-control" placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="input-group">
+                            <label>E-mail</label>
+                            <input type="email" class="form-control" placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="document.getElementById('form-gestao').reset()">Limpar</button>
+                        <button type="button" class="btn btn-primary"
+                            onclick="showToast('Alterações salvas com sucesso!', 'success')">
+                            <i class="fa-solid fa-save"></i> Salvar alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 6. SEÇÃO CRIAR ACESSO -->
+        <section id="secao-criar-acesso" class="secao">
+            <h2 class="page-title">Criar Acesso ao Sistema</h2>
+
+            <div class="card" style="max-width: 600px;">
+                <form onsubmit="event.preventDefault(); showToast('Acesso criado!', 'success'); this.reset();">
+
+                    <!-- NOME -->
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="form-control" required placeholder="Ex: João da Silva">
+                    </div>
+
+                    <!-- DATA + EMAIL -->
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Data de nascimento</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>E-mail</label>
+                            <input type="email" class="form-control" required placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+
+                    <!-- USUÁRIO -->
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Usuário</label>
+                            <input type="text" class="form-control" required placeholder="Crie um usuário">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Confirmar usuário</label>
+                            <input type="text" class="form-control" required placeholder="Repita o usuário">
+                        </div>
+                    </div>
+
+                    <!-- SENHA -->
+                    <div class="form-grid">
+                        <div class="input-group" style="position: relative;">
+                            <label>Senha</label>
+                            <input type="password" class="form-control senha" required placeholder="••••••••">
+                            <i class="fa-solid fa-eye toggle-senha"></i>
+                        </div>
+
+                        <div class="input-group" style="position: relative;">
+                            <label>Confirmar senha</label>
+                            <input type="password" class="form-control senha" required placeholder="••••••••">
+                            <i class="fa-solid fa-eye toggle-senha"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                        <i class="fa-solid fa-user-plus"></i> Cadastrar Acesso
+                    </button>
+
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <template id="template-pagamentos-acoes">
+        <button class="pagamentos-acao-card" type="button" data-modal-alvo="modal-total-pago">
+            <i class="fa-solid fa-wallet pagamentos-acao-icone pagamentos-acao-icone--sucesso" aria-hidden="true"></i>
+            <span class="pagamentos-acao-conteudo">
+                <span class="pagamentos-acao-titulo">Total pago</span>
+                <span class="pagamentos-acao-descricao">Consulte o valor já recebido.</span>
+            </span>
+        </button>
+        <button class="pagamentos-acao-card" type="button" data-modal-alvo="modal-valor-pendente">
+            <i class="fa-solid fa-clock pagamentos-acao-icone pagamentos-acao-icone--alerta" aria-hidden="true"></i>
+            <span class="pagamentos-acao-conteudo">
+                <span class="pagamentos-acao-titulo">Valor pendente</span>
+                <span class="pagamentos-acao-descricao">Veja quanto falta receber.</span>
+            </span>
+        </button>
+        <button class="pagamentos-acao-card" type="button" data-modal-alvo="modal-historico-pagamentos">
+            <i class="fa-solid fa-list pagamentos-acao-icone" aria-hidden="true"></i>
+            <span class="pagamentos-acao-conteudo">
+                <span class="pagamentos-acao-titulo">Histórico de pagamentos</span>
+                <span class="pagamentos-acao-descricao">Consulte datas, valores e formas de pagamento.</span>
+            </span>
+        </button>
+        <button class="pagamentos-acao-card pagamentos-acao-card--indisponivel" type="button" disabled>
+            <i class="fa-solid fa-file-invoice pagamentos-acao-icone" aria-hidden="true"></i>
+            <span class="pagamentos-acao-conteudo">
+                <span class="pagamentos-acao-titulo">Comprovante</span>
+                <span class="pagamentos-acao-descricao">Disponível após a quitação integral.</span>
+                <span class="pagamentos-badge-indisponivel">Indisponível neste exemplo</span>
+            </span>
+        </button>
+    </template>
+
+    <!-- Modais demonstrativos de pagamentos -->
+    <div class="modal-overlay" id="modal-historico-pagamentos" role="presentation">
+        <section class="modal-content modal-demo modal-historico-pagamentos" role="dialog" aria-modal="true"
+            aria-labelledby="modal-historico-titulo">
+            <header class="modal-demo-header">
+                <div class="modal-demo-titulo-grupo">
+                    <span class="modal-demo-icone modal-demo-icone--azul"><i class="fa-solid fa-clock-rotate-left"
+                            aria-hidden="true"></i></span>
+                    <div>
+                        <h2 id="modal-historico-titulo">Histórico de pagamentos</h2>
+                        <p>Consulte todos os pagamentos realizados, datas, valores e formas de pagamento.</p>
+                    </div>
+                </div>
+                <button class="modal-demo-fechar" type="button" data-fechar-modal
+                    aria-label="Fechar histórico de pagamentos">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <div class="modal-demo-corpo">
+                <label class="sr-only" for="modal-busca-pagamento">Buscar pagamento</label>
+                <div class="modal-demo-busca">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="modal-busca-pagamento" type="search"
+                        placeholder="Digite o ID da compra, CPF ou nome do cliente..." disabled>
+                    <button type="button" disabled aria-label="Buscar (demonstração não conectada)"><i
+                            class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Buscar</button>
+                </div>
+                <p class="pagamentos-demo-aviso">Busca demonstrativa; ainda não conectada aos dados do sistema.</p>
+
+                <div class="pagamento-compra-resumo">
+                    <div><span>Compra</span><strong>#125</strong></div>
+                    <div><span>Cliente</span><strong>Maria Oliveira</strong></div>
+                    <div><span>Data</span><strong>10/10/2026</strong></div>
+                    <span class="pagamentos-status">Parcialmente pago</span>
+                </div>
+
+                <div class="pagamento-mini-resumos">
+                    <article><span>Total da compra</span><strong>R$ 250,00</strong></article>
+                    <article class="pagamento-mini-resumos--pago"><span>Total pago</span><strong>R$ 150,00</strong>
+                    </article>
+                    <article class="pagamento-mini-resumos--pendente"><span>Valor pendente</span><strong>R$
+                            100,00</strong></article>
+                </div>
+
+                <div class="modal-pagamento-progresso" role="progressbar" aria-label="Compra paga em 60 por cento"
+                    aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><span></span></div>
+                <p class="modal-demo-nota-progresso">60% do valor da compra foi pago.</p>
+
+                <div class="modal-demo-tabela-scroll">
+                    <table class="modal-demo-tabela">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Forma de pagamento</th>
+                                <th scope="col">Valor</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>10/10/2026</td>
+                                <td>Dinheiro</td>
+                                <td>R$ 50,00</td>
+                                <td><span class="pagamento-status-confirmado">Confirmado</span></td>
+                                <td><button class="pagamento-acao-demo" type="button" disabled
+                                        title="Impressão demonstrativa não integrada"
+                                        aria-label="Impressão não integrada"><i class="fa-solid fa-print"
+                                            aria-hidden="true"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>12/10/2026</td>
+                                <td>Pix</td>
+                                <td>R$ 100,00</td>
+                                <td><span class="pagamento-status-confirmado">Confirmado</span></td>
+                                <td><button class="pagamento-acao-demo" type="button" disabled
+                                        title="Impressão demonstrativa não integrada"
+                                        aria-label="Impressão não integrada"><i class="fa-solid fa-print"
+                                            aria-hidden="true"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>15/10/2026</td>
+                                <td>Cartão de Débito</td>
+                                <td>R$ 50,00</td>
+                                <td><span class="pagamento-status-confirmado">Confirmado</span></td>
+                                <td><button class="pagamento-acao-demo" type="button" disabled
+                                        title="Impressão demonstrativa não integrada"
+                                        aria-label="Impressão não integrada"><i class="fa-solid fa-print"
+                                            aria-hidden="true"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-demo-acoes-host" data-pagamentos-acoes role="group" aria-label="Ações de pagamento">
+                </div>
+                <p class="pagamentos-disclaimer">Demonstração ilustrativa de como a interface poderia ficar; os valores
+                    e botões não estão conectados ao seu banco de dados.</p>
+                <button class="btn btn-secondary pagamento-preview-comprovante" type="button"
+                    data-modal-alvo="modal-comprovante-pagamento">
+                    Ver prévia demonstrativa de comprovante quitado
+                </button>
+            </div>
+            <footer class="modal-demo-footer"><button class="btn btn-secondary" type="button"
+                    data-fechar-modal>Fechar</button></footer>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="modal-total-pago" role="presentation">
+        <section class="modal-content modal-demo modal-pagamento-resumo-modal" role="dialog" aria-modal="true"
+            aria-labelledby="modal-total-pago-titulo">
+            <header class="modal-demo-header">
+                <div class="modal-demo-titulo-grupo">
+                    <span class="modal-demo-icone modal-demo-icone--verde"><i class="fa-solid fa-wallet"
+                            aria-hidden="true"></i></span>
+                    <div>
+                        <h2 id="modal-total-pago-titulo">Total pago</h2>
+                        <p>Consulte o valor total já recebido da compra.</p>
+                    </div>
+                </div>
+                <button class="modal-demo-fechar" type="button" data-fechar-modal aria-label="Fechar total pago"><i
+                        class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </header>
+            <div class="modal-demo-corpo">
+                <div class="pagamento-compra-resumo pagamento-compra-resumo--modal">
+                    <div><span>Compra</span><strong>#125</strong></div>
+                    <div><span>Cliente</span><strong>Maria Oliveira</strong></div>
+                    <div><span>Data</span><strong>10/10/2026</strong></div><span class="pagamentos-status">Parcialmente
+                        pago</span>
+                </div>
+                <div class="pagamento-valor-destaque pagamento-valor-destaque--verde"><span>Total pago</span><strong>R$
+                        150,00</strong></div>
+                <h3 class="modal-demo-secao-titulo">Pagamentos considerados</h3>
+                <div class="modal-demo-tabela-scroll">
+                    <table class="modal-demo-tabela">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Forma de pagamento</th>
+                                <th scope="col">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>10/10/2026</td>
+                                <td>Dinheiro</td>
+                                <td>R$ 50,00</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>12/10/2026</td>
+                                <td>Pix</td>
+                                <td>R$ 100,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="pagamentos-disclaimer">Exemplo visual; valores demonstrativos sem integração financeira.</p>
+            </div>
+            <footer class="modal-demo-footer"><button class="btn btn-secondary" type="button"
+                    data-fechar-modal>Fechar</button></footer>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="modal-valor-pendente" role="presentation">
+        <section class="modal-content modal-demo modal-pagamento-resumo-modal" role="dialog" aria-modal="true"
+            aria-labelledby="modal-valor-pendente-titulo">
+            <header class="modal-demo-header">
+                <div class="modal-demo-titulo-grupo">
+                    <span class="modal-demo-icone modal-demo-icone--vermelho"><i class="fa-solid fa-clock"
+                            aria-hidden="true"></i></span>
+                    <div>
+                        <h2 id="modal-valor-pendente-titulo">Valor pendente</h2>
+                        <p>Veja quanto ainda falta receber da compra.</p>
+                    </div>
+                </div>
+                <button class="modal-demo-fechar" type="button" data-fechar-modal aria-label="Fechar valor pendente"><i
+                        class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </header>
+            <div class="modal-demo-corpo">
+                <div class="pagamento-compra-resumo pagamento-compra-resumo--modal">
+                    <div><span>Compra</span><strong>#125</strong></div>
+                    <div><span>Cliente</span><strong>Maria Oliveira</strong></div>
+                    <div><span>Data</span><strong>10/10/2026</strong></div><span class="pagamentos-status">Parcialmente
+                        pago</span>
+                </div>
+                <div class="pagamento-valor-destaque pagamento-valor-destaque--vermelho"><span>Valor
+                        pendente</span><strong>R$ 100,00</strong></div>
+                <h3 class="modal-demo-secao-titulo">Resumo financeiro</h3>
+                <dl class="pagamento-financeiro-lista">
+                    <div>
+                        <dt>Total da compra</dt>
+                        <dd>R$ 250,00</dd>
+                    </div>
+                    <div>
+                        <dt>Total pago</dt>
+                        <dd>R$ 150,00</dd>
+                    </div>
+                    <div class="pagamento-financeiro-pendente">
+                        <dt>Valor pendente</dt>
+                        <dd>R$ 100,00</dd>
+                    </div>
+                </dl>
+                <p class="pagamentos-disclaimer">Exemplo visual; valores demonstrativos sem integração financeira.</p>
+            </div>
+            <footer class="modal-demo-footer"><button class="btn btn-secondary" type="button"
+                    data-fechar-modal>Fechar</button></footer>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="modal-comprovante-pagamento" role="presentation">
+
+        <section class="modal-content modal-demo modal-comprovante" role="dialog" aria-modal="true"
+            aria-labelledby="modal-comprovante-titulo">
+            <header class="modal-demo-header">
+                <div class="modal-demo-titulo-grupo">
+                    <span class="modal-demo-icone modal-demo-icone--azul"><i class="fa-solid fa-file-invoice"
+                            aria-hidden="true"></i></span>
+                    <div>
+                        <h2 id="modal-comprovante-titulo">Comprovante de Pagamento</h2>
+                        <p>Comprovante da transação realizada na compra #125.</p>
+                    </div>
+                </div>
+                <button class="modal-demo-fechar" type="button" data-fechar-modal aria-label="Fechar comprovante"><i
+                        class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </header>
+            <div class="modal-demo-corpo">
+                <div class="comprovante-metadados">
+                    <div><span>Nº da compra (cupom)</span><strong>#125</strong></div>
+                    <div><span>Data da compra</span><strong>10/10/2026 às 14:32</strong></div>
+                    <div><span>Data do pagamento</span><strong>10/10/2026 às 16:45</strong></div>
+                    <div><span>Cliente</span><strong>Maria Oliveira · (91) 98765-4321</strong></div>
+                </div>
+                <div class="comprovante-confirmado"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span
+                        class="comprovante-confirmado-copy"><strong>Pagamento confirmado</strong><small>Compra quitada
+                            com sucesso!</small></span><b>PIX</b></div>
+                <h3 class="modal-demo-secao-titulo">Detalhes da transação</h3>
+                <dl class="pagamento-financeiro-lista comprovante-detalhes">
+                    <div>
+                        <dt>Forma de pagamento</dt>
+                        <dd>PIX</dd>
+                    </div>
+                    <div>
+                        <dt>ID da transação</dt>
+                        <dd>E8F4A3D2-7C9B-4F1E-8A2D-6B7C9E3F1A0D</dd>
+                    </div>
+                    <div>
+                        <dt>Data e hora</dt>
+                        <dd>10/10/2026 às 16:45</dd>
+                    </div>
+                    <div>
+                        <dt>Valor recebido</dt>
+                        <dd>R$ 250,00</dd>
+                    </div>
+                    <div>
+                        <dt>Troco</dt>
+                        <dd>R$ 0,00</dd>
+                    </div>
+                </dl>
+                <div class="comprovante-qr-area">
+                    <h3>Pagamento via Pix</h3>
+                    <div class="comprovante-qr-demo" role="img"
+                        aria-label="Representação ilustrativa, não é um QR Code de pagamento"></div>
+                    <p>Escaneie o QR Code para verificar o comprovante no seu banco. QR visual de demonstração, sem
+                        validação de pagamento.</p>
+                    <span>Chave PIX demonstrativa</span>
+                    <code>e0113d7f-3a6c-4f7b-9e2d-8c1a5f6b7e9d</code>
+                    <button class="btn btn-secondary" type="button" disabled title="Cópia não integrada"><i
+                            class="fa-regular fa-copy" aria-hidden="true"></i> Copiar chave (indisponível)</button>
+                </div>
+                <h3 class="modal-demo-secao-titulo">Resumo da compra</h3>
+                <dl class="pagamento-financeiro-lista">
+                    <div>
+                        <dt>Total da compra</dt>
+                        <dd>R$ 250,00</dd>
+                    </div>
+                    <div>
+                        <dt>Total pago</dt>
+                        <dd>R$ 250,00</dd>
+                    </div>
+                    <div>
+                        <dt>Valor restante</dt>
+                        <dd>R$ 0,00</dd>
+                    </div>
+                    <div class="pagamento-financeiro-quitado">
+                        <dt>Status</dt>
+                        <dd>Quitada</dd>
+                    </div>
+                </dl>
+                <h3 class="modal-demo-secao-titulo">Histórico da transação</h3>
+                <div class="modal-demo-tabela-scroll">
+                    <table class="modal-demo-tabela comprovante-historico-tabela">
+                        <thead>
+                            <tr>
+                                <th scope="col">Pagamento</th>
+                                <th scope="col">Data e hora</th>
+                                <th scope="col">Forma</th>
+                                <th scope="col">Valor pago</th>
+                                <th scope="col">Valor recebido</th>
+                                <th scope="col">Troco</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#3 — Final</td>
+                                <td>10/10/2026 às 16:45</td>
+                                <td>Pix</td>
+                                <td>R$ 200,00</td>
+                                <td>R$ 200,00</td>
+                                <td>R$ 0,00</td>
+                            </tr>
+                            <tr>
+                                <td>#2</td>
+                                <td>12/10/2026 às 10:15</td>
+                                <td>Cartão de Débito</td>
+                                <td>R$ 50,00</td>
+                                <td>R$ 50,00</td>
+                                <td>R$ 0,00</td>
+                            </tr>
+                            <tr>
+                                <td>#1</td>
+                                <td>10/10/2026 às 09:32</td>
+                                <td>Dinheiro</td>
+                                <td>R$ 100,00</td>
+                                <td>R$ 100,00</td>
+                                <td>R$ 0,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="comprovante-total-pagamentos">Total de 3 pagamentos</p>
+                <p class="pagamentos-disclaimer">Este comprovante inclui todos os pagamentos realizados nesta compra e
+                    comprova a quitação total do valor.</p>
+                <p class="pagamentos-disclaimer">Prévia ilustrativa: identificador, chave, QR e valores não são dados
+                    bancários válidos e não comprovam uma transação real.</p>
+            </div>
+            <footer class="modal-demo-footer"><button class="btn btn-secondary" type="button"
+                    data-fechar-modal>Fechar</button><button class="btn btn-primary" type="button" disabled
+                    title="Ação demonstrativa; impressão não integrada"><i class="fa-solid fa-print"
+                        aria-hidden="true"></i> Imprimir comprovante (indisponível)</button></footer>
+        </section>
+    </div>
+
+    <!-- Cupom demonstrativo da compra -->
+    <div class="modal-overlay" id="modal-cupom-compra" role="presentation">
+        <section class="modal-content modal-demo modal-cupom-compra" role="dialog" aria-modal="true"
+            aria-labelledby="modal-cupom-titulo">
+            <header class="modal-demo-header cupom-cabecalho">
+                <div class="modal-demo-titulo-grupo">
+                    <span class="modal-demo-icone modal-demo-icone--azul"><i class="fa-solid fa-receipt"
+                            aria-hidden="true"></i></span>
+                    <div>
+                        <h2 id="modal-cupom-titulo">Cupom da Compra</h2>
+                        <p>Confira abaixo os detalhes da compra e os itens adquiridos.</p>
+                    </div>
+                </div>
+                <button class="modal-demo-fechar" type="button" data-fechar-modal aria-label="Fechar cupom"><i
+                        class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </header>
+            <div class="modal-demo-corpo cupom-conteudo">
+                <div class="cupom-metadados">
+                    <div><span>Número da compra</span><strong>#125</strong></div>
+                    <div><span>Data da compra</span><strong>10/10/2026 às 14:32</strong></div>
+                    <div><span>Cupom emitido</span><strong>10/10/2026 às 14:35</strong></div>
+                    <div><span>Produtos</span><strong>12 produtos</strong></div>
+                </div>
+                <section class="cupom-cliente" aria-labelledby="cupom-cliente-titulo">
+                    <div><span class="cupom-sobretitulo" id="cupom-cliente-titulo">Cliente</span><strong>Maria
+                            Oliveira</strong></div>
+                    <div><span>Telefone</span><strong>(91) 98765-4321</strong></div>
+                    <div><span>E-mail</span><strong>maria@email.com</strong></div>
+                    <span class="detalhes-status-pago">Pago</span>
+                </section>
+                <div class="cupom-itens-scroll" role="region" aria-label="Itens do cupom da compra" tabindex="0">
+                    <table class="modal-demo-tabela cupom-itens-tabela">
+                        <thead>
+                            <tr>
+                                <th scope="col">Produto</th>
+                                <th scope="col">Qtd.</th>
+                                <th scope="col">Preço unitário</th>
+                                <th scope="col">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span>Arroz tipo 1 — 5 kg</span><small
+                                        class="cupom-item-categoria">Alimentos</small></td>
+                                <td>2</td>
+                                <td>R$ 25,00</td>
+                                <td>R$ 50,00</td>
+                            </tr>
+                            <tr>
+                                <td><span>Feijão carioca — 1 kg</span><small
+                                        class="cupom-item-categoria">Alimentos</small></td>
+                                <td>3</td>
+                                <td>R$ 8,00</td>
+                                <td>R$ 24,00</td>
+                            </tr>
+                            <tr>
+                                <td><span>Óleo de soja — 900 ml</span><small
+                                        class="cupom-item-categoria">Alimentos</small></td>
+                                <td>2</td>
+                                <td>R$ 7,50</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                            <tr>
+                                <td><span>Açúcar refinado — 1 kg</span><small
+                                        class="cupom-item-categoria">Alimentos</small></td>
+                                <td>1</td>
+                                <td>R$ 4,50</td>
+                                <td>R$ 4,50</td>
+                            </tr>
+                            <tr>
+                                <td><span>Macarrão — 500 g</span><small class="cupom-item-categoria">Alimentos</small>
+                                </td>
+                                <td>2</td>
+                                <td>R$ 4,50</td>
+                                <td>R$ 9,00</td>
+                            </tr>
+                            <tr>
+                                <td><span>Café — 250 g</span><small class="cupom-item-categoria">Bebidas</small></td>
+                                <td>1</td>
+                                <td>R$ 12,00</td>
+                                <td>R$ 12,00</td>
+                            </tr>
+                            <tr>
+                                <td><span>Leite — 1 L</span><small class="cupom-item-categoria">Bebidas</small></td>
+                                <td>3</td>
+                                <td>R$ 6,00</td>
+                                <td>R$ 18,00</td>
+                            </tr>
+                            <tr>
+                                <td><span>Refrigerante — 2 L</span><small class="cupom-item-categoria">Bebidas</small>
+                                </td>
+                                <td>2</td>
+                                <td>R$ 8,00</td>
+                                <td>R$ 16,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="cupom-itens-ajuda">Role para ver todos os itens (12). A prévia apresenta os 8 produtos
+                    detalhados na referência.</p>
+                <div class="cupom-resumo">
+                    <section class="cupom-valores" aria-labelledby="cupom-valores-titulo">
+                        <h3 id="cupom-valores-titulo">Detalhamento de valores</h3>
+                        <dl class="pagamento-financeiro-lista">
+                            <div>
+                                <dt>Total da compra</dt>
+                                <dd>R$ 250,00</dd>
+                            </div>
+                            <div>
+                                <dt>Valor a pagar</dt>
+                                <dd>R$ 250,00</dd>
+                            </div>
+                            <div>
+                                <dt>Valor pago</dt>
+                                <dd>R$ 250,00</dd>
+                            </div>
+                            <div>
+                                <dt>Troco</dt>
+                                <dd>R$ 0,00</dd>
+                            </div>
+                        </dl>
+                    </section>
+                    <section class="cupom-pagamento" aria-labelledby="cupom-pagamento-titulo">
+                        <h3 id="cupom-pagamento-titulo">Pagamento</h3>
+                        <dl class="pagamento-financeiro-lista">
+                            <div>
+                                <dt>Forma de pagamento</dt>
+                                <dd>Dinheiro</dd>
+                            </div>
+                            <div>
+                                <dt>Pagamentos</dt>
+                                <dd>1x R$ 250,00</dd>
+                            </div>
+                            <div>
+                                <dt>Status</dt>
+                                <dd class="pagamento-financeiro-quitado">Pago</dd>
+                            </div>
+                        </dl>
+                    </section>
+                </div>
+                <p class="pagamentos-disclaimer">Este é um cupom de compra. O comprovante de pagamento individual está
+                    disponível na seção de histórico de pagamentos.</p>
+                <p class="pagamentos-disclaimer">Cupom demonstrativo; os dados não estão conectados ao sistema e não
+                    comprovam uma compra real.</p>
+            </div>
+            <footer class="modal-demo-footer cupom-acoes">
+                <button class="btn btn-secondary" type="button" data-fechar-modal>Fechar</button>
+                <button class="btn btn-primary" type="button" data-imprimir-cupom><i class="fa-solid fa-print"
+                        aria-hidden="true"></i> Imprimir cupom</button>
+            </footer>
+        </section>
+    </div>
+
+    <!-- ================= MODAL DE CADASTRO ================= -->
+    <div class="modal-overlay" id="modal-cadastro">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cadastrar Novo Cliente</h3>
+                <i class="fa-solid fa-xmark" onclick="fecharModal('modal-cadastro')"></i>
+            </div>
+            <form
+                onsubmit="event.preventDefault(); fecharModal('modal-cadastro'); showToast('Cliente cadastrado!', 'success');">
+                <div class="input-group">
+                    <label>Nome Completo</label>
+                    <input type="text" class="form-control" required id="cliente-nome">
+                </div>
+                <div class="input-group">
+                    <label>Telefone</label>
+                    <input type="number" class="form-control" required id="tel">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" required id="email">
+                </div>
+
+                <div class="input-group">
+                    <label>CPF</label>
+                    <input type="number" class="form-control" required maxlength="11" id="cpf">
+                </div>
+                <div class="modal-actions modal-actions--cadastro">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="fecharModal('modal-cadastro')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnAddclient">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL DE ADICIONAR ITEM ================= -->
+    <div class="modal-overlay" id="modal-adicionar-item">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h3>Adicionar Item ao Cliente</h3>
+
+                <i class="fa-solid fa-xmark" onclick="fecharModal('modal-adicionar-item')">
+                </i>
+            </div>
+
+            <div class="modal-item-cliente">
+                <p class="modal-item-cliente-label">
+                    Cliente
+                </p>
+
+                <h4 id="item-cliente-nome" class="modal-item-cliente-nome">
+                    Nome do Cliente
+                </h4>
+            </div>
+
+            <form id="form-adicionar-item">
+
+                <div class="input-group">
+                    <label for="codigo-de-barras">
+                        Digitar codigo de barras
+                    </label>
+
+                    <input type="text" id="codigo-de-barras" class="form-control" placeholder="Ex: 004000044A4422"
+                        required>
+                </div>
+
+                <div class="input-group">
+                    <label for="item-nome">
+                        Nome do Produto
+                    </label>
+
+                    <input type="text" id="item-nome" class="form-control" placeholder="Ex: Arroz 5kg" required>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="input-group">
+                        <label for="item-valor">
+                            Valor Unitário
+                        </label>
+
+                        <input type="number" id="item-valor" class="form-control" placeholder="0,00" step="0.01" min="0"
+                            required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="item-quantidade">
+                            Quantidade
+                        </label>
+
+                        <input type="number" id="item-quantidade" class="form-control" placeholder="1" min="1" value="1"
+                            required>
+                    </div>
+
+                </div>
+
+                <div class="modal-item-total">
+
+                    <div class="modal-item-total-linha">
+
+                        <span class="modal-item-total-rotulo">
+                            Total do item
+                        </span>
+
+                        <strong class="modal-item-total-valor">
+                            <p id="item-total">
+                                R$ 0,00
+                            </p>
+                        </strong>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-actions">
+
+                    <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-adicionar-item')">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="button" class="btn btn-primary" id="btnAddItem">
+
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar Item
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ================= MODAL DE CADASTRO DE PRODUTO ================= -->
+    <div class="modal-overlay modal-overlay--cadastro-produto" id="modal-cadastrar-produto" role="presentation">
+        <section class="modal-content modal-content--cadastro-produto" role="dialog" aria-modal="true"
+            aria-labelledby="modal-cadastrar-produto-titulo">
+            <header class="modal-header modal-cadastrar-produto-header">
+                <h2 id="modal-cadastrar-produto-titulo">Cadastrar Produto</h2>
+                <button class="modal-cadastrar-produto-fechar" type="button" data-fechar-modal
+                    aria-label="Fechar cadastro de produto">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <form id="form-cadastrar-produto" novalidate>
+                <div class="input-group">
+                    <label for="codigoBarras">Código de barras</label>
+                    <input type="text" id="codigoBarras" class="form-control" placeholder="Ex: 004000044A4422"
+                        autocomplete="off" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="nome">Nome do produto</label>
+                    <input type="text" id="nome" class="form-control" placeholder="Ex: Arroz 5kg" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="preco">Preço</label>
+                    <input type="text" id="preco" class="form-control" value="0,00" inputmode="decimal"
+                        aria-describedby="preco-ajuda" required>
+                    <small id="preco-ajuda" class="modal-cadastrar-produto-ajuda">Informe o valor no formato
+                        0,00.</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="setor">Setor</label>
+                    <select id="setor" class="form-control" required>
+                        <option value="" disabled selected>Selecione um setor</option>
+                        <option value="Alimentação">Alimentação</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Higiene Pessoal">Higiene Pessoal</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <footer class="modal-actions modal-cadastrar-produto-acoes">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnCadastrarProduto">
+                        <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+                        Cadastrar
+                    </button>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    <!-- ================= MODAL DE PAGAMENTO (PIX) ================= -->
+    <div class="modal-overlay" id="modal-pagamento">
+        <div class="modal-content modal-content--pagamento">
+            <div class="modal-header">
+                <h3>Pagamento via PIX</h3>
+                <i class="fa-solid fa-xmark" onclick="fecharModal('modal-pagamento')"></i>
+            </div>
+
+            <div class="pagamento-info">
+                <p class="pagamento-rotulo">Cobrança de</p>
+                <h4 id="pagamento-cliente-nome" class="pagamento-cliente-nome">
+                    Nome do Cliente</h4>
+
+                <p class="pagamento-rotulo">Valor a Pagar</p>
+                <h2 id="pagamento-valor-display" class="pagamento-valor">R$ 0,00</h2>
+
+                <!-- Container do QR Code (Gerado via API Dinâmica) -->
+                <div class="pagamento-qr">
+                    <!-- A imagem utiliza a API qrserver para gerar o QR dinamicamente baseado nos dados passados -->
+                    <img id="qr-code-img" src="" alt="QR Code PIX">
+                </div>
+                <p class="pagamento-instrucoes">Escaneie o QR Code pelo aplicativo do seu banco
+                </p>
+            </div>
+
+            <div class="modal-actions modal-actions--pagamento modal-actions--iguais">
+                <button type="button" class="btn btn-secondary"
+                    onclick="fecharModal('modal-pagamento')">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btn-confirmar-pag" onclick="confirmarPagamento()">
+                    <i class="fa-solid fa-check"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CONTAINER DE TOASTS ================= -->
+    <div id="toast-container"></div>
+
+    <script type="module" src="../scripts/main.js"></script>
+</body>
+
+</html>

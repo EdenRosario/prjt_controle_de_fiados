@@ -1,0 +1,18 @@
+POST http://localhost:3000/clients
+Content-Type: application/json
+
+{
+    "name":"exemplo 1",
+    "tel": "91 991431457",
+    "email": "exemplo1@gmail.com",
+    "cpf": "00011122233"
+}
+
+###
+
+GET http://localhost:3000/clients?search=exemplo
+
+###
+
+DELETE http://localhost:3000/clients/1
+

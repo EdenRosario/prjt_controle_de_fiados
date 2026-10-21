@@ -1,0 +1,16 @@
+POST http://localhost:3000/itensCompras
+Content-Type: application/json
+
+{
+    "clienteId" : 8,
+    "produtoId": 1,
+    "quantidade": 4,
+    "precoUnitario": 28.90
+}
+###
+
+GET http://localhost:3000/itensCompras/buscarcupom/5
+
+###
+
+GET http://localhost:3000/itensCompras/itens/4

@@ -1,0 +1,19 @@
+POST http://localhost:3000/pagamentos
+Content-Type: application/json
+
+{
+    "compraId": 4,
+    "valorRecebido": 144.10,
+    "metodoPagamento": "especie"
+}
+###
+GET http://localhost:3000/pagamentos/historico/4
+
+###
+GET http://localhost:3000/pagamentos/resumo/3
+
+###
+GET http://localhost:3000/pagamentos/pago/3
+
+###
+GET http://localhost:3000/pagamentos/saldo/3

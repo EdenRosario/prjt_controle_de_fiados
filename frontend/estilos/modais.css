@@ -1,0 +1,270 @@
+/* Estrutura compartilhada dos modais */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 500px;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.modal-header i {
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.modal-header i:hover {
+    color: var(--danger);
+}
+
+/* Ações e resumo dos modais */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modal-actions--cadastro {
+    margin-top: 24px;
+}
+
+.modal-item-cliente {
+    margin-bottom: 20px;
+}
+
+.modal-item-cliente-label,
+.modal-item-total-rotulo {
+    color: var(--text-muted);
+}
+
+.modal-item-cliente-label {
+    font-size: 14px;
+}
+
+.modal-item-cliente-nome {
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+.modal-item-total {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+}
+
+.modal-item-total-linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-item-total-valor {
+    font-size: 20px;
+    color: var(--text-main);
+}
+
+/* Apresentação do pagamento PIX */
+.modal-content--pagamento {
+    max-width: 420px;
+    text-align: center;
+}
+
+.pagamento-info {
+    margin-bottom: 24px;
+}
+
+.pagamento-rotulo {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.pagamento-cliente-nome {
+    font-size: 18px;
+    color: var(--text-main);
+    margin-bottom: 16px;
+}
+
+.pagamento-valor {
+    color: var(--success);
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.pagamento-qr {
+    background: white;
+    padding: 15px;
+    border-radius: 16px;
+    border: 2px dashed var(--border);
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.pagamento-qr img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+
+.pagamento-instrucoes {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.modal-actions--pagamento {
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-actions--iguais > .btn {
+    flex: 1;
+}
+
+/* Cadastro de produto */
+.modal-overlay--cadastro-produto {
+    padding: 24px;
+}
+
+.modal-content--cadastro-produto {
+    max-width: 820px;
+    padding: 40px;
+}
+
+.modal-cadastrar-produto-header {
+    margin-bottom: 30px;
+}
+
+.modal-cadastrar-produto-header h2 {
+    font-size: 32px;
+    line-height: 1.2;
+}
+
+.modal-cadastrar-produto-fechar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 26px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-cadastrar-produto-fechar:hover,
+.modal-cadastrar-produto-fechar:focus-visible {
+    color: var(--danger);
+}
+
+.modal-content--cadastro-produto .input-group {
+    margin-bottom: 20px;
+}
+
+.modal-content--cadastro-produto .input-group label {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.modal-content--cadastro-produto .form-control {
+    min-height: 56px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 18px;
+}
+
+.modal-cadastrar-produto-ajuda {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.modal-cadastrar-produto-acoes {
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.modal-cadastrar-produto-acoes .btn {
+    min-height: 56px;
+    padding: 12px 26px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .modal-overlay--cadastro-produto {
+        align-items: flex-start;
+        overflow-y: auto;
+        padding: 16px;
+    }
+
+    .modal-content--cadastro-produto {
+        margin: auto 0;
+        padding: 24px;
+    }
+
+    .modal-cadastrar-produto-header {
+        margin-bottom: 24px;
+    }
+
+    .modal-cadastrar-produto-header h2 {
+        font-size: 26px;
+    }
+
+    .modal-content--cadastro-produto .input-group label,
+    .modal-content--cadastro-produto .form-control,
+    .modal-cadastrar-produto-acoes .btn {
+        font-size: 16px;
+    }
+
+    .modal-cadastrar-produto-acoes {
+        flex-direction: column-reverse;
+    }
+
+    .modal-cadastrar-produto-acoes .btn {
+        width: 100%;
+    }
+}

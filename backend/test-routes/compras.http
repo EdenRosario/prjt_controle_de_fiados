@@ -1,0 +1,9 @@
+POST http://localhost:3000/compras/5
+Content-Type: application/json
+###
+
+GET http://localhost:3000/compras/aberta/7
+
+###
+
+PUT http://localhost:3000/compras/atualizar/4
