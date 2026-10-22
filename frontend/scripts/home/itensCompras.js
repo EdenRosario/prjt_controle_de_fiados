@@ -1,14 +1,14 @@
-import { preencherCamposModalProduto, abrirModalAdicionarItem } from "./produtos.js";
+import {
+    preencherCamposModalProduto,
+    abrirModalAdicionarItem,
+} from "./produtos.js";
 
 export async function obterProdutoBackEnd(codigoBarras) {
-
-
     if (codigoBarras) {
         try {
-
-
-
-            const response = await fetch(`http://localhost:3000/produtos/codigo-barras/${codigoBarras}`);
+            const response = await fetch(
+                `http://localhost:3000/produtos/codigo-barras/${codigoBarras}`,
+            );
 
             const data = await response.json();
 
@@ -17,21 +17,17 @@ export async function obterProdutoBackEnd(codigoBarras) {
                 data.message === "Nenhum produto encontrado"
             ) {
                 throw new Error("PRODUTO_NAO_CADASTRADO");
-            };
+            }
 
             if (!response.ok) {
-                console.error(produto)
-                console.log("Não foi possivel buscar produto")
+                console.error(produto);
+                console.log("Não foi possivel buscar produto");
                 throw new Error(
-                    data.message ||
-                    data.error ||
-                    "Não foi possível buscar o produto."
+                    data.message || data.error || "Não foi possível buscar o produto.",
                 );
-            };
+            }
 
             const produto = data.produto ?? data;
-
-
 
             if (
                 data.error === "Nenhum codigo de barras informado" ||
@@ -40,14 +36,12 @@ export async function obterProdutoBackEnd(codigoBarras) {
                 throw new Error("Informe o código de barras do produto.");
             }
 
-
             if (
                 data.erro === "Nenhum produto encontrado" ||
                 data.message === "Nenhum produto encontrado"
             ) {
                 throw new Error("Produto não cadastrado.");
             }
-
 
             if (!produto || !produto.id) {
                 throw new Error("Produto não cadastrado.");
@@ -56,50 +50,47 @@ export async function obterProdutoBackEnd(codigoBarras) {
             console.log("Produto encontrado:", produto);
 
             return produto;
-
         } catch (error) {
             console.error("Erro ao buscar produto:", error);
             throw error;
-        };
+        }
     } else {
-        window.alert("[ERRO] Não foi possivel adicionar o produto, por favor preencha o campo de codigo de barras");
-    };
+        window.alert(
+            "[ERRO] Não foi possivel adicionar o produto, por favor preencha o campo de codigo de barras",
+        );
+    }
+}
 
-};
-
-export async function adicionarItempCompra(clienteId, produtoId, quantidade, precoUnitario) {
-
-
+export async function adicionarItempCompra(
+    clienteId,
+    produtoId,
+    quantidade,
+    precoUnitario,
+) {
     console.log("produto backend ", {
         clienteId: clienteId,
         produtoId: produtoId,
         quantidade: quantidade,
-        precoUnitario: precoUnitario
-    })
+        precoUnitario: precoUnitario,
+    });
 
     if (!clienteId) {
-        throw new Error("nenhum cliente encontrado")
-
+        throw new Error("nenhum cliente encontrado");
     } else if (!produtoId) {
-        throw new Error("nenhum produto encontrado")
-
+        throw new Error("nenhum produto encontrado");
     } else {
-
         try {
-
             const response = await fetch("http://localhost:3000/itensCompras", {
-
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    "clienteId": clienteId,
-                    "produtoId": produtoId,
-                    "quantidade": quantidade,
-                    "precoUnitario": precoUnitario
-                })
-
+                    clienteId: clienteId,
+                    produtoId: produtoId,
+                    quantidade: quantidade,
+                    precoUnitario: precoUnitario,
+                }),
             });
 
             const data = await response.json();
@@ -108,118 +99,87 @@ export async function adicionarItempCompra(clienteId, produtoId, quantidade, pre
                 throw new Error(
                     data.message ||
                     data.error ||
-                    "Não foi possível adicionar o produto à compra."
+                    "Não foi possível adicionar o produto à compra.",
                 );
-            };
+            }
 
-         
             if (data.message === "body vazio") {
-                console.log("body vazio")
+                console.log("body vazio");
                 return false;
-            };
+            }
 
             if (data.message === "Informe todos os dados do produto.") {
-                console.log("Informe todos os dados do produto.")
+                console.log("Informe todos os dados do produto.");
                 return false;
-            };
+            }
 
             if (data.message === "Compra não encontrada.") {
-                console.log("Compra não encontrada.")
+                console.log("Compra não encontrada.");
                 return false;
-            };
+            }
 
-            if (data.message === "Não é possível adicionar produtos a uma compra que não está aberta.") {
-                console.log("Não é possível adicionar produtos a uma compra que não está aberta.")
+            if (
+                data.message ===
+                "Não é possível adicionar produtos a uma compra que não está aberta."
+            ) {
+                console.log(
+                    "Não é possível adicionar produtos a uma compra que não está aberta.",
+                );
                 return false;
-            };
+            }
 
-
-            console.log("produto adicionado com sucesso", data)
+            console.log("produto adicionado com sucesso", data);
             return data;
-
-
-
         } catch (error) {
             console.error("Erro ao adicionar item à compra:", error);
             throw error;
-        };
+        }
+    }
+}
 
-    };
-
-};
-
-
-export async function cadastrarProduto(codigoBarras, nome, preco, setor){
-
-    if(!codigoBarras || !nome || !preco || !setor){
-        throw new Error("Erro ao cadastrar produto")
-    }else{
-
-        try{
-
+export async function cadastrarProduto(codigoBarras, nome, preco, setor) {
+    if (!codigoBarras || !nome || !preco || !setor) {
+        throw new Error("Erro ao cadastrar produto");
+    } else {
+        try {
             const response = await fetch("http://localhost:3000/produtos", {
-
-                      method: "POST",
-                      headers: {
-                     "Content-Type": "application/json"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     codigoBarras,
-                    nome, 
+                    nome,
                     preco,
-                    setor
-                })
-            })
+                    setor,
+                }),
+            });
 
-               const data = await response.json();
+            const data = await response.json();
 
             if (!response.ok) {
                 throw new Error(
                     data.message ||
                     data.error ||
-                    "Não foi possível adicionar o produto à compra."
+                    "Não foi possível adicionar o produto à compra.",
                 );
-            };
+            }
 
-           
-            if (data.message === "Informe todos os dados obrigatórios do produto.") {
-                console.log("Informe todos os dados obrigatórios do produto.")
-                return false;
-            };
-
-            if (data.message ==="Informe um código de barras válido.") {
-                console.log("Informe um código de barras válido.")
-                return false;
-            };
-
-            if (data.message === "O preço deve ser um número válido e não negativo.") {
-                console.log("O preço deve ser um número válido e não negativo.")
-                return false;
-            };
-
-            if (data.message ==="O estoque deve ser um número inteiro não negativo.") {
-                console.log("O estoque deve ser um número inteiro não negativo.")
-                return false;
-            };
-
-
-            console.log("produto cadastrado com sucesso!", data)
+            console.log("produto cadastrado com sucesso!", data);
             return data;
-
-        }catch(error){
+        } catch (error) {
 
             if (error instanceof TypeError) {
-            throw new Error(
-                "Não foi possível conectar à API. Verifique se o servidor está funcionando."
-            );
-            };  
-          throw error; 
+                throw new Error(
+                    "Não foi possível conectar à API. Verifique se o servidor está funcionando."
+                );
+            }
 
-        };
+            throw error;
 
-    };
-
-};
+        }
+    }
+}
 // export async function atualizarTotalCompra(compraId) {
 
 //     if (!compraId) {
@@ -231,7 +191,6 @@ export async function cadastrarProduto(codigoBarras, nome, preco, setor){
 //             const response = await fetch(`http://localhost:3000/compras/atualizar/${compraId}`,{
 //                   method: "PUT"
 //             });
-             
 
 //             const data = await response.json();
 

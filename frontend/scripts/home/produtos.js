@@ -1,13 +1,12 @@
 import { adicionarItempCompra } from "./itensCompras.js";
 import { obterProdutoBackEnd } from "./itensCompras.js";
-import {cadastrarProduto} from "./itensCompras.js"
+import { cadastrarProduto } from "./itensCompras.js"
 
 let clienteAtual = null;
 let eventoInicializado = false;
 let produtoAtual = null;
 const modalAdicionarItem = document.querySelector("#modal-adicionar-item");
 const modalCadastrarProduto = document.querySelector("#modal-cadastrar-produto");
-const btnCadastrarProduto = modalCadastrarProduto.querySelector("#btnCadastrarProduto")
 
 const normalizarPreco = (valor) => {
     const valorInformado = valor.trim();
@@ -36,7 +35,7 @@ const abrirModalCadastrarProduto = (codigoBarras) => {
     form.reset();
     form.querySelector("#codigoBarras").value = codigoBarras;
     form.querySelector("#preco").value = "0,00";
-   
+
     modalAdicionarItem.classList.remove("show");
     modalCadastrarProduto.classList.add("show");
     form.querySelector("#codigoBarras").focus();
@@ -46,32 +45,42 @@ const abrirModalCadastrarProduto = (codigoBarras) => {
 const inicializarCadastroProduto = async () => {
     if (!modalCadastrarProduto) {
         return;
-    };   
+    };
 
     const form = modalCadastrarProduto.querySelector("#form-cadastrar-produto");
 
     const inputPreco = form.querySelector("#preco");
 
-    
-      inputPreco.addEventListener("input", () => {
+
+    inputPreco.addEventListener("input", () => {
         inputPreco.setCustomValidity("");
     });
 
-    form.addEventListener("submit", async(evt)=>{
+    form.addEventListener("submit", async (evt) => {
 
-            event.preventDefault();
+        event.preventDefault();
 
-            let codigoBarras = form.querySelector("#codigoBarras").value;
-            let nome = form.querySelector("#nome").value;
-            let setor = form.querySelector("#setor").value;
-            let preco = normalizarPreco(inputPreco.value);
+        let codigoBarras = form.querySelector("#codigoBarras").value;
+        let nome = form.querySelector("#nome").value;
+        let setor = form.querySelector("#setor").value;
+        let preco = normalizarPreco(inputPreco.value);
 
-            if (
+        if (!nome) {
+            window.showToast("Informe o nome do produto.", "error");
+            return;
+        }
+
+        if (!setor) {
+            window.showToast("Selecione o setor do produto.", "error");
+            return;
+        }
+
+        if (
             preco === null ||
             preco === undefined ||
             preco === "" ||
             !Number.isFinite(Number(preco)) ||
-            Number(preco) < 0
+            Number(preco) <= 0
         ) {
             inputPreco.setCustomValidity(
                 "Informe um preço válido e não negativo."
@@ -87,9 +96,9 @@ const inicializarCadastroProduto = async () => {
             return;
         };
 
-        try{
-            
-               const produtoCadastrado = await cadastrarProduto(
+        try {
+
+            const produtoCadastrado = await cadastrarProduto(
                 codigoBarras,
                 nome,
                 preco,
@@ -102,16 +111,17 @@ const inicializarCadastroProduto = async () => {
                     "success"
                 );
 
-                 console.log(
+                console.log(
                     "Produto cadastrado com sucesso!",
                     produtoCadastrado
                 )
 
                 form.reset();
                 inputPreco.setCustomValidity("");
+                
             };
-        
-        }catch(error){
+
+        } catch (error) {
 
             console.error("Erro ao cadastrar produto:", error);
 

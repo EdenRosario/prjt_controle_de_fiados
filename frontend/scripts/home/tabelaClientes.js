@@ -2,9 +2,7 @@ import { verHistorico } from '../historico.js';
 import { abrirModalAdicionarItem } from './produtos.js';
 
 const criarLinhaCliente = (nome, cpf, id, statusCliente, aoExcluir) => {
-    console.log(`id recebido ${id}`);
-    console.log(`cliente ativo : ${statusCliente}`);
-
+ 
     const tbody = document.querySelector("#tBody");
     const clientExist = tbody.querySelector(`tr[data-cpf="${cpf}"]`);
 

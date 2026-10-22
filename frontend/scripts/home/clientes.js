@@ -1,13 +1,49 @@
 import {
     criarLinhaCliente,
     limparTabelaClientes,
-    removerLinhaCliente
-} from './tabelaClientes.js';
+    removerLinhaCliente,
+} from "./tabelaClientes.js";
 
 const modalCliente = document.querySelector("#modal-cadastro");
 const btnClear = document.querySelector("#btnClear");
 const btnPesquisar = document.querySelector("#btn_pesquisar");
 const campoBuscaCliente = document.querySelector("#busca-cpf-home");
+
+const preencherDashboardGeral = async () => {
+    try {
+        const response = await fetch("http://localhost:3000/clients/total");
+
+        if (!response.ok) {
+            throw new Error("Erro ao buscar informações do dashboard");
+        }
+
+        const painelTotaldeClientes = document.querySelector(
+            "#painelTotaldeClientes",
+        );
+        const painelTotaldeComprasEmAberto = document.querySelector(
+            "#painelTotaldeComprasEmAberto",
+        );
+        const painelTotalCompraPago = document.querySelector(
+            "#painelTotalCompraPago",
+        );
+
+        const infoDashboard = await response.json();
+
+        const totalClientes = infoDashboard.totalClientes;
+        const totalValorCompras = infoDashboard.totalValorCompras;
+        const totalPago = infoDashboard.totalPago;
+
+        totalClientes ? painelTotaldeClientes.innerHTML = totalClientes : painelTotaldeClientes.innerHTML = "Erro";
+        totalValorCompras ? painelTotaldeComprasEmAberto.innerHTML = totalValorCompras : painelTotaldeComprasEmAberto.innerHTML = "Erro";
+        !Number(totalPago) ? painelTotalCompraPago.innerHTML = totalPago : painelTotalCompraPago.innerHTML = "Erro";
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: "Erro interno no servidor",
+        });
+    };
+};
 
 const limparBuscaCliente = () => {
     campoBuscaCliente.value = "";
@@ -28,14 +64,14 @@ const cadastrarCliente = async () => {
             const response = await fetch("http://localhost:3000/clients", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     name: nome,
                     tel: tel,
                     email: email,
-                    cpf: cpf
-                })
+                    cpf: cpf,
+                }),
             });
 
             const data = await response.json();
@@ -53,7 +89,7 @@ const excluirCliente = async (btn, id) => {
 
     try {
         const response = await fetch(`http://localhost:3000/clients/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
         });
 
         if (!response.ok) {
@@ -69,45 +105,61 @@ const excluirCliente = async (btn, id) => {
         console.log("cliente deletado com sucesso!");
     } catch (error) {
         console.error(error);
-        window.showToast(
-            "Não foi possível remover o cliente.",
-            "error"
-        );
+        window.showToast("Não foi possível remover o cliente.", "error");
     }
 };
+const loadingClientes = document.querySelector("#loading-clientes");
 
 const buscarCliente = async () => {
+
     const reqClient = campoBuscaCliente.value.trim();
 
-    if (reqClient) {
-        try {
-            const response = await fetch(`http://localhost:3000/clients?search=${reqClient}`);
+    if (!reqClient) {
+        window.alert(
+            "[ERRO] Não foi possível buscar o cliente. Por favor, preencha o campo de pesquisa."
+        );
+        return;
+    }
 
-            if (!response.ok) {
-                throw new Error("Erro ao buscar cliente");
-            }
+    try {
 
-            const cliente = await response.json();
-            const nome = cliente[0].nome;
-            const cpf = cliente[0].cpf;
-            const id = cliente[0].id;
-            const statusCliente = cliente[0].ativo;
+        loadingClientes.style.display = "flex";
 
-            console.log(cliente);
+        const response = await fetch(
+            `http://localhost:3000/clients?search=${reqClient}`,
+        );
 
-            criarLinhaCliente(nome, cpf, id, statusCliente, excluirCliente);
-        } catch (error) {
-            console.log(error);
-            window.showToast(
-                "Cliente não encontrado.",
-                "error"
+        if (!response.ok) {
+            throw new Error("Erro ao buscar cliente");
+        }
+
+        const cliente = await response.json();
+
+        if (!cliente.length) {
+            throw new Error("Cliente não encontrado");
+        }
+
+        
+        cliente.forEach((c) => {
+
+            criarLinhaCliente(
+                c.nome,
+                c.cpf,
+                c.id,
+                c.ativo,
+                excluirCliente
             );
 
-            limparBuscaCliente();
-        }
-    } else {
-        window.alert("[ERRO] Não foi possivel buscar o cliente, por favor preencha o campo de pesquisa");
-    }
+        });
+
+    } catch (error) {
+        console.log(error);
+        window.showToast("Cliente não encontrado.", "error");
+
+        limparBuscaCliente();
+    } finally {
+        loadingClientes.style.display = "none";
+    };
 };
 
 const limparPesquisaClientes = () => {
@@ -133,4 +185,5 @@ const inicializarClientes = () => {
 
 window.deletClient = excluirCliente;
 
+preencherDashboardGeral();
 export { inicializarClientes };
