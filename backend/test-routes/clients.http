@@ -13,6 +13,8 @@ Content-Type: application/json
 GET http://localhost:3000/clients?search=exemplo
 
 ###
+GET http://localhost:3000/clients/total
 
+###
 DELETE http://localhost:3000/clients/1
 

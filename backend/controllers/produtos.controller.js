@@ -9,30 +9,30 @@ export async function cadastrarProduto(req, res) {
             return res.status(400).send("body vazio")
         }
 
-        const { codigoBarras, nome, preco,setor } = req.body
+        const { codigoBarras, nome, preco, setor } = req.body
 
         if (
-            !codigoBarras || !nome || preco === undefined || preco === null ) {
+            !codigoBarras || !nome || preco === undefined || preco === null) {
             return res.status(400).json({
                 message: "Informe todos os dados obrigatórios do produto."
             });
         }
 
-      
+
         if (typeof codigoBarras !== "string" || !codigoBarras.trim()) {
             return res.status(400).json({
                 message: "Informe um código de barras válido."
             });
         }
 
-        
+
         if (typeof nome !== "string" || !nome.trim()) {
             return res.status(400).json({
                 message: "Informe um nome válido para o produto."
             });
         }
 
-       
+
         if (
             !Number.isFinite(Number(preco)) ||
             Number(preco) < 0
@@ -42,8 +42,8 @@ export async function cadastrarProduto(req, res) {
             });
         }
 
-        if( typeof setor !== "string" || !setor.trim()){
-               return res.status(400).json({
+        if (typeof setor !== "string" || !setor.trim()) {
+            return res.status(400).json({
                 message: "Informe o setor do produto."
             });
         }
@@ -58,10 +58,19 @@ export async function cadastrarProduto(req, res) {
         return res.status(201).json({ message: "produto cadastrado com sucesso!", resp })
 
     } catch (error) {
-        console.error(error)
+        console.error("Erro ao cadastrar produto:", error);
+        console.log("Mensagem:", error.message);
+
+        if (error.message?.includes("Já existe um produto cadastrado")) {
+            return res.status(409).json({
+                message: error.message
+            });
+        }
+
         return res.status(500).json({
-            error: "Erro interno no servidor"
-        })
+            error: "Erro interno no servidor",
+            detalhe: error.message
+        });
     }
 
 }

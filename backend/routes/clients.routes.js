@@ -5,6 +5,7 @@ const router = Router()
 
 router.post('/',clientController.createCliet)
 router.get('/', clientController.searchClient)
+router.get('/total', clientController.listarTodosClientesTodasComprasTodosPagamentos)
 router.delete('/:id', clientController.deletClient)
 
 export default router

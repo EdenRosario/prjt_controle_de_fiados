@@ -1,6 +1,6 @@
 import sql from "../conect.js"
 
-export class DatabasePostgres {
+export class PagamentosRepository {
 
     async registrarPagamento({ compraId, valorRecebido, metodoPagamento }) {
 
@@ -78,6 +78,19 @@ export class DatabasePostgres {
 
         return Number(resultado.total_pago)
     }
+
+    //usado no controller de clientes
+   async calcularTotalPagoComprasEmAberto() {
+    const [resultado] = await sql`
+        SELECT COALESCE(SUM(p.valor_pago), 0) AS total_pago
+        FROM pagamentos p
+        INNER JOIN compras c
+            ON c.id = p.compra_id
+        WHERE c.status = 'aberto';
+    `;
+
+    return Number(resultado.total_pago);
+}
 
     async calcularSaldo(compraId) {
 

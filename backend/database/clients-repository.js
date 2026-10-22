@@ -22,37 +22,43 @@ export class DatabasePostgres {
     }
 
     async list(search) {
-
-        let client
+        let client;
 
         if (search) {
+            const cleanSearch = search.replace(/\D/g, "");
+            const isCpf = /^\d+$/.test(cleanSearch);
 
-            const cleanSearch = search.replace(/\D/g, "")
-
-            const isCpf = /^\d+$/.test(cleanSearch)
-
-                if (isCpf) {
+            if (isCpf) {
                 client = await sql`
-                     SELECT * FROM clientes
-                     WHERE REPLACE(REPLACE(cpf, '.', ''), '-', '') ILIKE ${cleanSearch}
-                `
-                }else{
-                const busca = `%${search}%`
+                SELECT * FROM clientes
+                WHERE REPLACE(REPLACE(cpf, '.', ''), '-', '') ILIKE ${`%${cleanSearch}%`}
+            `;
+            } else {
+                const busca = `%${search}%`;
 
                 client = await sql`
-                    SELECT * FROM clientes
-                    WHERE nome ILIKE ${busca}
-                `
-                }
+                SELECT * FROM clientes
+                WHERE nome ILIKE ${busca}
+            `;
+            }
         } else {
             client = await sql`
-                SELECT * FROM clientes
-            `
+            SELECT * FROM clientes
+        `;
         }
 
-        return client
-
+        return client;
     }
+
+    async listAllClientes() {
+
+        const resultado = await sql`
+        SELECT COUNT(*) AS total_clientes
+        FROM clientes
+    `;
+        return Number(resultado[0].total_clientes);
+
+    };
 
     async delete(id) {
 

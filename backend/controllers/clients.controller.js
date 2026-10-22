@@ -1,7 +1,11 @@
 import { response } from "express";
 import { DatabasePostgres } from "../database/clients-repository.js";
+import {ComprasRepository} from "../database/compras-repository.js";
+import {PagamentosRepository} from "../database/pagamentos-repositoy.js"
 
-const clientRepository = new DatabasePostgres()
+const pagamentosRepository = new PagamentosRepository()
+const comprasRepository = new ComprasRepository();
+const clientRepository = new DatabasePostgres();
 
 export async function createCliet(req, res) {
     try {
@@ -60,7 +64,46 @@ export async function searchClient(req, res) {
 
     }
 
+}
 
+export async function listarTodosClientesTodasComprasTodosPagamentos(req, res){
+
+    try{
+
+        const totalClientes = await clientRepository.listAllClientes()
+        const totalValorCompras = await comprasRepository.somarComprasEmAberto()
+        const totalPago = await pagamentosRepository.calcularTotalPagoComprasEmAberto()
+
+        if(!totalClientes){
+            return res.status(404).json({
+                message: "não foi possivel lisatar o numero de clientes cadastrados"
+            })
+        }
+
+        if(!totalValorCompras){
+              return res.status(404).json({
+                message: "não foi possivel obter valor total das compras"
+            })
+        };
+
+        if(totalPago == undefined){
+              return res.status(404).json({
+                message: "não foi possivel obter valor total pago das compras em aberto"
+            })
+        };
+
+        return res.status(200).json({
+           totalClientes,
+           totalValorCompras,
+           totalPago
+        });
+
+    }catch(error){
+        console.error(error)
+        return res.status(500).json({
+            error: "Erro interno no servidor"
+        })
+    }
 }
 
 export async function deletClient(req, res) {

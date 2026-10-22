@@ -31,7 +31,18 @@ export class ComprasRepository {
         return compra
     }
 
+    //usado no controller de clientes
+    async somarComprasEmAberto() {
 
+    const [resultado] = await sql`
+        SELECT COALESCE(SUM(total), 0) AS total_compras_abertas
+        FROM compras
+        WHERE status = 'aberto'
+    `;
+
+    return Number(resultado.total_compras_abertas); 
+
+   }
 
     async atulizarTotal(compraId) {
         const [compra] = await sql`

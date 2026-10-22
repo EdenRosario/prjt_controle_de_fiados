@@ -1,7 +1,7 @@
-import { DatabasePostgres } from "../database/pagamentos-repositoy.js";
+import { PagamentosRepository } from "../database/pagamentos-repositoy.js";
 import { ComprasRepository } from "../database/compras-repository.js";
 
-const pagamentosRepository = new DatabasePostgres()
+const pagamentosRepository = new PagamentosRepository()
 const comprasRepository = new ComprasRepository()
 
 export async function registrarPagamentos(req, res) {
