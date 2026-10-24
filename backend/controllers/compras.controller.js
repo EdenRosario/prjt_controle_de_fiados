@@ -43,13 +43,13 @@ export async function buscarCompraEmAberto(req, res) {
 
         const busca = await comprasRopository.buscarCompraEmAberto(clienteId)
 
-        if(!busca){
-            return res.status(404).json({message: "Compra não encontrada"})
+        if (!busca) {
+            return res.status(404).json({ message: "Compra não encontrada" })
         }
 
         console.table(busca)
         return res.status(201).json(busca)
-        
+
     } catch (error) {
         console.log(error)
 
@@ -58,10 +58,9 @@ export async function buscarCompraEmAberto(req, res) {
 
 }
 
-
 export async function atulizarTotal(req, res) {
     try {
-        const compraId  = req.params.compraId;
+        const compraId = req.params.compraId;
 
         if (!compraId) {
             return res.status(400).json({

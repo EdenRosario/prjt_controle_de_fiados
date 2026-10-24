@@ -96,16 +96,18 @@ export async function adicionarItem(req, res) {
 
         const compraAtualizada = await comprasRepository.atulizarTotal(compraId);
 
-        if(compraAtualizada){
-            res.status(201).json({
-                message: "compra atualziada", compraAtualizada
-            })
+        if (produto && compraAtualizada) {
+
+            return res.status(201).json({
+                message: "Produto adicionado com sucesso.",
+                produto,
+                compraAtualizada
+            });
+
         }
 
-
-        return res.status(201).json({
-            message: "Produto adicionado com sucesso.",
-            produto
+        return res.status(500).json({
+            message: "O produto foi adicionado, mas não foi possível confirmar a atualização da compra."
         });
 
     } catch (error) {
@@ -167,3 +169,40 @@ export async function buscarDadosCompraEmAberto(req, res) {
         });
     }
 }
+
+
+export async function buscaCompraDetalhadaPorData(req, res) {
+
+    try {
+
+        const clienteId = req.params.clienteId
+
+        if (!clienteId) {
+
+            return res.status(400).json({
+                message: "ID do cliente não informado"
+            })
+
+        };
+
+        const compra = await itensComprasRepository.buscaCompraDetalhadaPorData(clienteId)
+
+        if (!compra) {
+            return res.status(200).json({
+                message: "Erro ao buscar dados da compra"
+            })
+        }
+
+        return res.status(200).json(compra)
+
+    } catch (error) {
+
+        console.error("Erro ao buscar compra em aberto:", error);
+
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        });
+
+    };
+
+};

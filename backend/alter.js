@@ -1,9 +1,8 @@
 import sql from "./conect.js";
 
 await sql`
-ALTER TABLE produtos
-ADD CONSTRAINT produtos_codigo_barras_unique
-UNIQUE (codigo_barras);
+ALTER TABLE itens_compra
+ADD COLUMN data_item_compra TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 `;
 
 console.log("alterações feitas com sucesso!");
