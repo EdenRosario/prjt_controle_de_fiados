@@ -1,4 +1,4 @@
-import { verHistorico } from '../historico.js';
+import { verHistorico } from './exibirHistoricoCompras.js';
 import { abrirModalAdicionarItem } from './produtos.js';
 
 const criarLinhaCliente = (nome, cpf, id, statusCliente, aoExcluir) => {

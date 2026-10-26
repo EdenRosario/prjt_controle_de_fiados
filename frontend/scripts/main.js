@@ -2,7 +2,7 @@ import './navigation.js';
 import './modais.js';
 import './toast.js';
 import './home/home.js';
-import './historico.js';
+import './home/exibirHistoricoCompras.js';
 import './gestao.js';
 
 document.addEventListener("click", function(e) {

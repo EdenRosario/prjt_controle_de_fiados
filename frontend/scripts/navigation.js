@@ -1,5 +1,5 @@
 import { initHome } from './home/home.js';
-import { initHistorico } from './historico.js';
+import { initHistorico } from './home/exibirHistoricoCompras.js';
 import { initGestao } from './gestao.js';
 
 function navegar(idSecao, elementoMenu = null) {
