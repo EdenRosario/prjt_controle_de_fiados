@@ -1,3 +1,5 @@
+import { API_URL } from "../../config.js";
+
 export async function getHistoricoComprasDetalhadoPorData(clienteId) {
 
     if (!clienteId) {
@@ -7,7 +9,9 @@ export async function getHistoricoComprasDetalhadoPorData(clienteId) {
 
         try{
     
-            const response = await fetch(`http://localhost:3000/itensCompras/compraDetalhada/8`);
+            const response = await fetch(
+                `${API_URL}/itensCompras/compraDetalhada/`+ encodeURIComponent(clienteId),
+            );
         
             const data = await response.json();
         

@@ -1,1 +1,1 @@
-export const API_URL = 'https://prjt-controle-de-fiados-testes.onrender.com/';
+export const API_URL = 'https://prjt-controle-de-fiados-testes.onrender.com';

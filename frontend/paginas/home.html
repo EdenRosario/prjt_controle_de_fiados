@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../estilos/modais.css">
     <link rel="stylesheet" href="../estilos/historico-pagamentos.css">
     <link rel="stylesheet" href="../estilos/detalhes-compra.css">
+    <link rel="stylesheet" href="../estilos/historico-compras.css">
 </head>
 
 <body>
@@ -113,52 +114,26 @@
         </section>
 
         <!-- 2. SEÇÃO HISTÓRICO RAPIDO DA HOME -->
-        <section id="secao-historico" class="secao">
-            <button class="btn btn-secondary" style="margin-bottom: 20px;"
-                onclick="navegar('secao-home', document.querySelectorAll('.nav-item')[0])">
-                <i class="fa-solid fa-arrow-left"></i> Voltar
-            </button>
+        <section id="secao-historico" class="secao historico-compras-section">
+            <div class="historico-compras-conteudo">
+                <button class="btn btn-secondary historico-compras-voltar" type="button"
+                    onclick="navegar('secao-home', document.querySelectorAll('.nav-item')[0])">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Voltar
+                </button>
 
-            <div class="card">
-                <h2 class="page-title" id="historico-nome-cliente">Histórico de Compras - Cliente</h2>
+                <header class="historico-compras-heading">
+                    <div class="historico-compras-titulo">
+                        <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                        <div>
+                            <h2 class="page-title">Histórico de Compras</h2>
+                            <p class="historico-compras-subtitulo">Produtos agrupados por data</p>
+                        </div>
+                    </div>
+                    <p class="historico-compras-cliente">Cliente: <span id="historico-nome-cliente"></span></p>
+                </header>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Valor</th>
-                                <th>Quantidade</th>
-                                <th>Soma</th>
-                                <th>Data da Compra</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Serviço de Manutenção</td>
-                                <td>R$ 150,00</td>
-                                <td>1</td>
-                                <td>R$ 150,00</td>
-                                <td>15/10/2023</td>
-                            </tr>
-                            <tr>
-                                <td>Peça de Reposição</td>
-                                <td>R$ 50,00</td>
-                                <td>2</td>
-                                <td>R$ 100,00</td>
-                                <td>15/10/2023</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="historico-footer">
-                    <div class="total-valor">Total em aberto: <span style="color: var(--danger);"
-                            id="historico-valor-total">R$ 250,00</span></div>
-                    <button class="btn btn-success" onclick="abrirModalPagamento()">
-                        <i class="fa-brands fa-pix"></i> Pagar Conta
-                    </button>
-                </div>
+                <div id="historico-compras-cards" class="historico-compras-grid" aria-live="polite"
+                    aria-busy="false"></div>
             </div>
         </section>
 
@@ -1207,6 +1182,57 @@
                 </button>
             </div>
         </div>
+    </div>
+
+    <!-- ================= MODAL DE ITENS DO HISTÓRICO DE COMPRAS ================= -->
+    <div class="modal-overlay modal-overlay--historico-compras" id="modal-historico-compras">
+        <section class="modal-content modal-content--historico-compras" role="dialog" aria-modal="true"
+            aria-labelledby="modal-historico-compras-titulo" aria-describedby="modal-historico-compras-cliente">
+            <header class="modal-header modal-historico-compras-header">
+                <div>
+                    <h2 id="modal-historico-compras-titulo">Compra do dia</h2>
+                    <p id="modal-historico-compras-cliente"></p>
+                </div>
+                <button class="modal-historico-compras-fechar" type="button" data-fechar-modal
+                    aria-label="Fechar detalhes da compra">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <div class="modal-historico-compras-corpo">
+                <section class="card detalhes-itens-card" aria-labelledby="modal-historico-itens-titulo">
+                    <div class="detalhes-itens-heading">
+                        <h3 id="modal-historico-itens-titulo">Itens da compra</h3>
+                        <span id="modal-historico-resumo">0 unidades · 0 produtos</span>
+                    </div>
+
+                    <div class="detalhes-itens-scroll" role="region" aria-label="Lista de itens da compra"
+                        tabindex="0">
+                        <table class="detalhes-itens-tabela">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Produto</th>
+                                    <th scope="col">Qtd.</th>
+                                    <th scope="col">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modal-historico-itens"></tbody>
+                        </table>
+                    </div>
+                    <p class="detalhes-itens-ajuda">A lista permite rolagem interna quando houver mais itens.</p>
+                </section>
+
+                <div class="historico-compra-total" aria-label="Total do dia">
+                    <i class="fa-solid fa-coins" aria-hidden="true"></i>
+                    <span class="historico-compra-total-rotulo">Total do dia</span>
+                    <strong class="historico-compra-total-valor" id="modal-historico-total">R$ 0,00</strong>
+                </div>
+            </div>
+
+            <footer class="modal-historico-compras-acoes">
+                <button class="btn btn-secondary" type="button" data-fechar-modal>Fechar</button>
+            </footer>
+        </section>
     </div>
 
     <!-- ================= CONTAINER DE TOASTS ================= -->

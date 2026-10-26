@@ -1,3 +1,5 @@
+import { API_URL } from "../../config.js";
+
 import {
     criarLinhaCliente,
     limparTabelaClientes,
@@ -11,7 +13,7 @@ const campoBuscaCliente = document.querySelector("#busca-cpf-home");
 
 const preencherDashboardGeral = async () => {
     try {
-        const response = await fetch("http://localhost:3000/clients/total");
+        const response = await fetch(`${API_URL}/clients/total`);
 
         if (!response.ok) {
             throw new Error("Erro ao buscar informações do dashboard");
@@ -126,7 +128,7 @@ const buscarCliente = async () => {
         loadingClientes.style.display = "flex";
 
         const response = await fetch(
-            `http://localhost:3000/clients?search=${reqClient}`,
+            `${API_URL}/clients?search=${reqClient}`,
         );
 
         if (!response.ok) {

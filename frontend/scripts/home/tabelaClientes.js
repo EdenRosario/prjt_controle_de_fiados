@@ -46,7 +46,7 @@ const criarLinhaCliente = (nome, cpf, id, statusCliente, aoExcluir) => {
     btnHistorico.title = "Ver Histórico";
     btnHistorico.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i>`;
     btnHistorico.addEventListener("click", () => {
-        verHistorico(nome);
+        verHistorico(nome, id);
     });
 
     const btnDelete = document.createElement("button");
