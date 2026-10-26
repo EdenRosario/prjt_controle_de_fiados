@@ -1,4 +1,4 @@
-import { API_URL } from "./config.js";
+// import { API_URL } from "./config.js";
 
 const btnLogin = document.querySelector("#bntLogin")
 const btnValidarDados = document.querySelector("#BtnValidar")
