@@ -25,7 +25,7 @@ export async function getHistoricoComprasDetalhadoPorData(clienteId) {
                 throw new Error(
                     data.message ||
                     data.error ||
-                    "Não foi possível adicionar o produto à compra.",
+                    "Não foi possível obter detalhes da compra.",
                 );
             }
 
@@ -35,7 +35,7 @@ export async function getHistoricoComprasDetalhadoPorData(clienteId) {
 
         } catch (error) {
 
-            console.error("Erro ao adicionar item à compra:", error);
+            console.error("Erro ao buscar detalhes da compra:", error);
             throw error;
 
         }

@@ -1,7 +1,7 @@
 import { verHistorico } from './exibirHistoricoCompras.js';
 import { abrirModalAdicionarItem } from './produtos.js';
 
-const criarLinhaCliente = (nome, cpf, id, statusCliente, aoExcluir) => {
+const criarLinhaCliente = (nome, cpf, id, statusCliente, compraId ,statusCompra) => {
 
     const tbody = document.querySelector("#tBody");
     const clientExist = tbody.querySelector(`tr[data-cpf="${cpf}"]`);

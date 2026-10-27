@@ -45,6 +45,30 @@
     font-size: 13px;
 }
 
+.numero-compra {
+    color: #ff1744;
+    font-weight: 800;
+}
+
+.status-compra {
+    color: #117729;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+
+#div-p-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+#msg-numero-compra-status-compra{
+    margin-left: 150px;
+}
+    
+
+
 .detalhes-status-pago {
     display: inline-flex;
     align-items: center;

@@ -3,11 +3,13 @@ import {
     abrirModalAdicionarItem,
 } from "./produtos.js";
 
+import { API_URL } from "../../config.js";
+
 export async function obterProdutoBackEnd(codigoBarras) {
     if (codigoBarras) {
         try {
             const response = await fetch(
-                `http://localhost:3000/produtos/codigo-barras/${codigoBarras}`,
+                `${API_URL}/produtos/codigo-barras/${codigoBarras}`,
             );
 
             const data = await response.json();
@@ -80,7 +82,7 @@ export async function adicionarItempCompra(
         throw new Error("nenhum produto encontrado");
     } else {
         try {
-            const response = await fetch("http://localhost:3000/itensCompras", {
+            const response = await fetch(`${API_URL}/itensCompras`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -142,7 +144,7 @@ export async function cadastrarProduto(codigoBarras, nome, preco, setor) {
         throw new Error("Erro ao cadastrar produto");
     } else {
         try {
-            const response = await fetch("http://localhost:3000/produtos", {
+            const response = await fetch(`${API_URL}/produtos`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -38,7 +38,7 @@ const abrirModalCadastrarProduto = (codigoBarras) => {
 
     modalAdicionarItem.classList.remove("show");
     modalCadastrarProduto.classList.add("show");
-    form.querySelector("#codigoBarras").focus();
+    form.querySelector("#item-nome").focus();
 
 };
 
@@ -118,7 +118,7 @@ const inicializarCadastroProduto = async () => {
 
                 form.reset();
                 inputPreco.setCustomValidity("");
-                
+
             };
 
         } catch (error) {
@@ -302,6 +302,11 @@ const inicializarProdutos = () => {
             if (resultado) {
 
                 window.showToast("Item adicionado à lista.", "success");
+                form.querySelector("#codigo-de-barras").value = "";
+                form.querySelector("#item-nome").value = "";
+                form.querySelector("#item-valor").value = "";
+                form.querySelector("#item-quantidade").value = "";
+                form.querySelector("#item-total").innerHTML = "";
 
             };
 
@@ -346,7 +351,7 @@ const abrirModalAdicionarItem = (cliente) => {
     modalAdicionarItem.classList.add("show");
 
     setTimeout(() => {
-        document.querySelector("#codigoBarras").focus();
+        modalAdicionarItem.querySelector("#codigo-de-barras").focus();
     }, 100);
 };
 

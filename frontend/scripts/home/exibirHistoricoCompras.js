@@ -1,4 +1,4 @@
-import {getHistoricoComprasDetalhadoPorData} from "./obterCompras.js"
+import { getHistoricoComprasDetalhadoPorData } from "./obterCompras.js"
 
 let clienteAberto = "";
 let historicoPorDia = [];
@@ -200,23 +200,39 @@ function initHistorico() {
 }
 
 async function verHistorico(nomeCliente, clienteId) {
+
     clienteAberto = nomeCliente;
     historicoPorDia = [];
     document.getElementById("historico-nome-cliente").textContent = nomeCliente;
     window.navegar('secao-historico');
 
     try {
+
+
         const dados = await getHistoricoComprasDetalhadoPorData(clienteId);
         const grupos = Array.isArray(dados?.[0]?.itens_por_dia)
             ? dados[0].itens_por_dia
             : [];
-
+        console.log(dados[0].compra_id)
         historicoPorDia = grupos;
         renderizarHistorico(historicoPorDia);
+
+        document.querySelector("#msg-numero-compra-status-compra").innerHTML = `
+    Número da compra: <strong class="numero-compra">${dados[0].compra_id}</strong>
+    &nbsp; Status da compra: <strong class="status-compra">${dados[0].status}</strong>
+`;
+        window.showToast("Histórico de compras carregado com sucesso!", "success");
+
     } catch (error) {
+
         console.error("Não foi possível carregar o histórico de compras:", error);
         historicoPorDia = [];
         renderizarMensagemHistorico("Não foi possível carregar o histórico de compras.");
+        window.showToast(
+            error.message || "Não foi possível carregar o histórico de compras.",
+            "error"
+        );
+
     }
 }
 

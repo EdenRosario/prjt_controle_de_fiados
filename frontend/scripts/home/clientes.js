@@ -63,7 +63,7 @@ const cadastrarCliente = async () => {
 
     if (nome && tel && email && cpf) {
         try {
-            const response = await fetch("http://localhost:3000/clients", {
+            const response = await fetch(`${API_URL}/clients`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -148,8 +148,7 @@ const buscarCliente = async () => {
                 c.nome,
                 c.cpf,
                 c.id,
-                c.ativo,
-                excluirCliente
+                c.ativo
             );
 
         });
