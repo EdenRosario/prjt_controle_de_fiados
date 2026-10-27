@@ -2,7 +2,7 @@ import { verHistorico } from './exibirHistoricoCompras.js';
 import { abrirModalAdicionarItem } from './produtos.js';
 
 const criarLinhaCliente = (nome, cpf, id, statusCliente, aoExcluir) => {
- 
+
     const tbody = document.querySelector("#tBody");
     const clientExist = tbody.querySelector(`tr[data-cpf="${cpf}"]`);
 
@@ -49,17 +49,18 @@ const criarLinhaCliente = (nome, cpf, id, statusCliente, aoExcluir) => {
         verHistorico(nome, id);
     });
 
-    const btnDelete = document.createElement("button");
-    btnDelete.className = "btn btn-sm btn-danger";
-    btnDelete.title = "Deletar";
-    btnDelete.innerHTML = `<i class="fa-solid fa-trash"></i>`;
-    btnDelete.addEventListener("click", () => {
-        aoExcluir(btnDelete, id);
+    const iconeClear = document.createElement("i");
+    iconeClear.className = "fa-solid fa-broom pointer";
+    iconeClear.id = "Clear";
+
+    iconeClear.addEventListener("click", (evt) => {
+        const actions = evt.target.parentElement;
+        actions.parentElement.remove();
     });
 
     tdActions.appendChild(openModalAdd);
     tdActions.appendChild(btnHistorico);
-    tdActions.appendChild(btnDelete);
+    tdActions.appendChild(iconeClear);
 
     tr.appendChild(tdNome);
     tr.appendChild(tdCpf);

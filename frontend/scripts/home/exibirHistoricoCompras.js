@@ -1,6 +1,5 @@
 import {getHistoricoComprasDetalhadoPorData} from "./obterCompras.js"
 
-
 let clienteAberto = "";
 let historicoPorDia = [];
 
@@ -73,7 +72,7 @@ const criarCardHistorico = (grupo, indice) => {
         "historico-compra-badge",
         itens.length + " " + (itens.length === 1 ? "produto" : "produtos"),
     );
-    
+
     const lista = criarElemento("div", "historico-compra-itens");
 
     iconeCalendario.appendChild(criarIcone("fa-regular fa-calendar"));
@@ -205,8 +204,6 @@ async function verHistorico(nomeCliente, clienteId) {
     historicoPorDia = [];
     document.getElementById("historico-nome-cliente").textContent = nomeCliente;
     window.navegar('secao-historico');
-
-    renderizarMensagemHistorico("Carregando histórico de compras...", true);
 
     try {
         const dados = await getHistoricoComprasDetalhadoPorData(clienteId);

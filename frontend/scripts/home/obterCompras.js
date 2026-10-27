@@ -1,23 +1,27 @@
 import { API_URL } from "../../config.js";
 
+const loadingClientes = document.querySelector("#loading-historico-compras");
+
 export async function getHistoricoComprasDetalhadoPorData(clienteId) {
 
     if (!clienteId) {
         throw new Error("nenhum cliente encontrado");
-    }else{
+    } else {
 
 
-        try{
-    
+        try {
+
+            loadingClientes.style.display = "flex";
+
             const response = await fetch(
-                `${API_URL}/itensCompras/compraDetalhada/`+ encodeURIComponent(clienteId),
+                `${API_URL}/itensCompras/compraDetalhada/` + encodeURIComponent(clienteId),
             );
-        
+
             const data = await response.json();
-        
-            
-            
-             if (!response.ok) {
+
+
+
+            if (!response.ok) {
                 throw new Error(
                     data.message ||
                     data.error ||
@@ -25,11 +29,11 @@ export async function getHistoricoComprasDetalhadoPorData(clienteId) {
                 );
             }
 
-            console.log("dados obtidos",data);
+            console.log("dados obtidos", data);
 
-            return data;     
-            
-        }catch(error){
+            return data;
+
+        } catch (error) {
 
             console.error("Erro ao adicionar item à compra:", error);
             throw error;

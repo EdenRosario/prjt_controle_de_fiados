@@ -1,3 +1,13 @@
+#loading-historico-compras {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  color: #243858;
+  font-size: 30px;
+  gap: 30px;
+}
+
 .historico-compras-section {
     min-height: 100vh;
     margin: -30px;

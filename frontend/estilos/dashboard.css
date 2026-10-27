@@ -227,7 +227,9 @@ ul {
   gap: 8px;
   justify-content: center;
 }
-
+.pointer{
+  cursor: pointer;
+}
 #btnClear {
   cursor: pointer;
 }
@@ -311,6 +313,7 @@ ul {
 .search-box i {
   color: var(--text-muted);
 }
+
 
 #btn_pesquisar {
   cursor: pointer;
