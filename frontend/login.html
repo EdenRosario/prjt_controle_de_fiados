@@ -20,152 +20,280 @@
     <div class="bg-shape shape-1"></div>
     <div class="bg-shape shape-2"></div>
 
-    <!-- TELA DE LOGIN PRINCIPAL -->
-    <div class="login-wrapper">
-        <div class="login-card">
+<!-- TELA DE LOGIN PRINCIPAL -->
+<div class="login-wrapper">
+    <div class="login-card" id="ContainerLogin">
+
+        
+        <div id="loading-login">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Validando suas credenciais...</p>
+        </div>
+
+        <!-- Conteúdo do login -->
+        <div id="conteudo-login">
+
             <div class="login-header">
-                <div class="logo-container"><i class="fa-solid fa-store"></i></div>
+                <div class="logo-container">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+
                 <h1>Controle de Devedores</h1>
                 <p>Acesse sua conta para gerenciar clientes</p>
             </div>
 
-            <form id="form-login" onsubmit="event.preventDefault(); /* Adicione sua lógica de login aqui */">
+            <form id="form-login"
+                  onsubmit="event.preventDefault(); /* Adicione sua lógica de login aqui */">
+
                 <div class="input-group">
                     <label>Usuário</label>
-                    <input type="text" class="form-control" placeholder="Digite seu usuário" id="Iuser">
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Digite seu usuário"
+                        id="Iuser"
+                    >
                 </div>
+
                 <div class="input-group">
                     <label>Senha</label>
-                    <input type="password" class="form-control" placeholder="Digite sua senha" id="Isenha">
+                    <input
+                        type="password"
+                        class="form-control"
+                        placeholder="Digite sua senha"
+                        id="Isenha"
+                    >
                 </div>
+
                 <button type="submit" class="btn-main" id="bntLogin">
-                    Entrar <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    Entrar
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
             </form>
 
             <div class="auth-links">
-                <a onclick="abrirModal('modal-recuperar')"><i class="fa-solid fa-lock-open"></i> Esqueci a senha</a>
-                <a onclick="abrirModal('modal-criar-conta')"><i class="fa-solid fa-user-plus"></i> Criar acesso</a>
+                <a onclick="abrirModal('modal-recuperar')">
+                    <i class="fa-solid fa-lock-open"></i>
+                    Esqueci a senha
+                </a>
+
+                <a onclick="abrirModal('modal-criar-conta')">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Criar acesso
+                </a>
             </div>
+
         </div>
     </div>
+</div>
 
-    <!-- ================= MODAL: CRIAR ACESSO (Container original mantido) ================= -->
-    <div class="modal-overlay" id="modal-criar-conta">
-        <!-- Mantido o ID Container para fins de compatibilidade JS -->
-        <div class="modal-content" id="Container">
+   <!-- MODAL: CRIAR ACESSO -->
+<div class="modal-overlay" id="modal-criar-conta">
+
+    <div class="modal-content" id="Container">
+
+    <!--carregamento --> 
+        <div id="loading-criar-acesso">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Criando sua conta...</p>
+        </div>
+
+        <div id="conteudo-criar-acesso">
+
             <div class="modal-header">
                 <h2>Criar acesso Admin</h2>
-                <button class="btn-close" onclick="fecharModal('modal-criar-conta')"><i
-                        class="fa-solid fa-xmark"></i></button>
+
+                <button class="btn-close"
+                    onclick="fecharModal('modal-criar-conta')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <div class="input-group">
                 <label for="Inome">Nome completo:</label>
-                <input type="text" id="Inome" class="form-control" placeholder="Ex: João da Silva">
+                <input type="text"
+                    id="Inome"
+                    class="form-control"
+                    placeholder="Ex: João da Silva">
             </div>
 
             <div class="form-grid">
+
                 <div class="input-group">
                     <label for="Idata">Data de nascimento:</label>
-                    <input type="date" id="Idata" class="form-control">
+                    <input type="date"
+                        id="Idata"
+                        class="form-control">
                 </div>
+
                 <div class="input-group">
-                    <label for="Iemail">E-mail:</label> <!-- Texto corrigido -->
-                    <input type="email" id="Iemail" class="form-control" placeholder="seu@email.com">
+                    <label for="Iemail">E-mail:</label>
+                    <input type="email"
+                        id="Iemail"
+                        class="form-control"
+                        placeholder="seu@email.com">
                 </div>
+
             </div>
 
             <div class="form-grid">
+
                 <div class="input-group">
                     <label for="Iuser">Crie seu usuário:</label>
-                    <input type="text" id="Iuser" class="form-control" placeholder="Ex: joao.admin">
+                    <input type="text"
+                        id="Iuser"
+                        class="form-control"
+                        placeholder="Ex: joao.admin">
                 </div>
+
                 <div class="input-group">
                     <label for="ConfirmarUsuario">Confirme o usuário:</label>
-                    <input type="text" id="ConfirmarUsuario" class="form-control" placeholder="Ex: joao.admin">
+                    <input type="text"
+                        id="ConfirmarUsuario"
+                        class="form-control"
+                        placeholder="Ex: joao.admin">
                 </div>
+
             </div>
 
             <div class="form-grid">
+
                 <div class="input-group">
                     <label for="Isenha">Crie sua senha:</label>
-                    <input type="password" id="Isenha" class="form-control senha" placeholder="••••••••">
+                    <input type="password"
+                        id="Isenha"
+                        class="form-control senha"
+                        placeholder="••••••••">
+
                     <i class="fa-solid fa-eye toggle-senha"></i>
                 </div>
 
                 <div class="input-group">
                     <label for="ConfirmarSenha">Confirme sua senha:</label>
-                    <input type="password" id="ConfirmarSenha" class="form-control senha" placeholder="••••••••">
+                    <input type="password"
+                        id="ConfirmarSenha"
+                        class="form-control senha"
+                        placeholder="••••••••">
+
                     <i class="fa-solid fa-eye toggle-senha"></i>
                 </div>
+
             </div>
 
-            <button id="BtnCriarAcesso" class="btn-main" style="margin-top: 20px;">
-                <i class="fa-solid fa-check"></i> Criar Conta
+            <button id="BtnCriarAcesso"
+                class="btn-main"
+                style="margin-top: 20px;">
+
+                <i class="fa-solid fa-check"></i>
+                Criar Conta
+
             </button>
+
         </div>
     </div>
+</div>
 
-    <!-- ================= MODAL: RECUPERAR SENHA (ContainerRecuperar mantido) ================= -->
-    <div class="modal-overlay" id="modal-recuperar">
+<!-- MODAL: RECUPERAR SENHA -->
+<div class="modal-overlay" id="modal-recuperar">
+
+    <div class="modal-content" id="ContainerRecuperar">
+
+      
+        <div id="loading-usuarios">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p id="msg-carregamento">Validando seus dados...</p>
+        </div>
+
         
-        <div class="modal-content" id="ContainerRecuperar">
+        <div id="conteudo-recuperar">
+
             <div class="modal-header">
                 <h2>Esqueceu sua senha?</h2>
-                <button class="btn-close" onclick="fecharModal('modal-recuperar')"><i
-                        class="fa-solid fa-xmark"></i></button>
+
+                <button class="btn-close"
+                    onclick="fecharModal('modal-recuperar')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
+
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
                 Valide seus dados para redefinir o acesso.
             </p>
 
             <div class="form-grid">
+
                 <div class="input-group">
                     <label for="UsuarioRec">Usuário:</label>
-                    <input type="text" id="UsuarioRec" class="form-control" placeholder="Seu usuário">
+                    <input type="text"
+                        id="UsuarioRec"
+                        class="form-control"
+                        placeholder="Seu usuário">
                 </div>
+
                 <div class="input-group">
                     <label for="NascimentoRec">Data de nascimento:</label>
-                    <input type="date" id="NascimentoRec" class="form-control">
+                    <input type="date"
+                        id="NascimentoRec"
+                        class="form-control">
                 </div>
+
             </div>
 
             <div class="input-group">
                 <label for="EmailRec">Email cadastrado:</label>
-                <input type="email" id="EmailRec" class="form-control" placeholder="seu@email.com">
+                <input type="email"
+                    id="EmailRec"
+                    class="form-control"
+                    placeholder="seu@email.com">
             </div>
 
             <button id="BtnValidar" class="btn-main">
-                <i class="fa-solid fa-shield-halved"></i> Validar Dados
+                <i class="fa-solid fa-shield-halved"></i>
+                Validar Dados
             </button>
 
             <hr style="border: none; border-top: 1px solid var(--border); margin: 24px 0;">
 
-            <h3 style="font-size: 16px; color: var(--text-main); margin-bottom: 16px;">Redefinir Senha</h3>
+            <h3 style="font-size: 16px; color: var(--text-main); margin-bottom: 16px;">
+                Redefinir Senha
+            </h3>
 
-           <div class="form-grid">
-    <div class="input-group">
+            <div class="form-grid">
 
-        <label for="NovaSenha">Nova senha:</label>
+                <div class="input-group">
+                    <label for="NovaSenha">Nova senha:</label>
 
-        <input type="password" id="NovaSenha" class="form-control senha" disabled placeholder="••••••••">
-        
-        <i class="fa-solid fa-eye toggle-senha"></i>
-    </div>
+                    <input type="password"
+                        id="NovaSenha"
+                        class="form-control senha"
+                        disabled
+                        placeholder="••••••••">
 
-    <div class="input-group">
-        <label for="ConfirmarNovaSenha">Confirmar nova senha:</label>
-        <input type="password" id="ConfirmarNovaSenha" class="form-control senha" disabled placeholder="••••••••">
-        <i class="fa-solid fa-eye toggle-senha"></i>
-    </div>
-</div>
+                    <i class="fa-solid fa-eye toggle-senha"></i>
+                </div>
+
+                <div class="input-group">
+                    <label for="ConfirmarNovaSenha">Confirmar nova senha:</label>
+
+                    <input type="password"
+                        id="ConfirmarNovaSenha"
+                        class="form-control senha"
+                        disabled
+                        placeholder="••••••••">
+
+                    <i class="fa-solid fa-eye toggle-senha"></i>
+                </div>
+
+            </div>
 
             <button id="BtnRedefinir" class="btn-main" disabled>
-                <i class="fa-solid fa-key"></i> Alterar Senha
+                <i class="fa-solid fa-key"></i>
+                Alterar Senha
             </button>
+
         </div>
     </div>
+</div>
     <script>
         // Lógica de Modais (Abertura e Fechamento)
         function abrirModal(id) {
@@ -187,7 +315,7 @@
     </script>
 
     <!-- MANTIDO SEU SCRIPT ORIGINAL DE VALIDAÇÃO (NÃO ALTERE O CAMINHO SE ESTIVER CORRETO) -->
-    <script src="./srcipt.js"></script>
+    <script src="./srcipt.js" type="module"></script>
 
 </body>
 
