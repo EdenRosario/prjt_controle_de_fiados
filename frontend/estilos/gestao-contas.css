@@ -1,0 +1,525 @@
+#btn-listar-clientes{
+    margin-left: 300px;
+    
+}
+
+.gestao-contas-section {
+    width: 100%;
+    max-width: 1120px;
+    margin-inline: auto;
+}
+
+.gestao-contas-card {
+    padding: 18px;
+}
+
+.gestao-contas-heading,
+.gestao-contas-toolbar,
+.gestao-contas-form-heading,
+.gestao-contas-form-actions,
+.modal-listar-clientes-header,
+.modal-listar-clientes-titulo,
+.modal-listar-clientes-resumo,
+.modal-listar-clientes-acoes,
+.modal-confirmar-conta-header,
+.modal-confirmar-conta-acoes {
+    display: flex;
+    align-items: center;
+}
+
+
+.gestao-contas-search {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: visible;
+}
+
+.gestao-contas-search > i {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    z-index: 1;
+}
+
+.gestao-contas-search input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 38px;
+}
+
+.gestao-contas-resultados {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.gestao-contas-resultados select {
+    width: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    color: #212529;
+    font: inherit;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+.gestao-contas-resultados select[hidden] {
+    display: none;
+}
+
+.gestao-contas-heading {
+    gap: 12px;
+    padding: 2px 2px 13px;
+    border-bottom: 1px solid var(--border);
+}
+
+.gestao-contas-heading-icon,
+.modal-listar-clientes-titulo > i {
+    color: var(--primary);
+}
+
+.gestao-contas-heading-icon {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    font-size: 21px;
+}
+
+.gestao-contas-heading .page-title {
+    margin: 0;
+    font-size: 20px;
+}
+
+.gestao-contas-heading p,
+.modal-listar-clientes-titulo p,
+.modal-confirmar-conta-header p {
+    margin-top: 3px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.gestao-contas-toolbar {
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 12px 0 9px;
+}
+
+.gestao-contas-search {
+    width: min(100%, 300px);
+}
+
+.gestao-listar-btn {
+    min-height: 36px;
+    padding: 8px 13px;
+    border: 1px solid var(--primary);
+    background: #fff;
+    color: var(--primary);
+}
+
+.gestao-listar-btn:hover:not(:disabled),
+.gestao-listar-btn:focus-visible {
+    background: rgba(13, 110, 253, 0.08);
+    box-shadow: none;
+}
+
+.gestao-contas-divider {
+    border-top: 1px solid var(--border);
+}
+
+.gestao-contas-form-heading {
+    justify-content: space-between;
+    min-height: 35px;
+    margin: 10px 0 4px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gestao-contas-account-actions {
+    display: flex;
+    min-height: 32px;
+    gap: 8px;
+}
+
+.gestao-conta-acao,
+.modal-listar-clientes-fechar,
+.modal-paginacao-btn {
+    display: inline-grid;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.gestao-conta-acao {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 17px;
+}
+
+.gestao-conta-acao:focus-visible,
+.modal-listar-clientes-fechar:focus-visible,
+.modal-paginacao-btn:focus-visible,
+.modal-listar-clientes-acao:focus-visible {
+    outline: 3px solid rgba(13, 110, 253, 0.2);
+    outline-offset: 2px;
+}
+
+.gestao-conta-acao--desativar {
+    color: var(--danger);
+}
+
+.gestao-conta-acao--desativar:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.gestao-conta-acao--reativar {
+    color: var(--success);
+}
+
+.gestao-conta-acao--reativar:hover {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.gestao-contas-form-actions {
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.gestao-contas-status {
+    min-height: 18px;
+    margin-top: -5px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.modal-overlay--listar-clientes,
+.modal-overlay--confirmar-conta,
+.modal-overlay--editar-cliente {
+    padding: 20px;
+}
+
+.modal-listar-clientes {
+    width: min(100%, 720px);
+    max-width: 720px;
+    max-height: min(680px, calc(100vh - 40px));
+    padding: 20px;
+    overflow: hidden;
+}
+
+.modal-listar-clientes-header {
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-listar-clientes-titulo {
+    min-width: 0;
+    gap: 11px;
+}
+
+.modal-listar-clientes-titulo > i {
+    font-size: 21px;
+}
+
+.modal-listar-clientes-titulo h2,
+.modal-confirmar-conta-header h2 {
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.modal-listar-clientes-fechar {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    border-radius: 7px;
+    color: var(--text-muted);
+    font-size: 19px;
+}
+
+.modal-listar-clientes-fechar:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.modal-listar-clientes-busca {
+    width: 100%;
+    margin: 13px 0 10px;
+}
+
+.modal-listar-clientes-tabela-scroll {
+    max-height: min(380px, calc(100vh - 300px));
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+}
+
+.modal-listar-clientes-tabela {
+    min-width: 590px;
+}
+
+.modal-listar-clientes-tabela th,
+.modal-listar-clientes-tabela td {
+    padding: 10px 12px;
+    font-size: 12px;
+}
+
+.modal-listar-clientes-tabela th {
+    z-index: 1;
+}
+
+.modal-listar-clientes-tabela th:nth-child(1),
+.modal-listar-clientes-tabela td:nth-child(1) {
+    width: 48%;
+}
+
+.modal-listar-clientes-tabela th:nth-child(2),
+.modal-listar-clientes-tabela td:nth-child(2) {
+    width: 26%;
+    white-space: nowrap;
+}
+
+.modal-listar-clientes-tabela th:nth-child(3),
+.modal-listar-clientes-tabela td:nth-child(3) {
+    width: 26%;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.modal-listar-clientes-sem-dados {
+    padding: 26px 12px !important;
+    color: var(--text-muted);
+    text-align: center !important;
+}
+
+.modal-listar-clientes-acoes-linha {
+    display: inline-flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.modal-listar-clientes-acao {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    gap: 5px;
+    padding: 5px 9px;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: #fff;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.modal-listar-clientes-acao:hover {
+    background: rgba(13, 110, 253, 0.08);
+}
+
+.modal-listar-clientes-acao--desativar {
+    color: var(--danger);
+}
+
+.modal-listar-clientes-acao--desativar:hover {
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.modal-listar-clientes-acao--reativar {
+    color: var(--success);
+}
+
+.modal-listar-clientes-acao--reativar:hover {
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.modal-listar-clientes-resumo {
+    justify-content: space-between;
+    gap: 12px;
+    margin: 10px 0 12px;
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.modal-listar-clientes-paginacao {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.modal-paginacao-btn,
+.modal-listar-clientes-paginacao span {
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--primary);
+    font-size: 11px;
+}
+
+.modal-paginacao-btn:disabled {
+    color: var(--text-muted);
+}
+
+.modal-listar-clientes-paginacao span {
+    display: inline-grid;
+    place-items: center;
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+}
+
+.modal-listar-clientes-acoes {
+    justify-content: flex-end;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.modal-editar-cliente {
+    width: min(100%, 640px);
+    max-width: 640px;
+    padding: 24px;
+}
+
+.modal-editar-cliente-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-editar-cliente-header h2 {
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.modal-editar-cliente-header p {
+    margin-top: 4px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.modal-editar-cliente-campos {
+    margin-top: 18px;
+}
+
+.modal-editar-cliente-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.modal-confirmar-conta {
+    width: min(100%, 500px);
+    padding: 24px;
+}
+
+.modal-confirmar-conta-header {
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.modal-confirmar-conta-icone {
+    display: inline-grid;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+.modal-confirmar-conta-icone--desativar {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.modal-confirmar-conta-icone--reativar {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.modal-confirmar-conta-header p {
+    margin-top: 7px;
+    line-height: 1.5;
+}
+
+.modal-confirmar-conta-acoes {
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.modal-confirmar-conta-acoes .btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    .gestao-contas-card,
+    .modal-listar-clientes,
+    .modal-confirmar-conta,
+    .modal-editar-cliente {
+        padding: 16px;
+    }
+
+    .gestao-contas-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .gestao-contas-search,
+    .gestao-listar-btn {
+        width: 100%;
+    }
+
+    .gestao-contas-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .gestao-contas-form-actions .btn {
+        width: 100%;
+    }
+
+    .modal-overlay--listar-clientes,
+    .modal-overlay--confirmar-conta,
+    .modal-overlay--editar-cliente {
+        align-items: flex-start;
+        padding: 10px;
+        overflow-y: auto;
+    }
+
+    .modal-listar-clientes,
+    .modal-confirmar-conta,
+    .modal-editar-cliente {
+        margin: auto 0;
+    }
+
+    .modal-editar-cliente-acoes {
+        flex-direction: column-reverse;
+    }
+
+    .modal-editar-cliente-acoes .btn {
+        width: 100%;
+    }
+
+    .modal-listar-clientes-tabela-scroll {
+        max-height: calc(100vh - 320px);
+    }
+}

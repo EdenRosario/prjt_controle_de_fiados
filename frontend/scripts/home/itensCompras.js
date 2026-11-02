@@ -184,7 +184,7 @@ export async function cadastrarProduto(codigoBarras, nome, preco, setor) {
 }
 // export async function atualizarTotalCompra(compraId) {
 
-//     if (!compraId) {
+//     if (!compraId) { 
 //         throw new Error("nenhuma compra encontrada");
 //     } else {
 
