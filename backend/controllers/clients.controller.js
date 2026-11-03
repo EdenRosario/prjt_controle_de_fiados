@@ -204,50 +204,58 @@ export async function atualizarDados(req, res) {
 
 }
 
-export async function mudarStatusConta(req, res){
+export async function mudarStatusConta(req, res) {
 
-    try{
-        
-        const clienteId = req.params.clientId
-        const novoStatus = req.body
-    
-        if(!clienteId){
+    try {
+
+        const clienteId = req.params.clientId;
+        let acao = req.body.novoStatus;
+
+        console.log("ID recebido:", req.params.clientId);
+        console.log("Body recebido:", req.body);
+        console.log("Ação recebida:", req.body.novoStatus);
+
+        if (!clienteId) {
             return res.status(404).json({
-                "message" : "Id do cliente não recebido"
-            })
+                "message": "Id do cliente não recebido"
+            });
         }
-    
-        if(!novoStatus){
+
+        if (!acao) {
             return res.status.json({
                 "message": "novo status não recebido"
-            })
+            });
         }
-    
-        if(novoStatus === "desativar"){
-            novoStatus = false
-        }
-    
-        if(novoStatus === "reativar"){
-            novoStatus === true
+        let novoStatus;
+
+        if (acao === "desativar") {
+            novoStatus = false;
+        } else if (acao === "reativar") {
+            novoStatus = true;
+        } else {
+            return res.status(400).json({
+                message: "Ação inválida"
+            });
         }
 
-        const statusClienteAtualizado = await clientRepository.mudarStatusConta(clienteId, novoStatus)
+        const statusClienteAtualizado = await clientRepository.mudarStatusConta(clienteId, novoStatus);
 
-        if(!statusClienteAtualizado){
+        if (!statusClienteAtualizado) {
             return res.status(400).json({
                 "message": "Não foi possivel atualizar status do cliente"
             })
         }
 
         return res.status(200).json({
-            "message" : "status do cliente atualizado com sucesso!",
+            "message": "status do cliente atualizado com sucesso!",
             statusClienteAtualizado
-        })
+        });
 
-    }catch(error){
-        console.error(error)
+    } catch (error) {
+        console.error("Erro no controller mudarStatusConta:",error)
+        
         return res.status(500).json({
-            error : "Erro interno no servidor"
+            error: "Erro interno no servidor"
         })
     }
 
