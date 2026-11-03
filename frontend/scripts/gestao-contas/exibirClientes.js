@@ -328,25 +328,6 @@ const abrirModalEdicao = (cliente) => {
     requestAnimationFrame(() => elementos.nomeEdicao.focus());
 };
 
-const obterDadosDaEdicao = () => ({
-    nome: elementos.nomeEdicao.value.trim(),
-    cpf: elementos.cpfEdicao.value.trim(),
-    telefone: elementos.telefoneEdicao.value.trim(),
-    email: elementos.emailEdicao.value.trim(),
-});
-
-const salvarEdicaoDoCliente = (evento) => {
-    evento.preventDefault();
-
-    if (!clienteEmEdicao) return;
-
-    const dadosDaEdicao = obterDadosDaEdicao();
-
-    // Ponto de integração: conectar aqui a atualização cadastral já definida pela aplicação.
-    // Enquanto ela não existir, a interface não confirma nem reflete a alteração na lista. 
-    void dadosDaEdicao;
-    exibirToast("A integração para salvar alterações cadastrais ainda não está disponível.");
-};
 
 const abrirConfirmacao = (cliente, acao) => {
     if (!cliente) {
@@ -375,28 +356,50 @@ const abrirConfirmacao = (cliente, acao) => {
 
     //ajustar a reativação e desativação da conta e testa o endpoint novo para o staus
 
+};
+
     const desativarConta = async () => {
-        try{
+
+          try{
+
             
-            if (acao === "desativar") {
-                console.log(confirmacaoPendente.acao)
-                console.log(clienteSelecionado.id)
-                console.log(confirmacaoPendente.cliente.id)
+
+            if(!confirmacaoPendente){
+             return  console.log("confimação pendente e cliente não informados");
+            }
+
+            if(!clienteSelecionado){
+            return  console.log("nenhum cliente selecionado");
+            }
+
+            const clienteId = confirmacaoPendente.cliente.id
+            const novoStatus = confirmacaoPendente.acao
+
+            if(!clienteId || clienteId != clienteSelecionado.id){
+                return console.log("id do cliente não informado ou diferente do cliente selecionado");
+            }
+
+            if(!novoStatus){
+                return console.log("acao não informada");
+            }
+
+            
+            if (novoStatus === "desativar") {
                 
-                const novoStatus = confirmacaoPendente.acao
-                const clientId = confirmacaoPendente.cliente.id || clienteSelecionado.id
+                const statusClienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
 
-                const statusClienteAtualizado = await mudarStatusConta(clientId, novoStatus)
-
-                console.log(statusClienteAtualizado)
+                console.log("status do cliete atualizado",statusClienteAtualizado);
             }
         }catch(error){
-            console.error(error)
-        }
+            console.error("Erro ao desativar cliente",error);
+        };
 
     }
-    desativarConta()
-};
+
+    elementos.botaoConfirmar.addEventListener("click", ()=>{
+        console.log("clickou")
+        desativarConta()
+    })
 
 const selecionarCliente = (cliente) => {
     clienteSelecionado = cliente || null;
@@ -415,55 +418,11 @@ const definirClientes = (novosClientes) => {
     renderizarListaDeClientes();
 };
 
-const aplicarResultadoDaOperacao = (clienteOriginal, acao, resultado) => {
-    const alterado = resultado && typeof resultado === "object" ? resultado : clienteOriginal;
-    const indice = clientes.findIndex((cliente) => mesmaPessoa(cliente, clienteOriginal));
-    const clienteAtualizado = { ...alterado, ativo: acao === "reativar" };
-
-    if (indice >= 0) clientes.splice(indice, 1, clienteAtualizado);
-    if (clienteSelecionado && mesmaPessoa(clienteSelecionado, clienteOriginal)) clienteSelecionado = clienteAtualizado;
-
-    atualizarCamposDoFormulario();
-    renderizarListaDeClientes();
-};
-
-const confirmarAlteracaoDeConta = async () => {
-    const pendencia = confirmacaoPendente;
-    if (!pendencia) return;
-
-    const executar = operacoesDeConta[pendencia.acao];
-
-    if (typeof executar !== "function") {
-        fecharModal("modal-confirmar-conta");
-        exibirToast("A integração para " + (pendencia.acao === "desativar" ? "desativar" : "reativar") + " contas ainda não está disponível.");
-        confirmacaoPendente = null;
-        return;
-    }
-
-    elementos.botaoConfirmar.disabled = true;
-
-    try {
-        const resultado = await executar(pendencia.cliente);
-        aplicarResultadoDaOperacao(pendencia.cliente, pendencia.acao, resultado);
-        fecharModal("modal-confirmar-conta");
-        exibirToast("Conta " + (pendencia.acao === "desativar" ? "desativada" : "reativada") + " com sucesso.", "success");
-    } catch (erro) {
-        console.error("Não foi possível alterar o status da conta:", erro);
-        exibirToast(erro?.message || "Não foi possível alterar o status da conta.");
-    } finally {
-        elementos.botaoConfirmar.disabled = false;
-        confirmacaoPendente = null;
-    }
-};
-
 elementos.botaoListar.addEventListener("click", () => {
     paginaAtual = 1;
     renderizarListaDeClientes();
     console.log("open modal")
 });
-
-
-
 
 const selectClientes = document.getElementById("select-clientes");
 const buscaGestao = document.getElementById("busca-cpf-gestao");
@@ -474,17 +433,17 @@ let clientesEncontrados = [];
 buscaGestao.addEventListener("input", async () => {
     const termo = buscaGestao.value.trim().toLocaleLowerCase("pt-BR");
 
-    // Limpa os resultados anteriores
+    
     selectClientes.innerHTML = "";
     selectClientes.hidden = true;
     clientesEncontrados = [];
 
-    // Não consulta a API se o campo estiver vazio
+    
     if (!termo) {
         return;
     }
 
-    // Exibe uma opção de carregamento
+    
     const opcaoInicial = document.createElement("option");
     opcaoInicial.value = "";
     opcaoInicial.textContent = "Buscando clientes...";
@@ -494,7 +453,7 @@ buscaGestao.addEventListener("input", async () => {
     try {
         const encontrados = await buscarCliente(termo);
 
-        // Evita apresentar resultados inválidos
+        
         if (!Array.isArray(encontrados) || encontrados.length === 0) {
             selectClientes.innerHTML = "";
 
@@ -554,13 +513,13 @@ selectClientes.addEventListener("change", () => {
         return;
     }
 
-    // Preenche a busca com o nome do cliente selecionado
+    
     buscaGestao.value = obterNome(cliente);
 
-    // Oculta os resultados após a seleção
+    
     selectClientes.hidden = true;
 
-    // Carrega os dados do cliente na tela
+   
     selecionarCliente(cliente);
 
     if (clienteSelecionado) {
@@ -652,8 +611,6 @@ elementos.botaoConfirmar.addEventListener("click", confirmarAlteracaoDeConta);
 elementos.botaoCancelarConfirmacao.addEventListener("click", () => {
     confirmacaoPendente = null;
 });
-
-elementos.formEdicao?.addEventListener("submit", salvarEdicaoDoCliente);
 
 elementos.modalEdicao?.addEventListener("click", (evento) => {
     if (evento.target === elementos.modalEdicao) {
