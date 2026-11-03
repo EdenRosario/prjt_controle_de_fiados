@@ -38,59 +38,42 @@ export async function buscarCliente(reqClient) {
 //falta implementar a funcao de atualizar no modal/botao editar e também na sessão principal
 export async function listarTodosClientes() {
 
-    try{
-        
-            const response = await fetch(`${API_URL}/clients/todos`)
-        
-            if(!response.ok){
-                throw new Error("Erro ao buscar clietes")
-            }
-        
-            const clientes = await response.json();
-        
-            if(!clientes.length){
-                 throw new Error("Cliente não encontrado");
-            }
-        
-            return clientes
+    try {
 
-    }catch(error){
+        const response = await fetch(`${API_URL}/clients/todos`)
+
+        if (!response.ok) {
+            throw new Error("Erro ao buscar clietes")
+        }
+
+        const clientes = await response.json();
+
+        if (!clientes.length) {
+            throw new Error("Cliente não encontrado");
+        }
+
+        return clientes
+
+    } catch (error) {
 
         console.error(error)
-        window.showToast("não foi possivel obter clientes", "error");    
+        window.showToast("não foi possivel obter clientes", "error");
     }
 }
 
-export async function  atualzizarDados(clientId, nome, cpf, tel, email) {
+export async function atualizarDados(clientId, nome, cpf, tel, email) {
 
-    if(!clientId){
-        console.log("nenhhum id")
-        return ;
-    }
+    if (!clientId) {
+        throw new Error("ID do cliente não informado.");
+    };
 
-    if(!nome){
-        console.log("nome não enviado")
-        return ;
-    }
+    if (!nome || !cpf || !tel || !email) {
+        throw new Error("Preencha todos os campos obrigatórios.");
+    };
 
-       if(!cpf){
-        console.log("cpf não enviado")
-        return ;
-    }
+    try {
 
-       if(!tel){
-        console.log("telefone não enviado")
-        return ;
-    }
-
-       if(!email){
-        console.log("email não enviado")
-        return ;
-    }
-
-    try{
-
-        const response = await fetch(`http://localhost:3000/clients/${clientId}`,{
+        const response = await fetch(`${API_URL}/clients/${clientId}`, {
 
             method: "PUT",
             headers: {
@@ -105,21 +88,54 @@ export async function  atualzizarDados(clientId, nome, cpf, tel, email) {
 
         });
 
-        if(!response.ok){
-            throw new Error("Erro ao tentar atualizar dados")
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || data.error || "Erro ao atualizar cliente."
+            );
         }
+
+        return data;
+
+    } catch (error) {
+        console.error("Erro ao atualizar cliente:", error);
+        throw error;
+    }
+
+}
+
+export async function mudarStatusConta(clientId, novoStatus) {
+
+    if (!clientId || !novoStatus) {
+        throw new Error("Preencha todos os campos")
+    }
+
+    try {
+
+        const response = await fetch(`${API_URL}/clients/status/${clientId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                novoStatus
+            })
+        })
 
         const data = await response.json();
 
-        if(!data){
-            throw new Error("nenhum cliente atualizado")
+        if (!response.ok) {
+            throw new Error(
+                data.message || data.error || "Erro ao atualizar status do cliente."
+            );
         }
 
-        return data
+        return data;
 
-    }catch(error){
-        console.error(error)
-        return console.log("Erro ao atualziar cliente")
-    } 
+    } catch (error) {
+        console.error("Erro ao atualizar status cliente:", error);
+        throw error;
+    }
 
 }

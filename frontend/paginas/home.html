@@ -327,7 +327,7 @@
                     <div class="gestao-contas-heading-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
                     <div>
                         <h2 class="page-title" id="gestao-contas-titulo">Gestão de Contas</h2>
-                        <p>Consulte, edite ou exclua os dados cadastrais dos clientes.</p>
+                        <p>Consulte e edite os dados cadastrais dos clientes.</p>
                     </div>
 
                     <button type="button" class="btn btn-secondary gestao-listar-btn" id="btn-listar-clientes"
@@ -371,20 +371,20 @@
                 <div class="form-grid">
                     <div class="input-group">
                         <label for="gestao-nome">Nome Completo</label>
-                        <input type="text" class="form-control" id="gestao-nome" placeholder="Nome do cliente">
+                        <input type="text" class="form-control" id="gestao-nome" placeholder="Nome do cliente" disabled>
                     </div>
                     <div class="input-group">
                         <label for="gestao-cpf">CPF</label>
                         <input type="text" class="form-control" id="gestao-cpf" placeholder="000.000.000-00" readonly
-                            style="background: #f8fafc;">
+                            style="background: #f8fafc;" disabled>
                     </div>
                     <div class="input-group">
                         <label for="gestao-telefone">Telefone</label>
-                        <input type="tel" class="form-control" id="gestao-telefone" placeholder="(00) 00000-0000">
+                        <input type="tel" class="form-control" id="gestao-telefone" placeholder="(00) 00000-0000" disabled>
                     </div>
                     <div class="input-group">
                         <label for="gestao-email">E-mail</label>
-                        <input type="email" class="form-control" id="gestao-email" placeholder="email@exemplo.com">
+                        <input type="email" class="form-control" id="gestao-email" placeholder="email@exemplo.com" disabled>
                     </div>
                 </div>
 
@@ -1369,7 +1369,8 @@
 
                 <footer class="modal-editar-cliente-acoes">
                     <button type="button" class="btn btn-secondary" data-fechar-modal>Fechar</button>
-                    <button type="submit" class="btn btn-primary">
+
+                    <button type="button" class="btn btn-primary" id="btnSalvarAlteracoes">
                         <i class="fa-solid fa-save" aria-hidden="true"></i> Salvar alterações
                     </button>
                 </footer>

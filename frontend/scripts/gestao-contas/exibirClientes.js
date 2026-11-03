@@ -1,5 +1,6 @@
-import { buscarCliente, listarTodosClientes } from "./clientes.js";
+import { buscarCliente, listarTodosClientes, atualizarDados, mudarStatusConta } from "./clientes.js";
 const tamanhoDaPagina = 8;
+
 
 let clientes = [];
 let clienteSelecionado = null;
@@ -129,6 +130,56 @@ const criarBotaoDeAcao = (texto, classe, icone, cliente, acao) => {
     elementoIcone.setAttribute("aria-hidden", "true");
     botao.append(elementoIcone, document.createTextNode(texto));
 
+    botao.addEventListener("click", () => {
+
+        if (acao === "editar") {
+
+            const form = elementos.modalEdicao.querySelector("#form-editar-cliente");
+
+            const btnSalvarAlteracoes = form.querySelector("#btnSalvarAlteracoes");
+
+            const updateDadosCliente = async () => {
+
+                try {
+
+                    const id = cliente.id
+                    const nome = form.querySelector("#editar-cliente-nome").value.trim();
+                    const cpf = form.querySelector("#editar-cliente-cpf").value.trim();
+                    const tel = form.querySelector("#editar-cliente-telefone").value.trim();
+                    const email = form.querySelector("#editar-cliente-email").value.trim();
+
+                    const clienteAtualizado = await atualizarDados(
+                        id,
+                        nome,
+                        cpf,
+                        tel,
+                        email
+                    )
+
+                    window.showToast(clienteAtualizado.message);
+
+                } catch (error) {
+                    window.showToast(error.message, 0);
+                    console.error("Erro ao atualizar cliente:", error);
+                }
+
+            }
+
+            btnSalvarAlteracoes.addEventListener("click", async () => {
+                console.log("clicou")
+                updateDadosCliente()
+            })
+
+        }
+        if (acao === "desativar") {
+            console.log("Desativar cliente:", cliente);
+        }
+
+        if (acao === "reativar") {
+            console.log("Reativar cliente:", cliente);
+        }
+    });
+
     return botao;
 };
 
@@ -139,7 +190,7 @@ const renderizarListaDeClientes = async () => {
         clientes = Array.isArray(clientesCarregados) ? clientesCarregados : [];
         const listaClientes = clientes;
 
-     
+
         const totalPaginas = Math.max(
             1,
             Math.ceil(listaClientes.length / tamanhoDaPagina)
@@ -168,7 +219,7 @@ const renderizarListaDeClientes = async () => {
             elementos.tabela.appendChild(linha);
 
         } else {
-          
+
             exibidos.forEach((cliente) => {
                 const linha = document.createElement("tr");
 
@@ -178,7 +229,7 @@ const renderizarListaDeClientes = async () => {
 
                 const grupoAcoes = document.createElement("div");
 
-               
+
                 nome.textContent = obterNome(cliente);
                 cpf.textContent = obterCpf(cliente);
 
@@ -221,7 +272,7 @@ const renderizarListaDeClientes = async () => {
             });
         }
 
-   
+
         elementos.quantidade.textContent =
             `Exibindo ${exibidos.length} de ${listaClientes.length} cliente` +
             (listaClientes.length === 1 ? "" : "s");
@@ -321,6 +372,30 @@ const abrirConfirmacao = (cliente, acao) => {
     elementos.botaoConfirmar.textContent = desativacao ? "Desativar conta" : "Reativar conta";
     elementos.modalConfirmacao.classList.add("show");
     elementos.botaoCancelarConfirmacao.focus();
+
+    //ajustar a reativação e desativação da conta e testa o endpoint novo para o staus
+
+    const desativarConta = async () => {
+        try{
+            
+            if (acao === "desativar") {
+                console.log(confirmacaoPendente.acao)
+                console.log(clienteSelecionado.id)
+                console.log(confirmacaoPendente.cliente.id)
+                
+                const novoStatus = confirmacaoPendente.acao
+                const clientId = confirmacaoPendente.cliente.id || clienteSelecionado.id
+
+                const statusClienteAtualizado = await mudarStatusConta(clientId, novoStatus)
+
+                console.log(statusClienteAtualizado)
+            }
+        }catch(error){
+            console.error(error)
+        }
+
+    }
+    desativarConta()
 };
 
 const selecionarCliente = (cliente) => {
@@ -488,6 +563,23 @@ selectClientes.addEventListener("change", () => {
     // Carrega os dados do cliente na tela
     selecionarCliente(cliente);
 
+    if (clienteSelecionado) {
+        const nome = elementos.form.querySelector("#gestao-nome")
+        const cpf = elementos.form.querySelector("#gestao-cpf")
+        const telefone = elementos.form.querySelector("#gestao-telefone")
+        const email = elementos.form.querySelector("#gestao-email")
+
+        nome.disabled = false
+        cpf.disabled = false
+        telefone.disabled = false
+        email.disabled = false
+    } else {
+        nome.disabled = true
+        cpf.disabled = true
+        telefone.disabled = true
+        email.disabled = true
+    }
+
     console.log("Cliente selecionado:", cliente);
 });
 
@@ -523,11 +615,38 @@ elementos.botaoLimpar.addEventListener("click", () => {
     atualizarCamposDoFormulario();
 });
 
+const updadteDadosCliente = async () => {
+
+    try {
+
+        const id = clienteSelecionado.id
+        const nome = elementos.form.querySelector("#gestao-nome").value.trim()
+        const cpf = elementos.form.querySelector("#gestao-cpf").value.trim()
+        const telefone = elementos.form.querySelector("#gestao-telefone").value.trim();
+        const email = elementos.form.querySelector("#gestao-email").value.trim();
+
+        const clienteAtualizado = await atualizarDados(
+            id,
+            nome,
+            cpf,
+            telefone,
+            email
+        )
+
+        window.showToast(clienteAtualizado.message);
+
+    } catch (error) {
+        window.showToast(error.message, 0);
+        console.error("Erro ao atualizar cliente:", error);
+    }
+}
+
 elementos.botaoSalvar.addEventListener("click", () => {
-    exibirToast("A API atual não disponibiliza a atualização cadastral do cliente.");
+    updadteDadosCliente();
 });
 
 elementos.botaoDesativar.addEventListener("click", () => abrirConfirmacao(clienteSelecionado, "desativar"));
+
 elementos.botaoReativar.addEventListener("click", () => abrirConfirmacao(clienteSelecionado, "reativar"));
 elementos.botaoConfirmar.addEventListener("click", confirmarAlteracaoDeConta);
 elementos.botaoCancelarConfirmacao.addEventListener("click", () => {

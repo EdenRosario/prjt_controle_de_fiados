@@ -204,27 +204,52 @@ export async function atualizarDados(req, res) {
 
 }
 
-export async function deletClient(req, res) {
+export async function mudarStatusConta(req, res){
 
-    try {
-
-        const clientId = req.params.id
-
-        if (!clientId) {
-            return res.status(400).json("Nenhum cliente encontrado")
+    try{
+        
+        const clienteId = req.params.clientId
+        const novoStatus = req.body
+    
+        if(!clienteId){
+            return res.status(404).json({
+                "message" : "Id do cliente não recebido"
+            })
+        }
+    
+        if(!novoStatus){
+            return res.status.json({
+                "message": "novo status não recebido"
+            })
+        }
+    
+        if(novoStatus === "desativar"){
+            novoStatus = false
+        }
+    
+        if(novoStatus === "reativar"){
+            novoStatus === true
         }
 
-        await clientRepository.delete(clientId)
+        const statusClienteAtualizado = await clientRepository.mudarStatusConta(clienteId, novoStatus)
 
-        return res.status(200).json({ message: "client deletado com sucesso" })
+        if(!statusClienteAtualizado){
+            return res.status(400).json({
+                "message": "Não foi possivel atualizar status do cliente"
+            })
+        }
 
-    } catch (error) {
-
-        console.error(error)
-        return res.status(500).json({
-            error: "Erro interno no servidor"
+        return res.status(200).json({
+            "message" : "status do cliente atualizado com sucesso!",
+            statusClienteAtualizado
         })
 
+    }catch(error){
+        console.error(error)
+        return res.status(500).json({
+            error : "Erro interno no servidor"
+        })
     }
+
 
 }

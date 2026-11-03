@@ -111,13 +111,17 @@ export class DatabasePostgres {
         return resultado[0] ?? null;
     };
 
-    async delete(id) {
+   async mudarStatusConta(id, novoStatus) {
+    
+    const resultado = await sql`
+        UPDATE clientes
+        SET ativo = ${novoStatus}
+        WHERE id = ${id}
+        RETURNING id, nome, ativo
+    `;
 
-        await sql`
-            DELETE FROM clientes
-            WHERE id = ${id}    
-        `
+    return resultado[0] || null;
+}
 
-    };
 };
 
