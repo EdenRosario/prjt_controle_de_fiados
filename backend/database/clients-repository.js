@@ -111,17 +111,18 @@ export class DatabasePostgres {
         return resultado[0] ?? null;
     };
 
-   async mudarStatusConta(id, novoStatus) {
-    
-    const resultado = await sql`
-        UPDATE clientes
-        SET ativo = ${novoStatus}
-        WHERE id = ${id}
-        RETURNING id, nome, ativo
-    `;
+    async mudarStatusConta(id, novoStatus) {
+        
+        const resultado = await sql`
+            UPDATE clientes
+            SET ativo = ${novoStatus},
+            atualizado_em = CURRENT_TIMESTAMP
+            WHERE id = ${id}
+            RETURNING id, nome, ativo
+        `;
 
-    return resultado[0] || null;
-}
+        return resultado[0] || null;
+    }
 
 };
 

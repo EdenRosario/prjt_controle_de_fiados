@@ -222,7 +222,7 @@ export async function mudarStatusConta(req, res) {
         }
 
         if (!acao) {
-            return res.status.json({
+            return res.status(400).json({
                 "message": "novo status não recebido"
             });
         }
@@ -253,7 +253,7 @@ export async function mudarStatusConta(req, res) {
 
     } catch (error) {
         console.error("Erro no controller mudarStatusConta:",error)
-        
+
         return res.status(500).json({
             error: "Erro interno no servidor"
         })
