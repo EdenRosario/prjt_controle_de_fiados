@@ -50,6 +50,16 @@ export class DatabasePostgres {
         return client;
     }
 
+    async buscarClientePorId(id) {
+
+    const resultado = await sql`
+        SELECT id, nome, ativo
+        FROM clientes
+        WHERE id = ${id}
+    `;
+
+    return resultado[0] || null;
+}
 
     async listarTodosClientes() {
         const clientes = await sql`
@@ -111,18 +121,19 @@ export class DatabasePostgres {
         return resultado[0] ?? null;
     };
 
-    async mudarStatusConta(id, novoStatus) {
-        
-        const resultado = await sql`
-            UPDATE clientes
-            SET ativo = ${novoStatus},
-            atualizado_em = CURRENT_TIMESTAMP
-            WHERE id = ${id}
-            RETURNING id, nome, ativo
-        `;
+async mudarStatusConta(id, novoStatus) {
 
-        return resultado[0] || null;
-    }
+    const resultado = await sql`
+        UPDATE clientes
+        SET ativo = ${novoStatus},
+            atualizado_em = CURRENT_TIMESTAMP
+        WHERE id = ${id}
+          AND ativo IS DISTINCT FROM ${novoStatus}
+        RETURNING id, nome, ativo
+    `;
+
+    return resultado[0] || null;
+}
 
 };
 

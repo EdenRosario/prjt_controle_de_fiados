@@ -343,7 +343,7 @@
                         autocomplete="off" aria-label="Buscar cliente por nome ou CPF">
                     <div class="gestao-contas-resultados">
                         <select id="select-clientes" size="1" hidden aria-label="Resultados da busca de clientes">
-                            
+
                         </select>
                     </div>
                 </div>
@@ -355,6 +355,12 @@
                 <div class="gestao-contas-form-heading">
                     <span>Dados do cliente</span>
                     <div class="gestao-contas-account-actions" aria-live="polite">
+
+                        <span id="indicador-status-cliente" class="status-cliente-badge" hidden>
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                            <span id="texto-status-cliente">status</span>
+                        </span>
+
                         <button type="button" class="gestao-conta-acao gestao-conta-acao--desativar"
                             id="btn-desativar-conta" hidden title="Desativar conta do cliente"
                             aria-label="Desativar conta do cliente">
@@ -380,11 +386,13 @@
                     </div>
                     <div class="input-group">
                         <label for="gestao-telefone">Telefone</label>
-                        <input type="tel" class="form-control" id="gestao-telefone" placeholder="(00) 00000-0000" disabled>
+                        <input type="tel" class="form-control" id="gestao-telefone" placeholder="(00) 00000-0000"
+                            disabled>
                     </div>
                     <div class="input-group">
                         <label for="gestao-email">E-mail</label>
-                        <input type="email" class="form-control" id="gestao-email" placeholder="email@exemplo.com" disabled>
+                        <input type="email" class="form-control" id="gestao-email" placeholder="email@exemplo.com"
+                            disabled>
                     </div>
                 </div>
 
@@ -1284,7 +1292,7 @@
     <div class="modal-overlay modal-overlay--listar-clientes" id="modal-listar-clientes" role="presentation">
         <section class="modal-content modal-listar-clientes" role="dialog" aria-modal="true"
             aria-labelledby="modal-listar-clientes-titulo" aria-describedby="modal-listar-clientes-descricao">
-            <header class="modal-listar-clientes-header"> 
+            <header class="modal-listar-clientes-header">
                 <div class="modal-listar-clientes-titulo">
                     <div>
                         <h2 id="modal-listar-clientes-titulo">Listar Clientes</h2>
@@ -1363,7 +1371,8 @@
                     </div>
                     <div class="input-group">
                         <label for="editar-cliente-email">E-mail</label>
-                        <input type="email" class="form-control" id="editar-cliente-email" autocomplete="email" required>
+                        <input type="email" class="form-control" id="editar-cliente-email" autocomplete="email"
+                            required>
                     </div>
                 </div>
 

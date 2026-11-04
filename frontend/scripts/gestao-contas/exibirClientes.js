@@ -353,53 +353,127 @@ const abrirConfirmacao = (cliente, acao) => {
     elementos.botaoConfirmar.textContent = desativacao ? "Desativar conta" : "Reativar conta";
     elementos.modalConfirmacao.classList.add("show");
     elementos.botaoCancelarConfirmacao.focus();
-
-    //ajustar a reativação e desativação da conta e testa o endpoint novo para o staus
-
 };
 
-    const desativarConta = async () => {
+//reutilizar funcoes para ativar e desativar 
 
-          try{
+const desativarConta = async () => {
 
-            
+    try {
+        if (!confirmacaoPendente) {
+            return console.log("confimação pendente e cliente não informados");
+        }
 
-            if(!confirmacaoPendente){
-             return  console.log("confimação pendente e cliente não informados");
-            }
+        if (!clienteSelecionado) {
+            return console.log("nenhum cliente selecionado");
+        }
 
-            if(!clienteSelecionado){
-            return  console.log("nenhum cliente selecionado");
-            }
+        const clienteId = confirmacaoPendente.cliente.id
+        const novoStatus = confirmacaoPendente.acao
 
-            const clienteId = confirmacaoPendente.cliente.id
-            const novoStatus = confirmacaoPendente.acao
+        if (!clienteId || clienteId != clienteSelecionado.id) {
+            return console.log("id do cliente não informado ou diferente do cliente selecionado");
+        }
 
-            if(!clienteId || clienteId != clienteSelecionado.id){
-                return console.log("id do cliente não informado ou diferente do cliente selecionado");
-            }
+        if (!novoStatus) {
+            return console.log("acao não informada");
+        }
 
-            if(!novoStatus){
-                return console.log("acao não informada");
-            }
 
-            
-            if (novoStatus === "desativar") {
-                
-                const statusClienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
+        if (novoStatus === "desativar") {
 
-                console.log("status do cliete atualizado",statusClienteAtualizado);
-            }
-        }catch(error){
-            console.error("Erro ao desativar cliente",error);
-        };
+            const statusClienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
 
+            console.log("status do cliete atualizado", statusClienteAtualizado);
+            window.showToast("Conta do cliente desativada!", "error");
+            atualizarIndicadorStatus();
+        }
+    } catch (error) {
+        console.error("Erro ao desativar cliente", error);
+        window.showToast(
+            error.message || "Erro ao desativar conta do cliente.",
+            "error"
+        );
+    };
+
+}
+
+
+const reativarConta = async () => {
+
+    try {
+
+        if (!confirmacaoPendente) {
+            return console.log("confimação pendente e cliente não informados");
+        }
+
+        if (!clienteSelecionado) {
+            return console.log("nenhum cliente selecionado");
+        }
+
+        const clienteId = confirmacaoPendente.cliente.id
+        const novoStatus = confirmacaoPendente.acao
+
+        if (!clienteId || clienteId != clienteSelecionado.id) {
+            return console.log("id do cliente não informado ou diferente do cliente selecionado");
+        }
+
+        if (!novoStatus) {
+            return console.log("acao não informada");
+        }
+
+
+        if (novoStatus === "reativar") {
+            console.log(novoStatus)
+            const statusClienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
+
+            console.log("status do cliete atualizado", statusClienteAtualizado);
+            window.showToast("Conta do cliente reativada!", "success");
+            atualizarIndicadorStatus(); 
+        }
+    } catch (error) {
+        console.error("Erro ao desativar cliente", error);
+         window.showToast(
+            error.message || "Erro ao reativar conta do cliente.",
+            "error"
+        );
+    };
+    
+}
+
+elementos.botaoConfirmar.addEventListener("click", () => confirmacaoPendente.acao == "reativar" ? reativarConta() : desativarConta())
+
+    //aqui
+
+const atualizarIndicadorStatus = (cliente) => {
+
+    const indicador = document.getElementById("indicador-status-cliente");
+    const texto = document.getElementById("texto-status-cliente");
+
+    if (!cliente) {
+        indicador.hidden = true;
+        return;
     }
 
-    elementos.botaoConfirmar.addEventListener("click", ()=>{
-        console.log("clickou")
-        desativarConta()
-    })
+    indicador.hidden = false;
+
+    if (cliente.ativo === true) {
+
+        indicador.className = "status-cliente-badge ativo";
+
+        indicador.querySelector("i").className = "fa-solid fa-circle-check";
+
+        texto.textContent = "Ativo";
+
+    } else {
+
+        indicador.className = "status-cliente-badge desativado";
+
+        indicador.querySelector("i").className = "fa-solid fa-circle-xmark";
+
+        texto.textContent = "Desativado";
+    }
+}
 
 const selecionarCliente = (cliente) => {
     clienteSelecionado = cliente || null;
@@ -433,17 +507,17 @@ let clientesEncontrados = [];
 buscaGestao.addEventListener("input", async () => {
     const termo = buscaGestao.value.trim().toLocaleLowerCase("pt-BR");
 
-    
+
     selectClientes.innerHTML = "";
     selectClientes.hidden = true;
     clientesEncontrados = [];
 
-    
+
     if (!termo) {
         return;
     }
 
-    
+
     const opcaoInicial = document.createElement("option");
     opcaoInicial.value = "";
     opcaoInicial.textContent = "Buscando clientes...";
@@ -453,7 +527,7 @@ buscaGestao.addEventListener("input", async () => {
     try {
         const encontrados = await buscarCliente(termo);
 
-        
+
         if (!Array.isArray(encontrados) || encontrados.length === 0) {
             selectClientes.innerHTML = "";
 
@@ -513,13 +587,13 @@ selectClientes.addEventListener("change", () => {
         return;
     }
 
-    
+
     buscaGestao.value = obterNome(cliente);
 
-    
+
     selectClientes.hidden = true;
 
-   
+
     selecionarCliente(cliente);
 
     if (clienteSelecionado) {
@@ -540,6 +614,8 @@ selectClientes.addEventListener("change", () => {
     }
 
     console.log("Cliente selecionado:", cliente);
+
+    atualizarIndicadorStatus(cliente)
 });
 
 elementos.tabela.addEventListener("click", (evento) => {

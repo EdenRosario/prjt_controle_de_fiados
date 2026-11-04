@@ -211,19 +211,16 @@ export async function mudarStatusConta(req, res) {
         const clienteId = req.params.clientId;
         let acao = req.body.novoStatus;
 
-        console.log("ID recebido:", req.params.clientId);
-        console.log("Body recebido:", req.body);
-        console.log("Ação recebida:", req.body.novoStatus);
 
         if (!clienteId) {
             return res.status(404).json({
-                "message": "Id do cliente não recebido"
+                message: "Id do cliente não recebido"
             });
         }
 
         if (!acao) {
             return res.status(400).json({
-                "message": "novo status não recebido"
+                message: "novo status não recebido"
             });
         }
         let novoStatus;
@@ -237,12 +234,26 @@ export async function mudarStatusConta(req, res) {
                 message: "Ação inválida"
             });
         }
+        
+        const cliente = await clientRepository.buscarClientePorId(clienteId);
+
+         if (!cliente) {
+            return res.status(404).json({
+                message: "Cliente não encontrado"
+            });
+        }
+
+        if(cliente.ativo === novoStatus){
+            return res.status(409).json({
+                message : `o cliente ja está ${novoStatus ? "ativo" : "desativado"}.`
+            })
+        }
 
         const statusClienteAtualizado = await clientRepository.mudarStatusConta(clienteId, novoStatus);
 
         if (!statusClienteAtualizado) {
             return res.status(400).json({
-                "message": "Não foi possivel atualizar status do cliente"
+                message: "Não foi possivel atualizar status do cliente"
             })
         }
 
