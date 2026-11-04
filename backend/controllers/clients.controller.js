@@ -249,18 +249,15 @@ export async function mudarStatusConta(req, res) {
             })
         }
 
-        const statusClienteAtualizado = await clientRepository.mudarStatusConta(clienteId, novoStatus);
+        const clienteAtualizado= await clientRepository.mudarStatusConta(clienteId, novoStatus);
 
-        if (!statusClienteAtualizado) {
+        if (!clienteAtualizado) {
             return res.status(400).json({
                 message: "Não foi possivel atualizar status do cliente"
             })
         }
 
-        return res.status(200).json({
-            "message": "status do cliente atualizado com sucesso!",
-            statusClienteAtualizado
-        });
+        return res.status(200).json(clienteAtualizado);
 
     } catch (error) {
         console.error("Erro no controller mudarStatusConta:",error)

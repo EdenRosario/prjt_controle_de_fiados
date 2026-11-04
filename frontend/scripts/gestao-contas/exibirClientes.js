@@ -105,17 +105,6 @@ const atualizarCamposDoFormulario = () => {
     atualizarAcoesDaConta();
 };
 
-const filtrarClientes = () => {
-    const termo = elementos.buscaModal.value.trim().toLocaleLowerCase("pt-BR");
-
-    if (!termo) return clientes;
-
-    return clientes.filter((cliente) => {
-        return obterNome(cliente).toLocaleLowerCase("pt-BR").includes(termo)
-            || obterCpf(cliente).replace(/\D/g, "").includes(termo.replace(/\D/g, ""));
-    });
-};
-
 const criarBotaoDeAcao = (texto, classe, icone, cliente, acao) => {
     const botao = document.createElement("button");
     const elementoIcone = document.createElement("i");
@@ -171,13 +160,61 @@ const criarBotaoDeAcao = (texto, classe, icone, cliente, acao) => {
             })
 
         }
+
+        const mudarStatusClienteLista = async (cliente, acao) => {
+
+            try {
+                if (!cliente || !cliente.id) {
+                    return console.log("Cliente não informado");
+                }
+
+                const clienteAtualizado = await mudarStatusConta(
+                    cliente.id,
+                    acao
+                );
+
+                if (!clienteAtualizado) {
+                    return console.log("Nenhuma alteração realizada");
+                }
+
+                Object.assign(cliente, clienteAtualizado);
+
+                window.showToast(
+                    `Conta ${acao === "reativar" ? "reativada" : "desativada"} com sucesso!`,
+                    "success"
+                );
+
+                elementos.modalConfirmacao.classList.remove("show");
+
+            } catch (error) {
+                console.error("Erro ao alterar status:", error);
+
+                window.showToast(
+                    error.message || "Erro ao alterar status da conta.",
+                    "error"
+                );
+            }
+
+
+        }
+
         if (acao === "desativar") {
             console.log("Desativar cliente:", cliente);
+            console.log("botao desativar criado")
+
+            elementos.botaoConfirmar.onclick = async () => {
+                mudarStatusClienteLista(cliente, acao)
+            };
         }
 
         if (acao === "reativar") {
             console.log("Reativar cliente:", cliente);
+            console.log("botao reativar criado")
+            elementos.botaoConfirmar.onclick = async () => {
+                mudarStatusClienteLista(cliente, acao)
+            }
         }
+
     });
 
     return botao;
@@ -382,11 +419,13 @@ const desativarConta = async () => {
 
         if (novoStatus === "desativar") {
 
-            const statusClienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
+            const clienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
 
-            console.log("status do cliete atualizado", statusClienteAtualizado);
+            console.log("status do cliete atualizado", clienteAtualizado);
+            Object.assign(clienteSelecionado, clienteAtualizado);
+            atualizarIndicadorStatus(clienteSelecionado);
             window.showToast("Conta do cliente desativada!", "error");
-            atualizarIndicadorStatus();
+            elementos.modalConfirmacao.classList.remove("show");
         }
     } catch (error) {
         console.error("Erro ao desativar cliente", error);
@@ -394,6 +433,7 @@ const desativarConta = async () => {
             error.message || "Erro ao desativar conta do cliente.",
             "error"
         );
+        elementos.modalConfirmacao.classList.remove("show");
     };
 
 }
@@ -404,11 +444,11 @@ const reativarConta = async () => {
     try {
 
         if (!confirmacaoPendente) {
-            return console.log("confimação pendente e cliente não informados");
+            return console.log("Nenhuma confirmação");
         }
 
         if (!clienteSelecionado) {
-            return console.log("nenhum cliente selecionado");
+            return  console.log("nenhum cliente selecionado");
         }
 
         const clienteId = confirmacaoPendente.cliente.id
@@ -424,28 +464,33 @@ const reativarConta = async () => {
 
 
         if (novoStatus === "reativar") {
-            console.log(novoStatus)
-            const statusClienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
 
-            console.log("status do cliete atualizado", statusClienteAtualizado);
+            const clienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
+
+            console.log("status do cliete atualizado", clienteAtualizado);
+            Object.assign(clienteSelecionado, clienteAtualizado);
+            atualizarIndicadorStatus(clienteSelecionado);
             window.showToast("Conta do cliente reativada!", "success");
-            atualizarIndicadorStatus(); 
+            elementos.modalConfirmacao.classList.remove("show");
         }
     } catch (error) {
         console.error("Erro ao desativar cliente", error);
-         window.showToast(
+        window.showToast(
             error.message || "Erro ao reativar conta do cliente.",
             "error"
         );
+        elementos.modalConfirmacao.classList.remove("show");
     };
-    
+
 }
 
-elementos.botaoConfirmar.addEventListener("click", () => confirmacaoPendente.acao == "reativar" ? reativarConta() : desativarConta())
+elementos.botaoConfirmar.onclick = async () => confirmacaoPendente.acao == "reativar" ? reativarConta() : desativarConta()
 
-    //aqui
+//aqui
 
 const atualizarIndicadorStatus = (cliente) => {
+
+    console.log("cliente do atualizar indicador", cliente)
 
     const indicador = document.getElementById("indicador-status-cliente");
     const texto = document.getElementById("texto-status-cliente");
@@ -683,7 +728,7 @@ elementos.botaoSalvar.addEventListener("click", () => {
 elementos.botaoDesativar.addEventListener("click", () => abrirConfirmacao(clienteSelecionado, "desativar"));
 
 elementos.botaoReativar.addEventListener("click", () => abrirConfirmacao(clienteSelecionado, "reativar"));
-elementos.botaoConfirmar.addEventListener("click", confirmarAlteracaoDeConta);
+
 elementos.botaoCancelarConfirmacao.addEventListener("click", () => {
     confirmacaoPendente = null;
 });

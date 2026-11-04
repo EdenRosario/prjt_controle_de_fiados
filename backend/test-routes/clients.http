@@ -9,7 +9,6 @@ Content-Type: application/json
 }
 
 ###
-
 GET http://localhost:3000/clients?search=exemplo
 
 ###
@@ -27,8 +26,16 @@ Content-Type: application/json
     "cpf": "11112223332",
     "tel": "91991961295",
     "email": "Lari@gmail.com.br22"
-}
+}   
 
+###
+PUT http://localhost:3000/clients/status/8
+Content-Type: application/json
+
+{
+  "novoStatus": "reativar"
+}
+ 
 ###
 DELETE http://localhost:3000/clients/1
 
