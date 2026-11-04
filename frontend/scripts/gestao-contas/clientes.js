@@ -25,7 +25,7 @@ export async function buscarCliente(reqClient) {
             throw new Error("Cliente não encontrado");
         }
 
-        console.log(cliente)
+
         return cliente
 
     } catch (error) {

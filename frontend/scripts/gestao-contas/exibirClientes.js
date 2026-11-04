@@ -199,7 +199,7 @@ const criarBotaoDeAcao = (texto, classe, icone, cliente, acao) => {
         }
 
         if (acao === "desativar") {
-            console.log("Desativar cliente:", cliente);
+        
             console.log("botao desativar criado")
 
             elementos.botaoConfirmar.onclick = async () => {
@@ -208,7 +208,6 @@ const criarBotaoDeAcao = (texto, classe, icone, cliente, acao) => {
         }
 
         if (acao === "reativar") {
-            console.log("Reativar cliente:", cliente);
             console.log("botao reativar criado")
             elementos.botaoConfirmar.onclick = async () => {
                 mudarStatusClienteLista(cliente, acao)
@@ -421,7 +420,6 @@ const desativarConta = async () => {
 
             const clienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
 
-            console.log("status do cliete atualizado", clienteAtualizado);
             Object.assign(clienteSelecionado, clienteAtualizado);
             atualizarIndicadorStatus(clienteSelecionado);
             window.showToast("Conta do cliente desativada!", "error");
@@ -466,8 +464,7 @@ const reativarConta = async () => {
         if (novoStatus === "reativar") {
 
             const clienteAtualizado = await mudarStatusConta(clienteId, novoStatus);
-
-            console.log("status do cliete atualizado", clienteAtualizado);
+            
             Object.assign(clienteSelecionado, clienteAtualizado);
             atualizarIndicadorStatus(clienteSelecionado);
             window.showToast("Conta do cliente reativada!", "success");
@@ -489,8 +486,6 @@ elementos.botaoConfirmar.onclick = async () => confirmacaoPendente.acao == "reat
 //aqui
 
 const atualizarIndicadorStatus = (cliente) => {
-
-    console.log("cliente do atualizar indicador", cliente)
 
     const indicador = document.getElementById("indicador-status-cliente");
     const texto = document.getElementById("texto-status-cliente");
@@ -657,8 +652,6 @@ selectClientes.addEventListener("change", () => {
         telefone.disabled = true
         email.disabled = true
     }
-
-    console.log("Cliente selecionado:", cliente);
 
     atualizarIndicadorStatus(cliente)
 });
