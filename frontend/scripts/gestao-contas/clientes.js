@@ -113,7 +113,7 @@ export async function mudarStatusConta(clientId, novoStatus) {
 
     try {
 
-        const response = await fetch(`http://localhost:3000/clients/status/${clientId}`, {
+        const response = await fetch(`${API_URL}/clients/status/${clientId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
