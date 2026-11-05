@@ -8,7 +8,6 @@ export async function getHistoricoComprasDetalhadoPorData(clienteId) {
         throw new Error("nenhum cliente encontrado");
     } else {
 
-
         try {
 
             loadingClientes.style.display = "flex";

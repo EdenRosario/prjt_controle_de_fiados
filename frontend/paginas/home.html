@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../estilos/historico-pagamentos.css">
     <link rel="stylesheet" href="../estilos/detalhes-compra.css">
     <link rel="stylesheet" href="../estilos/historico-compras.css">
+    <link rel="stylesheet" href="../estilos/gestao-contas.css">
     <link rel="icon" type="image/png" href="../img/favicon_carrinho.png">
 </head>
 
@@ -43,7 +44,7 @@
         </ul>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- CONTEÃšDO PRINCIPAL -->
     <main class="main-content">
 
         <!-- 1. SEÇÃO HOME / DASHBOARD -->
@@ -129,7 +130,7 @@
                             <h2 class="page-title">Histórico de Compras Detalhado</h2>
                             <div id="div-p-center">
                                 <p class="historico-compras-subtitulo">Produtos agrupados por data</p>
-                                <p class="historico-compras-subtitulo" id="msg-numero-compra-status-compra" ></p>
+                                <p class="historico-compras-subtitulo" id="msg-numero-compra-status-compra"></p>
                             </div>
                         </div>
                     </div>
@@ -138,12 +139,12 @@
 
                 <div id="historico-compras-cards" class="historico-compras-grid" aria-live="polite" aria-busy="false">
                     <!-- ICONE DE CARREGAMENTO -->
-                     <div id="loading-historico-compras" style="display: none;">
+                    <div id="loading-historico-compras" style="display: none;">
                         <i class="fa-solid fa-spinner fa-spin"></i>
                     </div>
-                    
+
                 </div>
-                  
+
             </div>
         </section>
 
@@ -320,50 +321,93 @@
         </section>
 
         <!-- 5. SEÇÃO GESTÃO DE CONTAS -->
-        <section id="secao-contas" class="secao">
-            <h2 class="page-title">Gestão de Contas</h2>
-
-            <div class="card">
-                <div class="toolbar">
-                    <div class="search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="busca-cpf-gestao" placeholder="Buscar por CPF para editar...">
+        <section id="secao-contas" class="secao gestao-contas-section" aria-labelledby="gestao-contas-titulo">
+            <div class="card gestao-contas-card">
+                <header class="gestao-contas-heading">
+                    <div class="gestao-contas-heading-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <h2 class="page-title" id="gestao-contas-titulo">Gestão de Contas</h2>
+                        <p>Consulte e edite os dados cadastrais dos clientes.</p>
                     </div>
-                    <button class="btn btn-secondary" onclick="buscarDadosConta()">Buscar</button>
+
+                    <button type="button" class="btn btn-secondary gestao-listar-btn" id="btn-listar-clientes"
+                        data-modal-alvo="modal-listar-clientes">
+                        <i class="fa-solid fa-users" aria-hidden="true"></i>
+                        Listar clientes
+                    </button>
+                </header>
+
+                <div class="search-box gestao-contas-search">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="text" id="busca-cpf-gestao" placeholder="Buscar cliente por nome ou CPF..."
+                        autocomplete="off" aria-label="Buscar cliente por nome ou CPF">
+                    <div class="gestao-contas-resultados">
+                        <select id="select-clientes" size="1" hidden aria-label="Resultados da busca de clientes">
+
+                        </select>
+                    </div>
                 </div>
 
-                <hr style="border: none; border-top: 1px solid var(--border); margin: 20px 0;">
+            </div>
+            <div class="gestao-contas-divider" aria-hidden="true"></div>
 
-                <form id="form-gestao">
-                    <div class="form-grid">
-                        <div class="input-group">
-                            <label>Nome Completo</label>
-                            <input type="text" class="form-control" placeholder="Nome do cliente">
-                        </div>
-                        <div class="input-group">
-                            <label>CPF</label>
-                            <input type="text" class="form-control" placeholder="000.000.000-00" readonly
-                                style="background: #f8fafc;">
-                        </div>
-                        <div class="input-group">
-                            <label>Telefone</label>
-                            <input type="tel" class="form-control" placeholder="(00) 00000-0000">
-                        </div>
-                        <div class="input-group">
-                            <label>E-mail</label>
-                            <input type="email" class="form-control" placeholder="email@exemplo.com">
-                        </div>
-                    </div>
+            <form id="form-gestao" novalidate>
+                <div class="gestao-contas-form-heading">
+                    <span>Dados do cliente</span>
+                    <div class="gestao-contas-account-actions" aria-live="polite">
 
-                    <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
-                        <button type="button" class="btn btn-secondary"
-                            onclick="document.getElementById('form-gestao').reset()">Limpar</button>
-                        <button type="button" class="btn btn-primary"
-                            onclick="showToast('Alterações salvas com sucesso!', 'success')">
-                            <i class="fa-solid fa-save"></i> Salvar alterações
+                        <span id="indicador-status-cliente" class="status-cliente-badge" hidden>
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                            <span id="texto-status-cliente">status</span>
+                        </span>
+
+                        <button type="button" class="gestao-conta-acao gestao-conta-acao--desativar"
+                            id="btn-desativar-conta" hidden title="Desativar conta do cliente"
+                            aria-label="Desativar conta do cliente">
+                            <i class="fa-solid fa-user-slash" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="gestao-conta-acao gestao-conta-acao--reativar"
+                            id="btn-reativar-conta" hidden title="Reativar conta do cliente"
+                            aria-label="Reativar conta do cliente">
+                            <i class="fa-solid fa-user-check" aria-hidden="true"></i>
                         </button>
                     </div>
-                </form>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="gestao-nome">Nome Completo</label>
+                        <input type="text" class="form-control" id="gestao-nome" placeholder="Nome do cliente" disabled>
+                    </div>
+                    <div class="input-group">
+                        <label for="gestao-cpf">CPF</label>
+                        <input type="text" class="form-control" id="gestao-cpf" placeholder="000.000.000-00" readonly
+                            style="background: #f8fafc;" disabled>
+                    </div>
+                    <div class="input-group">
+                        <label for="gestao-telefone">Telefone</label>
+                        <input type="tel" class="form-control" id="gestao-telefone" placeholder="(00) 00000-0000"
+                            disabled>
+                    </div>
+                    <div class="input-group">
+                        <label for="gestao-email">E-mail</label>
+                        <input type="email" class="form-control" id="gestao-email" placeholder="email@exemplo.com"
+                            disabled>
+                    </div>
+                </div>
+
+                <p class="gestao-contas-status" id="gestao-contas-status" role="status">
+                    Selecione um cliente para consultar ou editar seus dados.
+                </p>
+
+                <div class="gestao-contas-form-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-limpar-gestao"
+                        onclick="document.getElementById('form-gestao').reset()">Limpar</button>
+                    <button type="button" class="btn btn-primary" id="btn-salvar-gestao">
+                        <i class="fa-solid fa-save" aria-hidden="true"></i> Salvar alterações
+                    </button>
+                </div>
+            </form>
             </div>
         </section>
 
@@ -1194,7 +1238,7 @@
         </div>
     </div>
 
-    <!-- ================= MODAL DE ITENS DO HISTÓRICO DE COMPRAS ================= -->
+    <!-- ================= MODAL DE ITENS DO HISTÃ“RICO DE COMPRAS ================= -->
     <div class="modal-overlay modal-overlay--historico-compras" id="modal-historico-compras">
         <section class="modal-content modal-content--historico-compras" role="dialog" aria-modal="true"
             aria-labelledby="modal-historico-compras-titulo" aria-describedby="modal-historico-compras-cliente">
@@ -1240,6 +1284,123 @@
 
             <footer class="modal-historico-compras-acoes">
                 <button class="btn btn-secondary" type="button" data-fechar-modal>Fechar</button>
+            </footer>
+        </section>
+    </div>
+
+    <!-- = MODAIS DA GESTÃƒO DE CONTAS = -->
+    <div class="modal-overlay modal-overlay--listar-clientes" id="modal-listar-clientes" role="presentation">
+        <section class="modal-content modal-listar-clientes" role="dialog" aria-modal="true"
+            aria-labelledby="modal-listar-clientes-titulo" aria-describedby="modal-listar-clientes-descricao">
+            <header class="modal-listar-clientes-header">
+                <div class="modal-listar-clientes-titulo">
+                    <div>
+                        <h2 id="modal-listar-clientes-titulo">Listar Clientes</h2>
+                        <p id="modal-listar-clientes-descricao">Consulte os clientes cadastrados.</p>
+                    </div>
+                </div>
+                <button type="button" class="modal-listar-clientes-fechar" data-fechar-modal
+                    aria-label="Fechar listagem de clientes">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </header>
+
+
+            <div class="modal-listar-clientes-tabela-scroll" role="region" aria-label="Lista de clientes" tabindex="0">
+                <table class="modal-listar-clientes-tabela">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome Completo</th>
+                            <th scope="col">CPF</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-clientes-modal"></tbody>
+                </table>
+            </div>
+
+            <div class="modal-listar-clientes-resumo">
+                <p id="quantidade-clientes-modal" aria-live="polite">Exibindo 0 de 0 clientes</p>
+                <nav class="modal-listar-clientes-paginacao" aria-label="Paginação de clientes">
+                    <button type="button" class="modal-paginacao-btn" id="pagina-clientes-anterior"
+                        aria-label="PÃ¡gina anterior">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <span id="pagina-clientes-atual" aria-current="page">1</span>
+                    <button type="button" class="modal-paginacao-btn" id="pagina-clientes-proxima"
+                        aria-label="Próxima página">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </nav>
+            </div>
+
+            <footer class="modal-listar-clientes-acoes">
+                <button type="button" class="btn btn-secondary" data-fechar-modal>Fechar</button>
+            </footer>
+        </section>
+    </div>
+
+    <div class="modal-overlay modal-overlay--editar-cliente" id="modal-editar-cliente" role="presentation">
+        <section class="modal-content modal-editar-cliente" role="dialog" aria-modal="true"
+            aria-labelledby="modal-editar-cliente-titulo" aria-describedby="modal-editar-cliente-descricao">
+            <header class="modal-editar-cliente-header">
+                <div>
+                    <h2 id="modal-editar-cliente-titulo">Editar cliente</h2>
+                    <p id="modal-editar-cliente-descricao">Atualize os dados cadastrais do cliente selecionado.</p>
+                </div>
+                <button type="button" class="modal-listar-clientes-fechar" data-fechar-modal
+                    aria-label="Fechar edição de cliente">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <form id="form-editar-cliente">
+                <div class="form-grid modal-editar-cliente-campos">
+                    <div class="input-group">
+                        <label for="editar-cliente-nome">Nome completo</label>
+                        <input type="text" class="form-control" id="editar-cliente-nome" autocomplete="name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="editar-cliente-cpf">CPF</label>
+                        <input type="text" class="form-control" id="editar-cliente-cpf" inputmode="numeric"
+                            autocomplete="off" maxlength="11" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="editar-cliente-telefone">Telefone</label>
+                        <input type="tel" class="form-control" id="editar-cliente-telefone" autocomplete="tel" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="editar-cliente-email">E-mail</label>
+                        <input type="email" class="form-control" id="editar-cliente-email" autocomplete="email"
+                            required>
+                    </div>
+                </div>
+
+                <footer class="modal-editar-cliente-acoes">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Fechar</button>
+
+                    <button type="button" class="btn btn-primary" id="btnSalvarAlteracoes">
+                        <i class="fa-solid fa-save" aria-hidden="true"></i> Salvar alterações
+                    </button>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    <div class="modal-overlay modal-overlay--confirmar-conta" id="modal-confirmar-conta" role="presentation">
+        <section class="modal-content modal-confirmar-conta" role="dialog" aria-modal="true"
+            aria-labelledby="modal-confirmar-conta-titulo" aria-describedby="modal-confirmar-conta-descricao">
+            <header class="modal-confirmar-conta-header">
+                <span class="modal-confirmar-conta-icone" id="modal-confirmar-conta-icone" aria-hidden="true"></span>
+                <div>
+                    <h2 id="modal-confirmar-conta-titulo"></h2>
+                    <p id="modal-confirmar-conta-descricao"></p>
+                </div>
+            </header>
+            <footer class="modal-confirmar-conta-acoes">
+                <button type="button" class="btn btn-secondary" id="btn-cancelar-confirmacao"
+                    data-fechar-modal>Cancelar</button>
+                <button type="button" class="btn" id="btn-confirmar-conta"></button>
             </footer>
         </section>
     </div>

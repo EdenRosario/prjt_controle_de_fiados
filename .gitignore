@@ -5,7 +5,7 @@
 
 # Dependências
 node_modules/
-
+test-routes/
 # Logs
 npm-debug.log*
 yarn-debug.log*

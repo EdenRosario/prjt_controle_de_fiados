@@ -4,6 +4,7 @@ import './toast.js';
 import './home/home.js';
 import './home/exibirHistoricoCompras.js';
 import './gestao.js';
+import './gestao-contas/exibirClientes.js';
 
 document.addEventListener("click", function(e) {
     if (e.target.classList.contains("toggle-senha")) {

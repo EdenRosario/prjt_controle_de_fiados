@@ -50,6 +50,26 @@ export class DatabasePostgres {
         return client;
     }
 
+    async buscarClientePorId(id) {
+
+        const resultado = await sql`
+        SELECT id, nome, ativo
+        FROM clientes
+        WHERE id = ${id}
+    `;
+
+        return resultado[0] || null;
+    }
+
+    async listarTodosClientes() {
+        const clientes = await sql`
+        SELECT * FROM clientes
+        ORDER BY nome ASC
+    `;
+
+        return clientes;
+    }
+
     async listAllClientes() {
 
         const resultado = await sql`
@@ -60,13 +80,61 @@ export class DatabasePostgres {
 
     };
 
-    async delete(id) {
 
-        await sql`
-            DELETE FROM clientes
-            WHERE id = ${id}    
-        `
+    async atualizarDados({ clienteId, nome, cpf, tel, email }) {
+        const dados = {
+            nome,
+            cpf,
+            telefone: tel,
+            email
+        };
 
+        const colunasAlteradas = [];
+        const valores = [];
+
+        for (const [coluna, valor] of Object.entries(dados)) {
+            if (valor !== undefined) {
+                colunasAlteradas.push(coluna);
+                valores.push(valor);
+            }
+        }
+
+        if (colunasAlteradas.length === 0) {
+            return null;
+        }
+
+        const setClause = colunasAlteradas
+            .map((coluna, index) => `${coluna} = $${index + 1}`)
+            .join(', ');
+
+        valores.push(clienteId);
+
+        const query = `
+        UPDATE clientes
+        SET ${setClause},
+        atualizado_em = CURRENT_TIMESTAMP
+        WHERE id = $${valores.length}
+        RETURNING *;
+    `;
+
+        const resultado = await sql.unsafe(query, valores);
+
+        return resultado[0] ?? null;
+    };
+
+    async mudarStatusConta(id, novoStatus) {
+
+        const resultado = await sql`
+        UPDATE clientes
+        SET ativo = ${novoStatus},
+            atualizado_em = CURRENT_TIMESTAMP
+        WHERE id = ${id}
+          AND ativo IS DISTINCT FROM ${novoStatus}
+        RETURNING *
+    `;
+
+        return resultado[0] || null;
     }
-}
+
+};
 

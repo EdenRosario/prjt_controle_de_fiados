@@ -73,7 +73,7 @@ const cadastrarCliente = async () => {
                     tel: tel,
                     email: email,
                     cpf: cpf,
-                }),
+                })
             });
 
             const data = await response.json();
@@ -84,32 +84,7 @@ const cadastrarCliente = async () => {
     }
 };
 
-const excluirCliente = async (btn, id) => {
-    if (!confirm("Tem certeza que deseja deletar este cliente?")) {
-        return;
-    }
 
-    try {
-        const response = await fetch(`http://localhost:3000/clients/${id}`, {
-            method: "DELETE",
-        });
-
-        if (!response.ok) {
-            throw Error("Erro ao deletar cliente");
-        }
-
-        await response.json();
-        console.log("cliente deletado com sucesso");
-
-        removerLinhaCliente(btn);
-        window.showToast("Cliente removido!", "success");
-        limparBuscaCliente();
-        console.log("cliente deletado com sucesso!");
-    } catch (error) {
-        console.error(error);
-        window.showToast("Não foi possível remover o cliente.", "error");
-    }
-};
 const loadingClientes = document.querySelector("#loading-clientes");
 
 const buscarCliente = async () => {
@@ -183,8 +158,6 @@ const inicializarClientes = () => {
 
     eventosInicializados = true;
 };
-
-window.deletClient = excluirCliente;
 
 preencherDashboardGeral();
 export { inicializarClientes };

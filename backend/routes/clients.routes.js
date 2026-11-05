@@ -5,7 +5,10 @@ const router = Router()
 
 router.post('/',clientController.createCliet)
 router.get('/', clientController.searchClient)
+router.get('/todos', clientController.listarTodosClientes)
 router.get('/total', clientController.listarTodosClientesTodasComprasTodosPagamentos)
-router.delete('/:id', clientController.deletClient)
+router.put('/:clientId', clientController.atualizarDados)
+router.put('/status/:clientId', clientController.mudarStatusConta)
+
 
 export default router

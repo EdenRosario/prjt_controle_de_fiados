@@ -1,4 +1,4 @@
-// import { API_URL } from "./config.js";
+import { API_URL } from "./config.js"
 
 const btnLogin = document.querySelector("#bntLogin")
 const btnValidarDados = document.querySelector("#BtnValidar")
@@ -32,21 +32,25 @@ const validarLogin = async () => {
 
     const inputUser = document.querySelector("#Iuser");
     const inputPassword = document.querySelector("#Isenha");
+    const containerLogin = document.getElementById("ContainerLogin");
 
     const user = inputUser.value.trim();
     const password = inputPassword.value;
 
-   
-
-        if (!user.length || !password.trim()) {
-
-            msgToast("Por favor, preencha todos os campos.", "error");
-            return;
-        }
 
 
-     try {
-        const response = await fetch(`http://localhost:3000/auth/login`, {
+    if (!user.length || !password.trim()) {
+
+        msgToast("Por favor, preencha todos os campos.", "error");
+        return;
+    }
+
+
+    try {
+
+        containerLogin.classList.add("carregando");
+        
+        const response = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
@@ -58,7 +62,7 @@ const validarLogin = async () => {
         });
         let data;
 
-     try {
+        try {
             data = await response.json();
         } catch {
             data = {};
@@ -88,36 +92,27 @@ const validarLogin = async () => {
             return;
         }
 
-        // validar acesso
-        if (data.message === "Login realizado com sucesso") {
             msgToast("Login realizado com sucesso!", "success");
-
             inputUser.value = "";
             inputPassword.value = "";
-
             setTimeout(() => {
                 window.location.href = "./paginas/home.html";
             }, 800);
-
-            return;
-        }
-        
-        msgToast(
-            data.message || "Não foi possível confirmar o login.",
-            "error"
-        );
+             return;
 
     } catch (error) {
-        console.log(error)
+        console.error("Erro ao realizar login:", error);
         msgToast(
             "Não foi possível conectar ao servidor. Tente novamente.",
             "error"
         );
-    }
+    }finally {
+    containerLogin.classList.remove("carregando");
+}
 
 }
 
-if(btnLogin){
+if (btnLogin) {
 
     btnLogin.addEventListener("click", () => {
         validarLogin()
@@ -147,56 +142,69 @@ document.addEventListener("DOMContentLoaded", () => {
         const confirmarUsuario = modalCriar.querySelector("#ConfirmarUsuario").value
         const senha = modalCriar.querySelector("#Isenha").value
         const confirmarSenha = modalCriar.querySelector("#ConfirmarSenha").value
+        const containerCriarAcesso = document.querySelector("#Container");
 
         if (nome.length == 0 || birthDate.length == 0 || email.length == 0 || usuario.length == 0 || confirmarUsuario.length == 0 || senha.length == 0 || confirmarSenha.length == 0) {
             window.alert("[ERRO!!!] Por favor preencha todos os campos")
             return;
-        }
-
-        if (usuario !== confirmarUsuario) {
+        } else if (usuario !== confirmarUsuario) {
             window.alert("[ERRO!] usuarios divergentes ")
             return;
-        }
-
-        if (senha !== confirmarSenha) {
+        } else if (senha !== confirmarSenha) {
             window.alert("[ERRO!] Senhas divergentes")
             return;
-        }
+        } else {
 
-        try {
+            try {
 
-            const response = await fetch(`http://localhost:3000/auth/register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
+                containerCriarAcesso.classList.add("carregando");
 
-                    name: nome,
-                    date: birthDate,
-                    user: usuario,
-                    senha: senha,
-                    email: email
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
 
+                        name: nome,
+                        date: birthDate,
+                        user: usuario,
+                        senha: senha,
+                        email: email
+
+                    })
                 })
-            })
 
-            if (response.ok) {
-                console.log("ok")
+                if (response.ok) {
+                    console.log("ok")
+                }
+
+                const data = await response.json()
+
+                if (data.error === "Body incompleto") {
+                    console.log("body incompleto")
+                    msgToast("preencha todos os campos", "error")
+                }
+
+                if (data.message === "usuario criado com sucesso!") {
+                    console.log("usuario criado com sucesso!")
+                    msgToast("usuario criado com sucesso!", "sucess")
+                }
+
+                modalCriar.querySelector("#Inome").value = "";
+                modalCriar.querySelector("#Idata").value = "";
+                modalCriar.querySelector("#Iemail").value = "";
+                modalCriar.querySelector("#Iuser").value = "";
+                modalCriar.querySelector("#ConfirmarUsuario").value = "";
+                modalCriar.querySelector("#Isenha").value = "";
+                modalCriar.querySelector("#ConfirmarSenha").value = "";
+
+            } catch (error) {
+                console.error(error)
+            } finally {
+                containerCriarAcesso.classList.remove("carregando");
             }
 
-            const data = await response.json()
-
-            if (data.error === "Body incompleto") {
-                console.log("body incompleto")
-            }
-
-            if (data.message === "usuario criado com sucesso!") {
-                console.log("usuario criado com sucesso!")
-            }
-
-        } catch (error) {
-            console.error(error)
         }
 
     }
@@ -205,6 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const novaSenha = modalRecuperar.querySelector("#NovaSenha")
         const confirmarNovaSenha = modalRecuperar.querySelector("#ConfirmarNovaSenha")
+        const containerRecuperar = document.querySelector("#ContainerRecuperar");
 
         if (novaSenha.value !== confirmarNovaSenha.value) {
             window.alert("SENHAS DIVERGENTES")
@@ -218,7 +227,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            const response = await fetch(`http://localhost:3000/auth/${idUser}`, {
+            containerRecuperar.classList.add("carregando");
+            document.querySelector("#msg-carregamento").textContent = "redefinindo senha..."
+            const response = await fetch(`${API_URL}/auth/${idUser}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -236,16 +247,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (data.msg === "body vazio") {
                 console.log("body vazio")
+                msgToast("preencha todos os campos", "error")
             }
 
             if (data.msg === "senha alterada com sucesso") {
                 console.log("senha alterada com sucesso")
-                msgToast("SENHA ALTERADA COM SUCESSO!")
+                msgToast("SENHA ALTERADA COM SUCESSO!", "sucess")
 
-                
                 modalRecuperar.querySelector("#NovaSenha").value = ""
                 modalRecuperar.querySelector("#ConfirmarNovaSenha").value = ""
-            
+
                 modalRecuperar.querySelector("#NovaSenha").disabled = true
                 modalRecuperar.querySelector("#ConfirmarNovaSenha").disabled = true
                 modalRecuperar.querySelector("#BtnRedefinir").disabled = true
@@ -254,16 +265,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
             console.log(error)
-        }
 
-        console.log(`id usuario : ${idUser}`)
-    }
+            msgToast(
+                "Não foi possível conectar ao servidor. Tente novamente.",
+                "error"
+            );
+        } finally {
+            containerRecuperar.classList.remove("carregando");
+        };
+
+    };
 
     const validarDados = async () => {
 
         const user = modalRecuperar.querySelector("#UsuarioRec").value
         const birthDate = modalRecuperar.querySelector("#NascimentoRec").value
         const email = modalRecuperar.querySelector("#EmailRec").value
+        const containerRecuperar = document.querySelector("#ContainerRecuperar");
 
         try {
 
@@ -272,7 +290,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const response = await fetch(`http://localhost:3000/auth/recover`, {
+            containerRecuperar.classList.add("carregando");
+
+            const response = await fetch(`${API_URL}/auth/recover`, {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json"
@@ -293,19 +313,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (data.error === "Body não enviado") {
                 console.log("Body não enviado")
+                msgToast("dados não enviados", "error")
             }
 
             if (data.error === "campos obrigatorios não preenchidos") {
                 console.log("preencha todos os campos")
+                msgToast("preencha todos os campos", "error")
             }
 
             if (data.error === "usuario não encontrado") {
                 console.log("usuario não encontrado")
+                msgToast("usuario não encontrado", "error")
             }
 
             if (data.msg === "usuario autenticado com sucesso") {
                 console.log("os dados foram validados com sucesso")
-                msgToast("OS DADOS FORAM VALIDADOS COM SUCESSO!")
+                msgToast("OS DADOS FORAM VALIDADOS COM SUCESSO!", "sucess")
+
                 idUser = data.id
 
                 const novaSenha = modalRecuperar.querySelector("#NovaSenha")
@@ -323,26 +347,34 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) {
             console.log(error)
-        }
-    }
+            msgToast(
+                "Não foi possível conectar ao servidor. Tente novamente.",
+                "error"
+            );
+        } finally {
+            containerRecuperar.classList.remove("carregando");
+        };
+    };
 
 
     btnValidarDados.addEventListener("click", () => {
         validarDados()
-    })
+    });
 
     btnRedefinir.addEventListener("click", () => {
         redefinirSenha()
-    })
+    });
+
 
     btnCriar.addEventListener("click", () => {
         console.log("click")
         createUser()
-    })
+    });
 
-})
+});
 
 document.addEventListener("click", function (e) {
+
     if (e.target.classList.contains("toggle-senha")) {
 
         const input = e.target.parentElement.querySelector("input");
