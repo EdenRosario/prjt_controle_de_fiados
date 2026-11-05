@@ -39,7 +39,7 @@
                     <h1>Controle de Devedores</h1>
                     <p>Acesse sua conta para gerenciar clientes</p>
                 </div>
-
+ 
                 <form id="form-login" onsubmit="event.preventDefault()">
 
                     <div class="input-group">
@@ -79,7 +79,6 @@
 
         <div class="modal-content" id="Container">
 
-            <!--carregamento -->
             <div id="loading-criar-acesso">
                 <i class="fa-solid fa-spinner fa-spin"></i>
                 <p>Criando sua conta...</p>
@@ -243,8 +242,9 @@
             </div>
         </div>
     </div>
+    
     <script>
-        // Lógica de Modais (Abertura e Fechamento)
+        
         function abrirModal(id) {
             document.getElementById(id).classList.add('show');
         }
