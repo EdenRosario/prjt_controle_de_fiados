@@ -9,6 +9,8 @@ router.post('/login', userController.searchUser)
 
 router.post('/recover', userController.validateRecovery)
 
+router.post('/autenticar', userController.autentincarDados)    
+
 router.put('/:id', userController.update)
 
 export default router 

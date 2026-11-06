@@ -151,3 +151,47 @@ export async function update(req, res) {
         })
     }
 }
+
+export const autentincarDados = async (req, res) => {
+
+    try {
+
+        if (!req.body) {
+            return res.status(400).json({
+                msg: "body vazio"
+            })
+        }
+
+
+        const { user, senhaAntiga } = req.body
+
+        if (!user) {
+            return res.status(400).json({
+                msg: "Usuario não recebido"
+            })
+        }
+
+        if (!senhaAntiga) {
+            return res.status(400).json({
+                msg: "Senha antiga não recebida"
+            })
+        }
+
+
+        const dadosUsuario = await userRepository.autenticarDados(user)
+
+        if(!dadosUsuario){
+            return res.status(404).json({
+                msg: "Usuario não encontrado na base de dados"
+            })
+        }
+
+        return res.status(200).json(dadosUsuario.id)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            error : "Erro intenrno no servidor..."
+        })
+    }
+
+}

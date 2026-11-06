@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log("usuario criado com sucesso!")
                     msgToast("usuario criado com sucesso!", "sucess")
                 }
-
+                
                 modalCriar.querySelector("#Inome").value = "";
                 modalCriar.querySelector("#Idata").value = "";
                 modalCriar.querySelector("#Iemail").value = "";

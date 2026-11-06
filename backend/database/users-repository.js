@@ -36,14 +36,14 @@ export class DatabasePostgres {
     }
 
     async searchUser(usuario) {
-        const {user} = usuario
+        const { user } = usuario
 
         const result = await sql`
 
             SELECT * FROM usuarios
             WHERE usuario = ${user}`
 
-        return result    
+        return result
     }
 
     async update(id, usuario) {
@@ -52,9 +52,19 @@ export class DatabasePostgres {
 
         await sql`
              UPDATE usuarios
-              SET senha_hash = ${ newSenha }
-              WHERE id = ${ id };
+              SET senha_hash = ${newSenha}
+              WHERE id = ${id};
         `
 
+    }
+
+    async autenticarDados(user) {
+        
+        const result = await sql`
+        SELECT *
+        FROM usuarios
+        WHERE usuario = ${user};
+    `
+        return result[0] || null
     }
 }
