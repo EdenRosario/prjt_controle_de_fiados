@@ -534,6 +534,325 @@
             </div>
         </div>
 
+        <div class="modal-overlay" id="modal-atualizar-informacoes" role="presentation">
+            <section class="modal-content" role="dialog" aria-modal="true"
+                aria-labelledby="modal-atualizar-informacoes-titulo">
+                <div class="modal-header">
+                    <h2 id="modal-atualizar-informacoes-titulo">Atualizar Informações</h2>
+                    <button class="btn-close" type="button" data-fechar-modal
+                        aria-label="Fechar atualização de informações">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <p class="gestao-usuarios-modal-descricao">
+                    Valide sua identidade para atualizar seus dados cadastrais.
+                </p>
+
+                <form id="form-atualizar-informacoes" novalidate>
+                    <div class="atualizar-etapa" id="atualizar-etapa-autenticacao">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="AtualizarUsuario">Usuário:</label>
+                                <input type="text" id="AtualizarUsuario" class="form-control"
+                                    placeholder="Seu usuário" autocomplete="username">
+                            </div>
+
+                            <div class="input-group gestao-usuarios-modal-senha">
+                                <label for="AtualizarSenhaAtual">Senha atual:</label>
+                                <input type="password" id="AtualizarSenhaAtual" class="form-control senha"
+                                    placeholder="••••••••" autocomplete="current-password">
+                                <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
+                                    aria-label="Mostrar senha atual"></i>
+                            </div>
+                        </div>
+
+                        <button id="BtnValidarAtualizacao" type="button" class="btn-main">
+                            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                            Validar Dados
+                        </button>
+                    </div>
+
+                    <hr class="gestao-usuarios-modal-divisor">
+
+                    <h3 class="gestao-usuarios-modal-subtitulo">Atualizar dados cadastrais</h3>
+
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="AtualizarEmail">E-mail:</label>
+                            <input type="email" id="AtualizarEmail" class="form-control"
+                                placeholder="email@exemplo.com" autocomplete="email" disabled>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="AtualizarNascimento">Data de nascimento:</label>
+                            <input type="date" id="AtualizarNascimento" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="AtualizarNomeCompleto">Nome completo:</label>
+                        <input type="text" id="AtualizarNomeCompleto" class="form-control"
+                            placeholder="Seu nome completo" autocomplete="name" disabled>
+                    </div>
+
+                    <button id="BtnSalvarAtualizacao" type="button" class="btn-main" disabled>
+                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                        Salvar alterações
+                    </button>
+                </form>
+            </section>
+        </div>
+
+        <div class="modal-overlay" id="modal-mudar-senha" role="presentation">
+            <section class="modal-content" role="dialog" aria-modal="true"
+                aria-labelledby="modal-mudar-senha-titulo">
+                <div class="modal-header">
+                    <h2 id="modal-mudar-senha-titulo">Mudar Senha</h2>
+                    <button class="btn-close" type="button" data-fechar-modal aria-label="Fechar mudança de senha">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <p class="gestao-usuarios-modal-descricao">
+                    Valide sua identidade para definir uma nova senha.
+                </p>
+
+                <form id="form-mudar-senha" novalidate>
+                    <div class="atualizar-etapa" id="mudar-senha-etapa-autenticacao">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="MudarSenhaUsuario">Usuário:</label>
+                                <input type="text" id="MudarSenhaUsuario" class="form-control"
+                                    placeholder="Seu usuário" autocomplete="username">
+                            </div>
+
+                            <div class="input-group gestao-usuarios-modal-senha">
+                                <label for="MudarSenhaAtual">Senha antiga:</label>
+                                <input type="password" id="MudarSenhaAtual" class="form-control senha"
+                                    placeholder="••••••••" autocomplete="current-password">
+                                <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
+                                    aria-label="Mostrar senha antiga"></i>
+                            </div>
+                        </div>
+
+                        <button id="BtnValidarMudarSenha" type="button" class="btn-main">
+                            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                            Validar Dados
+                        </button>
+                    </div>
+
+                    <hr class="gestao-usuarios-modal-divisor">
+
+                    <h3 class="gestao-usuarios-modal-subtitulo">Redefinir senha</h3>
+
+                    <div class="form-grid">
+                        <div class="input-group gestao-usuarios-modal-senha">
+                            <label for="MudarNovaSenha">Nova senha:</label>
+                            <input type="password" id="MudarNovaSenha" class="form-control senha"
+                                placeholder="••••••••" autocomplete="new-password" disabled>
+                            <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
+                                aria-label="Mostrar nova senha"></i>
+                        </div>
+
+                        <div class="input-group gestao-usuarios-modal-senha">
+                            <label for="MudarConfirmarSenha">Confirmar nova senha:</label>
+                            <input type="password" id="MudarConfirmarSenha" class="form-control senha"
+                                placeholder="••••••••" autocomplete="new-password" disabled>
+                            <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
+                                aria-label="Mostrar confirmação de nova senha"></i>
+                        </div>
+                    </div>
+
+                    <button id="BtnRedefinirMudarSenha" type="button" class="btn-main" disabled>
+                        <i class="fa-solid fa-key" aria-hidden="true"></i>
+                        Redefinir Senha
+                    </button>
+                </form>
+            </section>
+        </div>
+
+        <div class="modal-overlay gestao-usuarios-lista-overlay" id="modal-listar-usuarios" role="presentation">
+            <section class="modal-content gestao-usuarios-lista" role="dialog" aria-modal="true"
+                aria-labelledby="modal-listar-usuarios-titulo">
+                <header class="gestao-usuarios-lista-header">
+                    <div class="gestao-usuarios-lista-heading">
+                        <span class="gestao-usuarios-lista-icone" aria-hidden="true">
+                            <i class="fa-solid fa-users"></i>
+                        </span>
+                        <div>
+                            <h2 id="modal-listar-usuarios-titulo">Usuários do Sistema</h2>
+                            <p>Exemplos locais para consulta e teste das ações de gerenciamento.</p>
+                        </div>
+                    </div>
+                    <button class="gestao-usuarios-lista-fechar" type="button" data-fechar-modal
+                        aria-label="Fechar listagem de usuários">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </header>
+
+                <label class="gestao-usuarios-lista-busca" for="busca-usuarios-sistema">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" id="busca-usuarios-sistema"
+                        placeholder="Buscar por nome, usuário ou e-mail" autocomplete="off">
+                </label>
+
+                <div class="gestao-usuarios-lista-scroll" role="region" aria-label="Lista de usuários" tabindex="0">
+                    <table class="gestao-usuarios-tabela">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nome completo</th>
+                                <th scope="col">Usuário</th>
+                                <th scope="col">E-mail</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-usuarios-sistema"></tbody>
+                    </table>
+                </div>
+
+                <div class="gestao-usuarios-lista-resumo">
+                    <p id="quantidade-usuarios-sistema" aria-live="polite"></p>
+                    <nav class="gestao-usuarios-paginacao" aria-label="Paginação de usuários">
+                        <button class="gestao-usuarios-paginacao-btn" id="usuarios-pagina-anterior" type="button"
+                            aria-label="Página anterior">
+                            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                        </button>
+                        <span id="usuarios-pagina-atual" aria-current="page">1</span>
+                        <button class="gestao-usuarios-paginacao-btn" id="usuarios-pagina-proxima" type="button"
+                            aria-label="Próxima página">
+                            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </nav>
+                </div>
+
+                <footer class="gestao-usuarios-lista-footer">
+                    <button class="btn btn-secondary" type="button" data-fechar-modal>Fechar</button>
+                </footer>
+            </section>
+        </div>
+
+        <div class="modal-overlay gestao-usuarios-confirmar-overlay" id="modal-confirmar-desativacao-usuario"
+            role="presentation">
+            <section class="modal-content gestao-usuarios-confirmar" role="dialog" aria-modal="true"
+                aria-labelledby="titulo-confirmar-desativacao">
+                <header class="gestao-usuarios-confirmar-header">
+                    <span class="gestao-usuarios-confirmar-icone gestao-usuarios-confirmar-icone--desativar"
+                        aria-hidden="true"><i class="fa-solid fa-user-slash"></i></span>
+                    <div>
+                        <h2 id="titulo-confirmar-desativacao">Desativar usuário?</h2>
+                        <p id="descricao-confirmar-desativacao"></p>
+                    </div>
+                </header>
+                <footer class="gestao-usuarios-confirmar-acoes">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btn-confirmar-desativacao-usuario">
+                        Confirmar desativação
+                    </button>
+                </footer>
+            </section>
+        </div>
+
+        <div class="modal-overlay gestao-usuarios-confirmar-overlay" id="modal-confirmar-reativacao-usuario"
+            role="presentation">
+            <section class="modal-content gestao-usuarios-confirmar" role="dialog" aria-modal="true"
+                aria-labelledby="titulo-confirmar-reativacao">
+                <header class="gestao-usuarios-confirmar-header">
+                    <span class="gestao-usuarios-confirmar-icone gestao-usuarios-confirmar-icone--reativar"
+                        aria-hidden="true"><i class="fa-solid fa-user-check"></i></span>
+                    <div>
+                        <h2 id="titulo-confirmar-reativacao">Reativar usuário?</h2>
+                        <p id="descricao-confirmar-reativacao"></p>
+                    </div>
+                </header>
+                <footer class="gestao-usuarios-confirmar-acoes">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-confirmar-reativacao-usuario">
+                        Confirmar reativação
+                    </button>
+                </footer>
+            </section>
+        </div>
+
+        <div class="modal-overlay gestao-usuarios-confirmar-overlay" id="modal-confirmar-exclusao-usuario"
+            role="presentation">
+            <section class="modal-content gestao-usuarios-confirmar" role="dialog" aria-modal="true"
+                aria-labelledby="titulo-confirmar-exclusao">
+                <header class="gestao-usuarios-confirmar-header">
+                    <span class="gestao-usuarios-confirmar-icone gestao-usuarios-confirmar-icone--excluir"
+                        aria-hidden="true"><i class="fa-solid fa-trash"></i></span>
+                    <div>
+                        <h2 id="titulo-confirmar-exclusao">Excluir usuário?</h2>
+                        <p id="descricao-confirmar-exclusao"></p>
+                    </div>
+                </header>
+                <footer class="gestao-usuarios-confirmar-acoes">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btn-confirmar-exclusao-usuario">
+                        Confirmar exclusão
+                    </button>
+                </footer>
+            </section>
+        </div>
+
+        <div class="modal-overlay gestao-usuarios-confirmar-overlay" id="modal-redefinir-senha-usuario"
+            role="presentation">
+            <section class="modal-content gestao-usuarios-redefinir" role="dialog" aria-modal="true"
+                aria-labelledby="titulo-redefinir-senha-usuario">
+                <header class="gestao-usuarios-redefinir-header">
+                    <div>
+                        <h2 id="titulo-redefinir-senha-usuario">Redefinir senha do usuário</h2>
+                        <p id="descricao-redefinir-senha-usuario">Identifique o usuário selecionado para continuar.</p>
+                    </div>
+                    <button class="gestao-usuarios-lista-fechar" type="button" data-fechar-modal
+                        aria-label="Fechar redefinição de senha">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </header>
+
+                <form id="form-redefinir-senha-usuario" novalidate>
+                    <input type="hidden" id="redefinir-senha-usuario-id">
+                    <div class="input-group">
+                        <label for="redefinir-senha-usuario-nome">Usuário selecionado:</label>
+                        <input type="text" class="form-control" id="redefinir-senha-usuario-nome" readonly>
+                    </div>
+
+                    <button type="button" class="btn-main" id="btn-autenticar-redefinicao-usuario">
+                        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                        Autenticar
+                    </button>
+
+                    <hr class="gestao-usuarios-modal-divisor">
+
+                    <div class="form-grid">
+                        <div class="input-group gestao-usuarios-modal-senha">
+                            <label for="redefinir-senha-nova">Nova senha:</label>
+                            <input type="password" class="form-control senha" id="redefinir-senha-nova"
+                                placeholder="••••••••" autocomplete="new-password" disabled>
+                            <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
+                                aria-label="Mostrar nova senha"></i>
+                        </div>
+                        <div class="input-group gestao-usuarios-modal-senha">
+                            <label for="redefinir-senha-confirmacao">Confirmar nova senha:</label>
+                            <input type="password" class="form-control senha" id="redefinir-senha-confirmacao"
+                                placeholder="••••••••" autocomplete="new-password" disabled>
+                            <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
+                                aria-label="Mostrar confirmação de nova senha"></i>
+                        </div>
+                    </div>
+
+                    <footer class="gestao-usuarios-redefinir-acoes">
+                        <button class="btn btn-secondary" type="button" data-fechar-modal>Cancelar</button>
+                        <button type="button" class="btn-main" id="btn-confirmar-redefinicao-usuario" disabled>
+                            <i class="fa-solid fa-key" aria-hidden="true"></i>
+                            Redefinir Senha
+                        </button>
+                    </footer>
+                </form>
+            </section>
+        </div>
+
     </main>
 
     <template id="template-pagamentos-acoes">
