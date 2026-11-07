@@ -11,10 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../estilos/dashboard.css">
     <link rel="stylesheet" href="../estilos/modais.css">
+    <link rel="stylesheet" href="../estilos/gestao-usuarios-modal.css">
     <link rel="stylesheet" href="../estilos/historico-pagamentos.css">
     <link rel="stylesheet" href="../estilos/detalhes-compra.css">
     <link rel="stylesheet" href="../estilos/historico-compras.css">
     <link rel="stylesheet" href="../estilos/gestao-contas.css">
+    <link rel="stylesheet" href="../estilos/gestao-usuarios.css">
     <link rel="icon" type="image/png" href="../img/favicon_carrinho.png">
 </head>
 
@@ -413,65 +415,124 @@
 
         <!-- 6. SEÇÃO CRIAR ACESSO -->
         <section id="secao-criar-acesso" class="secao">
-            <h2 class="page-title">Criar Acesso ao Sistema</h2>
+            <h2 class="page-title">Gestão de Usuários</h2>
 
-            <div class="card" style="max-width: 600px;">
-                <form onsubmit="event.preventDefault(); showToast('Acesso criado!', 'success'); this.reset();">
+            <div class="gestao-usuarios-cards">
+                <button class="gestao-usuarios-card" type="button" data-modal-alvo="modal-criar-acesso">
+                    <i class="fa-solid fa-user-plus gestao-usuarios-card-icone" aria-hidden="true"></i>
+                    <span class="gestao-usuarios-card-conteudo">
+                        <span class="gestao-usuarios-card-titulo">Criar Acesso</span>
+                        <span class="gestao-usuarios-card-descricao">Cadastre um novo usuário do sistema.</span>
+                    </span>
+                </button>
 
-                    
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="form-control" required placeholder="Ex: João da Silva">
-                    </div>
+                <button class="gestao-usuarios-card" type="button" data-modal-alvo="modal-recuperar-acesso">
+                    <i class="fa-solid fa-key gestao-usuarios-card-icone gestao-usuarios-card-icone--alerta" aria-hidden="true"></i>
+                    <span class="gestao-usuarios-card-conteudo">
+                        <span class="gestao-usuarios-card-titulo">Recuperar Acesso</span>
+                        <span class="gestao-usuarios-card-descricao">Valide os dados e redefina a senha de um acesso.</span>
+                    </span>
+                </button>
 
-                    
-                    <div class="form-grid">
-                        <div class="input-group">
-                            <label>Data de nascimento</label>
-                            <input type="date" class="form-control" required>
-                        </div>
+                <button class="gestao-usuarios-card" type="button" data-modal-alvo="modal-atualizar-informacoes">
+                    <i class="fa-solid fa-user-pen gestao-usuarios-card-icone" aria-hidden="true"></i>
+                    <span class="gestao-usuarios-card-conteudo">
+                        <span class="gestao-usuarios-card-titulo">Atualizar Informações</span>
+                        <span class="gestao-usuarios-card-descricao">Altere e-mail, nome e data de nascimento.</span>
+                    </span>
+                </button>
 
-                        <div class="input-group">
-                            <label>E-mail</label>
-                            <input type="email" class="form-control" required placeholder="email@exemplo.com">
-                        </div>
-                    </div>
+                <button class="gestao-usuarios-card" type="button" data-modal-alvo="modal-mudar-senha">
+                    <i class="fa-solid fa-lock gestao-usuarios-card-icone gestao-usuarios-card-icone--sucesso" aria-hidden="true"></i>
+                    <span class="gestao-usuarios-card-conteudo">
+                        <span class="gestao-usuarios-card-titulo">Mudar Senha</span>
+                        <span class="gestao-usuarios-card-descricao">Confirme a senha atual e defina uma nova.</span>
+                    </span>
+                </button>
 
-                    
-                    <div class="form-grid">
-                        <div class="input-group">
-                            <label>Usuário</label>
-                            <input type="text" class="form-control" required placeholder="Crie um usuário">
-                        </div>
-
-                        <div class="input-group">
-                            <label>Confirmar usuário</label>
-                            <input type="text" class="form-control" required placeholder="Repita o usuário">
-                        </div>
-                    </div>
-
-                    
-                    <div class="form-grid">
-                        <div class="input-group" style="position: relative;">
-                            <label>Senha</label>
-                            <input type="password" class="form-control senha" required placeholder="••••••••">
-                            <i class="fa-solid fa-eye toggle-senha"></i>
-                        </div>
-
-                        <div class="input-group" style="position: relative;">
-                            <label>Confirmar senha</label>
-                            <input type="password" class="form-control senha" required placeholder="••••••••">
-                            <i class="fa-solid fa-eye toggle-senha"></i>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
-                        <i class="fa-solid fa-user-plus"></i> Cadastrar Acesso
-                    </button>
-
-                </form>
+                <button class="gestao-usuarios-card" type="button" data-modal-alvo="modal-listar-usuarios">
+                    <i class="fa-solid fa-users gestao-usuarios-card-icone" aria-hidden="true"></i>
+                    <span class="gestao-usuarios-card-conteudo">
+                        <span class="gestao-usuarios-card-titulo">Listar Usuários do Sistema</span>
+                        <span class="gestao-usuarios-card-descricao">Consulte os usuários cadastrados e suas ações.</span>
+                    </span>
+                </button>
             </div>
         </section>
+
+        <div class="modal-overlay" id="modal-recuperar-acesso" role="presentation">
+            <div class="modal-content modal-content--recuperar-acesso" id="ContainerRecuperar" role="dialog"
+                aria-modal="true" aria-labelledby="modal-recuperar-acesso-titulo">
+                <div id="loading-usuarios">
+                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    <p id="msg-carregamento">Validando seus dados...</p>
+                </div>
+
+                <div id="conteudo-recuperar">
+                    <div class="modal-header">
+                        <h2 id="modal-recuperar-acesso-titulo">Recuperar Acesso</h2>
+                        <button class="btn-close" type="button" data-fechar-modal aria-label="Fechar recuperar acesso">
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+                        Valide seus dados para redefinir o acesso.
+                    </p>
+
+                    <form id="form-recuperar-acesso" novalidate>
+                        <div class="recuperar-validacao recuperar-validacao--bloqueado" id="recuperar-validacao">
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label for="UsuarioRec">Usuário:</label>
+                                    <input type="text" id="UsuarioRec" class="form-control" placeholder="Seu usuário" autocomplete="username">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="NascimentoRec">Data de nascimento:</label>
+                                    <input type="date" id="NascimentoRec" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="EmailRec">Email cadastrado:</label>
+                                <input type="email" id="EmailRec" class="form-control" placeholder="seu@email.com" autocomplete="email">
+                            </div>
+
+                            <button id="BtnValidar" type="button" class="btn-main">
+                                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                                Validar Dados
+                            </button>
+                        </div>
+
+                        <hr style="border: none; border-top: 1px solid var(--border); margin: 24px 0;">
+
+                        <h3 style="font-size: 16px; color: var(--text-main); margin-bottom: 16px;">
+                            Redefinir Senha
+                        </h3>
+
+                        <div class="form-grid">
+                            <div class="input-group gestao-usuarios-senha">
+                                <label for="NovaSenha">Nova senha:</label>
+                                <input type="password" id="NovaSenha" class="form-control senha" placeholder="••••••••" disabled autocomplete="new-password">
+                                <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0" aria-label="Mostrar nova senha"></i>
+                            </div>
+
+                            <div class="input-group gestao-usuarios-senha">
+                                <label for="ConfirmarNovaSenha">Confirmar nova senha:</label>
+                                <input type="password" id="ConfirmarNovaSenha" class="form-control senha" placeholder="••••••••" disabled autocomplete="new-password">
+                                <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0" aria-label="Mostrar confirmação de senha"></i>
+                            </div>
+                        </div>
+
+                        <button id="BtnRedefinir" type="button" class="btn-main" disabled>
+                            <i class="fa-solid fa-key" aria-hidden="true"></i>
+                            Alterar Senha
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
     </main>
 
@@ -1405,10 +1466,80 @@
         </section>
     </div>
 
+    <div class="modal-overlay" id="modal-criar-acesso" role="presentation">
+        <section class="modal-content modal-content--criar-acesso" role="dialog" aria-modal="true"
+            aria-labelledby="modal-criar-acesso-titulo">
+            <div class="modal-header">
+                <h3 id="modal-criar-acesso-titulo">Criar Acesso</h3>
+                <button class="gestao-usuarios-fechar" type="button" data-fechar-modal aria-label="Fechar criar acesso">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <form id="form-criar-acesso">
+                <div class="input-group">
+                    <label for="criar-acesso-nome">Nome Completo</label>
+                    <input type="text" class="form-control" id="criar-acesso-nome" required
+                        placeholder="Ex: João da Silva" autocomplete="name">
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="criar-acesso-nascimento">Data de nascimento</label>
+                        <input type="date" class="form-control" id="criar-acesso-nascimento" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="criar-acesso-email">E-mail</label>
+                        <input type="email" class="form-control" id="criar-acesso-email" required
+                            placeholder="email@exemplo.com" autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="criar-acesso-usuario">Usuário</label>
+                        <input type="text" class="form-control" id="criar-acesso-usuario" required
+                            placeholder="Crie um usuário" autocomplete="off">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="criar-acesso-confirmar-usuario">Confirmar usuário</label>
+                        <input type="text" class="form-control" id="criar-acesso-confirmar-usuario" required
+                            placeholder="Repita o usuário" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group gestao-usuarios-senha">
+                        <label for="criar-acesso-senha">Senha</label>
+                        <input type="password" class="form-control senha" id="criar-acesso-senha" required
+                            placeholder="••••••••" autocomplete="new-password">
+                        <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
+                            aria-label="Mostrar senha"></i>
+                    </div>
+
+                    <div class="input-group gestao-usuarios-senha">
+                        <label for="criar-acesso-confirmar-senha">Confirmar senha</label>
+                        <input type="password" class="form-control senha" id="criar-acesso-confirmar-senha" required
+                            placeholder="••••••••" autocomplete="new-password">
+                        <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
+                            aria-label="Mostrar confirmação de senha"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary gestao-usuarios-submit">
+                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Cadastrar Acesso
+                </button>
+            </form>
+        </section>
+    </div>
+
     <!-- ================= CONTAINER DE TOASTS ================= -->
     <div id="toast-container"></div>
 
     <script type="module" src="../scripts/main.js"></script>
+    <script type="module" src="../scripts/gestao-usuarios/exibirUsuarios.js"></script>
 </body>
 
 </html>
