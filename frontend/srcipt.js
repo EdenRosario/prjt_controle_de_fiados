@@ -27,6 +27,8 @@ function msgToast(mensagem, tipo = "success") {
     }, 3000);
 }
 
+window.showToast = msgToast;
+
 //funcao para validação de acesso
 const validarLogin = async () => {
 
@@ -49,7 +51,7 @@ const validarLogin = async () => {
     try {
 
         containerLogin.classList.add("carregando");
-        
+
         const response = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
             headers: {
@@ -68,7 +70,7 @@ const validarLogin = async () => {
             data = {};
         }
 
-        // Tratamento de erros
+
         if (!response.ok) {
             const erro = (data.error || data.message || "").toLowerCase();
 
@@ -92,13 +94,13 @@ const validarLogin = async () => {
             return;
         }
 
-            msgToast("Login realizado com sucesso!", "success");
-            inputUser.value = "";
-            inputPassword.value = "";
-            setTimeout(() => {
-                window.location.href = "./paginas/home.html";
-            }, 800);
-             return;
+        msgToast("Login realizado com sucesso!", "success");
+        inputUser.value = "";
+        inputPassword.value = "";
+        setTimeout(() => {
+            window.location.href = "./paginas/home.html";
+        }, 800);
+        return;
 
     } catch (error) {
         console.error("Erro ao realizar login:", error);
@@ -106,9 +108,9 @@ const validarLogin = async () => {
             "Não foi possível conectar ao servidor. Tente novamente.",
             "error"
         );
-    }finally {
-    containerLogin.classList.remove("carregando");
-}
+    } finally {
+        containerLogin.classList.remove("carregando");
+    }
 
 }
 
@@ -120,8 +122,7 @@ if (btnLogin) {
 };
 
 
-
-//Validar informações para recuperar a senha e criar acesso admin
+//Validar informações para recuperar a senha e criar acesso 
 document.addEventListener("DOMContentLoaded", () => {
 
     let idUser = null
@@ -135,79 +136,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const createUser = async () => {
 
-        const nome = modalCriar.querySelector("#Inome").value
-        const birthDate = modalCriar.querySelector("#Idata").value
-        const email = modalCriar.querySelector("#Iemail").value
-        const usuario = modalCriar.querySelector("#Iuser").value
-        const confirmarUsuario = modalCriar.querySelector("#ConfirmarUsuario").value
-        const senha = modalCriar.querySelector("#Isenha").value
-        const confirmarSenha = modalCriar.querySelector("#ConfirmarSenha").value
+        const nome = modalCriar.querySelector("#Inome").value;
+        const birthDate = modalCriar.querySelector("#Idata").value;
+        const email = modalCriar.querySelector("#Iemail").value;
+        const usuario = modalCriar.querySelector("#Iuser").value;
+        const confirmarUsuario = modalCriar.querySelector("#ConfirmarUsuario").value;
+        const senha = modalCriar.querySelector("#Isenha").value;
+        const confirmarSenha = modalCriar.querySelector("#ConfirmarSenha").value;
+
         const containerCriarAcesso = document.querySelector("#Container");
 
-        if (nome.length == 0 || birthDate.length == 0 || email.length == 0 || usuario.length == 0 || confirmarUsuario.length == 0 || senha.length == 0 || confirmarSenha.length == 0) {
-            window.alert("[ERRO!!!] Por favor preencha todos os campos")
-            return;
-        } else if (usuario !== confirmarUsuario) {
-            window.alert("[ERRO!] usuarios divergentes ")
-            return;
-        } else if (senha !== confirmarSenha) {
-            window.alert("[ERRO!] Senhas divergentes")
-            return;
-        } else {
-
-            try {
-
-                containerCriarAcesso.classList.add("carregando");
-
-                const response = await fetch(`${API_URL}/auth/register`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-
-                        name: nome,
-                        date: birthDate,
-                        user: usuario,
-                        senha: senha,
-                        email: email
-
-                    })
-                })
-
-                if (response.ok) {
-                    console.log("ok")
-                }
-
-                const data = await response.json()
-
-                if (data.error === "Body incompleto") {
-                    console.log("body incompleto")
-                    msgToast("preencha todos os campos", "error")
-                }
-
-                if (data.message === "usuario criado com sucesso!") {
-                    console.log("usuario criado com sucesso!")
-                    msgToast("usuario criado com sucesso!", "sucess")
-                }
-                
-                modalCriar.querySelector("#Inome").value = "";
-                modalCriar.querySelector("#Idata").value = "";
-                modalCriar.querySelector("#Iemail").value = "";
-                modalCriar.querySelector("#Iuser").value = "";
-                modalCriar.querySelector("#ConfirmarUsuario").value = "";
-                modalCriar.querySelector("#Isenha").value = "";
-                modalCriar.querySelector("#ConfirmarSenha").value = "";
-
-            } catch (error) {
-                console.error(error)
-            } finally {
-                containerCriarAcesso.classList.remove("carregando");
-            }
-
+        if (!nome || !birthDate || !email || !usuario || !confirmarUsuario || !senha || !confirmarSenha) {
+            return window.showToast("Por favor, preencha todos os campos.", "error");
         }
 
-    }
+        if (usuario !== confirmarUsuario) {
+            return window.showToast("Os usuários são divergentes.", "error");
+        }
+
+        if (senha !== confirmarSenha) {
+            return window.showToast("As senhas são divergentes.", "error");
+        }
+
+        try {
+
+            containerCriarAcesso.classList.add("carregando");
+
+            const response = await fetch(`${API_URL}/auth/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: nome,
+                    date: birthDate,
+                    user: usuario,
+                    senha: senha,
+                    email: email
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || data.error || "Erro ao criar usuário.");
+            }
+
+            window.showToast(data.message, "success");
+
+            modalCriar.querySelector("#Inome").value = "";
+            modalCriar.querySelector("#Idata").value = "";
+            modalCriar.querySelector("#Iemail").value = "";
+            modalCriar.querySelector("#Iuser").value = "";
+            modalCriar.querySelector("#ConfirmarUsuario").value = "";
+            modalCriar.querySelector("#Isenha").value = "";
+            modalCriar.querySelector("#ConfirmarSenha").value = "";
+
+        } catch (error) {
+
+            console.error(error);
+            window.showToast(error.message, "error");
+
+        } finally {
+
+            containerCriarAcesso.classList.remove("carregando");
+
+        }
+    };
 
     const redefinirSenha = async () => {
 

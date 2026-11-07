@@ -5,7 +5,7 @@ export const criarUsuario = async (name, date, user, senha, email) => {
 
     try {
 
-        if (!nome || !date || !user || !senha || !email) {
+        if (!name || !date || !user || !senha || !email) {
             throw new Error("Preencha todos os campos")
         }
 
@@ -15,20 +15,24 @@ export const criarUsuario = async (name, date, user, senha, email) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            name,
-            date,
-            user,
-            senha,
-            email
+            body: JSON.stringify({
+                name,
+                date,
+                user,
+                senha,
+                email
+            })
         })
 
-        const data = response.json()
+        const data = await response.json()
 
         if (!response.ok) {
             throw new Error(
                 data.message || data.error || "Erro ao criar novo usuario."
             )
         }
+
+        return data
 
     } catch (error) {
         console.error("Erro ao tentar criar usuario no sistema", error);
@@ -55,7 +59,7 @@ export const validarDados = async (user, email, date) => {
             })
         })
 
-        const data = response.json();
+        const data = await response.json();
 
         if (!response.ok) {
             throw new Error(
@@ -97,7 +101,7 @@ export const recuperarSenha = async (newSenha, idUser) => {
 
         });
 
-        const data = response.json()
+        const data = await response.json()
 
         if (!response.ok) {
 
@@ -133,7 +137,7 @@ export const autentincarDados = async (user, senhaAntiga) => {
 
         });
 
-        const data = response.json();
+        const data = await response.json();
 
         if (!response.ok) {
             throw new Error(
@@ -149,7 +153,7 @@ export const autentincarDados = async (user, senhaAntiga) => {
     };
 };
 
-    //mudar senha pode ser reutilizada no modal de listagem dos usuarios
+//mudar senha pode ser reutilizada no modal de listagem dos usuarios
 
 export const mudarSenha = async (id, novaSenha) => {
 
@@ -167,7 +171,7 @@ export const mudarSenha = async (id, novaSenha) => {
             })
         });
 
-        const data = response.json();
+        const data = await response.json();
 
         if (!response.ok) {
             throw new Error(
@@ -208,7 +212,7 @@ export const atualizarInformacoes = async (userId, usuario, email, nome) => {
 
         })
 
-        const data = response.json();
+        const data = await response.json();
 
         if (!response.ok) {
             throw new Error(
@@ -229,16 +233,16 @@ export const listarUsuarios = async () => {
 
     try {
 
-        const response = await fetch(`http://localhost:3000/users`, {method: "GET" })
+        const response = await fetch(`http://localhost:3000/users`, { method: "GET" })
 
-        const usuarios = response.json();
+        const usuarios = await response.json();
 
-        if (!response.ok){
+        if (!response.ok) {
             throw new Error(
-                 usuarios.msg || usuarios.error || "Erro ao tentar listar usuarios."
+                usuarios.msg || usuarios.error || "Erro ao tentar listar usuarios."
             )
         }
-        
+
         return usuarios;
 
     } catch (error) {
@@ -248,17 +252,17 @@ export const listarUsuarios = async () => {
 
 }
 
-export const autenticarUsuarioModalListagem = async(idUser, nome)=>{
+export const autenticarUsuarioModalListagem = async (idUser, nome) => {
 
-    try{
-       
-        if(!idUser || !nome){
+    try {
+
+        if (!idUser || !nome) {
             throw new Error("ID e nome do usuario não informados")
         }
 
         const response = await fetch(``)
 
-    }catch(error){
+    } catch (error) {
         console.error("Falha na autenticação do usuario", error)
         throw error
 

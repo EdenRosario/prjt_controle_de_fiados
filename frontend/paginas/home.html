@@ -35,7 +35,7 @@
                 <i class="fa-solid fa-user-pen"></i> Gestão de Contas
             </li>
             <li class="nav-item" onclick="navegar('secao-criar-acesso', this)">
-                <i class="fa-solid fa-key"></i> Criar Acesso
+                <i class="fa-solid fa-key"></i> Gestao de Usuarios
             </li>
             <li class="nav-item" onclick="navegar('secao-pagamentos', this)">
                 <i class="fa-solid fa-clock-rotate-left"></i> Histórico de pagamentos
@@ -1847,14 +1847,14 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary gestao-usuarios-submit">
+                <button type="button" class="btn btn-primary gestao-usuarios-submit" id="btn-cadastrar">
                     <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Cadastrar Acesso
                 </button>
             </form>
         </section>
     </div>
 
-    <!-- ================= CONTAINER DE TOASTS ================= -->
+    <!--TOASTS  -->
     <div id="toast-container"></div>
 
     <script type="module" src="../scripts/main.js"></script>

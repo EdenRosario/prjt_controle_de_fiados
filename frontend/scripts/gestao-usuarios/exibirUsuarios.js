@@ -1,3 +1,5 @@
+import { criarUsuario } from "./usuarios.js";
+
 const modalCriarAcesso = document.getElementById("modal-criar-acesso");
 const formCriarAcesso = document.getElementById("form-criar-acesso");
 
@@ -20,7 +22,91 @@ const limparFormularioCriarAcesso = () => {
 }
 
 // Ação para criar o usuário
+
+const cadastrarUsuario = async () => {
+
+    const form = modalCriarAcesso.querySelector("#form-criar-acesso")
+
+    const nome = form.querySelector("#criar-acesso-nome").value
+
+    const data = form.querySelector("#criar-acesso-nascimento").value
+
+    const email = form.querySelector("#criar-acesso-email").value
+
+    const usuario = form.querySelector("#criar-acesso-usuario").value
+
+    const confirmarUsuario = form.querySelector("#criar-acesso-confirmar-usuario").value
+
+    const senha = form.querySelector("#criar-acesso-senha").value
+
+    const confirmarSenha = form.querySelector("#criar-acesso-confirmar-senha").value
+
+    if (!nome) {
+        window.showToast("[ERRO!]preencha o campo nome!", "error")
+        return;
+    }
+    if (!data) {
+        window.showToast("[ERRO!]preencha o campo data!", "error")
+        return;
+    }
+    if (!email) {
+        window.showToast("[ERRO!]preencha o campo email!", "error")
+        return;
+    }
+    if (!usuario) {
+        window.showToast("[ERRO!]preencha o campo usuario!", "error")
+        return;
+    }
+    if (!confirmarUsuario) {
+        window.showToast("[ERRO!]preencha o campo confirmar usuario!", "error")
+        return;
+    }
+    if (!senha) {
+        window.showToast("[ERRO!]preencha o campo senha!", "error")
+        return;
+    }
+    if (!confirmarSenha) {
+        window.showToast("[ERRO!]preencha o campo confirmar senha!", "error")
+        return;
+    }
+    if (senha !== confirmarSenha) {
+        window.showToast("[ERRO!]Senhas divergentes!", "error")
+        return;
+    }
+    if (usuario !== confirmarUsuario) {
+        window.showToast("[ERRO!]Usuarios divergentes!", "error")
+        return;
+    }
+
+    try {
+
+        const usuarioCriado = await criarUsuario(
+            nome,
+            data,
+            usuario,
+            senha,
+            email
+        )
+
+        window.showToast(usuarioCriado.message, "success")
+
+    } catch (error) {
+        console.error(error)
+        return window.showToast(error.message, "error");
+    }
+
+}
+
+const modal = document.querySelector("#modal-criar-acesso")
+const form = modal.querySelector("#form-criar-acesso")
+
+form.querySelector("#btn-cadastrar").addEventListener("click", () => {
+    cadastrarUsuario()
+})
+
 if (modalCriarAcesso && formCriarAcesso) {
+
+
 
     formCriarAcesso.addEventListener("keydown", (event) => {
         const icone = event.target.closest(".toggle-senha");
@@ -29,6 +115,8 @@ if (modalCriarAcesso && formCriarAcesso) {
         event.preventDefault();
         icone.click();
     });
+
+
 
     formCriarAcesso.addEventListener("submit", (event) => {
         event.preventDefault();
