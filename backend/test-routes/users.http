@@ -32,9 +32,41 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:3000/auth/autenticar
+Content-Type: application/json
+
+{
+  "user": "@Exemplo",
+  "senhaAntiga: "*******"
+}
+
+
+###
+GET http://localhost:3000/users
+
+###
+
 PUT http://localhost:3000/users/1
 Content-Type: application/json
 
 {
-        "newSenha": "Es82250361#"
+        "newSenha": "*********#"
+}
+
+###
+PUT http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+        "novaSenha": "********#"
+}
+
+###
+PUT http://localhost:3000/users/atualizar/1
+Content-Type: application/json
+
+{
+   usuario,
+   email,
+   nome     
 }

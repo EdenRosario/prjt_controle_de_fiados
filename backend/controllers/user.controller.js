@@ -1,3 +1,4 @@
+import { json } from "sequelize";
 import { DatabasePostgres } from "../database/users-repository.js";
 import bcrypt from 'bcrypt'
 
@@ -124,6 +125,29 @@ export async function searchUser(req, res) {
     }
 }
 
+export const listarTodosUsuarios = async (req, res)=>{
+
+    try{
+
+        const usuarios = await userRepository();
+
+        if(!usuarios){
+            return res.status(404).json({
+                msg : "Falha na busca dos usuarios"
+            })
+        }
+
+        return res.status(200).json(usuarios)
+
+    }catch(error){
+        console.error(error)
+        return res.status(500).json({
+            error: "Erro interno no servidor"
+        })
+    }   
+
+}
+
 export async function update(req, res) {
 
     try {
@@ -180,7 +204,7 @@ export const autentincarDados = async (req, res) => {
 
         const dadosUsuario = await userRepository.autenticarDados(user)
 
-        if(!dadosUsuario){
+        if (!dadosUsuario) {
             return res.status(404).json({
                 msg: "Usuario não encontrado na base de dados"
             })
@@ -190,8 +214,111 @@ export const autentincarDados = async (req, res) => {
     } catch (error) {
         console.error(error)
         return res.status(500).json({
-            error : "Erro intenrno no servidor..."
+            error: "Erro intenrno no servidor..."
         })
     }
 
+}
+
+export const mudarSenha = async (req, res) => {
+
+    try {
+        const userId = req.params.userId
+
+        if (!userId) {
+            return res.status(400).json({
+                msg: "ID do usuario não recebido"
+            })
+        }
+
+        const novaSenha = req.body
+
+        if (!novaSenha) {
+            return res.status(400).json({
+                msg: "A nova senha não foi recebida"
+            })
+        }
+
+        const senhaHash = await bcrypt.hash(novaSenha, 10)
+
+        const sucesso = await userRepository.mudarSenha(userId, senhaHash)
+
+        if (!sucesso) {
+            return res.status(404).json({
+                msg: "Não foi possivel alterar senha"
+            })
+        }
+
+        return res.status(200).json({
+            msg: "Senha alterada com sucesso"
+        })
+
+    } catch (error) {
+
+        console.error(error)
+        return res.status(500).json({
+            error: "Erro interno no servidor"
+        })
+
+    }
+}
+
+export const atualizarInformacoes = async (req, res) => {
+
+    try {
+
+        const userId = req.params.userId
+        const { usuario, email, nome } = req.body
+
+        if (!userId) {
+            return res.status(400).json({
+                msg: "ID do usuario não recebido"
+            })
+        }
+
+        if (!req.body) {
+            return res.status(400).json({
+                msg: "body não recebido"
+            })
+        }
+
+        if (!usuario) {
+            return res.status(400).json({
+                msg: "usuario não recebido"
+            })
+        }
+
+        if (!email) {
+            return res.status(400).json({
+                msg: "email não recebido"
+            })
+        }
+
+        if(!nome){
+            return res.status(400).json({
+                msg : "nome não recebido"
+            })
+        }
+
+        const sucesso = await userRepository({
+            userId,
+            usuario,
+            email,
+            nome
+        })
+
+        if(!sucesso){
+            return res.status(4040).json({
+                msg : "Não foi possivel atualizar os dados do usuarios"
+            })
+        }
+
+        return res.json(sucesso)
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            error: "Erro interno no servidor"
+        })
+    }
 }

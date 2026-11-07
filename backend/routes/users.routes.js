@@ -11,6 +11,12 @@ router.post('/recover', userController.validateRecovery)
 
 router.post('/autenticar', userController.autentincarDados)    
 
+router.get('/', userController.listarTodosUsuarios)
+
 router.put('/:id', userController.update)
+
+router.put('/:userId', userController.mudarSenha)
+
+router.put('/atualizar/:userId', userController.atualizarInformacoes)
 
 export default router 
