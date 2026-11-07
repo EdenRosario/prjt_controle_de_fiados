@@ -55,7 +55,6 @@ export async function listarTodosClientes() {
         return clientes
 
     } catch (error) {
-
         console.error(error)
         window.showToast("não foi possivel obter clientes", "error");
     }
