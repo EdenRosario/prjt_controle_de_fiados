@@ -23,7 +23,7 @@ function showToast(mensagem, tipo = "success") {
 
     setTimeout(() => {
         toast.remove();
-    }, 3000);
+    }, 5000);
 }
 
 window.showToast = showToast;

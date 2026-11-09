@@ -122,6 +122,58 @@ if (btnLogin) {
 };
 
 
+const usuarioForte = (usuario) => {
+    if (!usuario) {
+        return false;
+    }
+
+    if (usuario.length === 0) {
+        window.showToast("[ERRO|] O usuario deve conter no minimo 6 caracters", "error")
+        return false;
+    }
+
+    const regexUsuario = /^(?=.*\d.*\d)[a-z0-9]{8,}$/;
+
+    if (!regexUsuario.test(usuario)) {
+        window.showToast(
+            "[ERRO] O usuario deve possuir todos caracters de letra em minusculo e no minimo 2 caracters de numero", "error",
+            "error"
+        );
+
+        return false;
+    }
+
+    return true;
+
+}
+
+const senhaForte = (senha) => {
+
+    if (!senha) {
+        console.log("Não foi possivel validar a senha");
+        return false;
+    }
+
+    if (senha.length === 0) {
+        window.showToast("[ERRO|] a senha deve conter no minimo 6 caracters", "error")
+        return false;
+    }
+
+    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]~`]).+$/;
+
+    if (!regex.test(senha)) {
+        window.showToast(
+            "[ERRO]A senha deve possuir pelo menos uma letra maiúscula, um número e um caractere especial",
+            "error"
+        );
+
+        return false;
+    }
+
+    return true
+
+}
+
 //Validar informações para recuperar a senha e criar acesso 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -133,6 +185,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalRecuperar = document.querySelector("#modal-recuperar")
     const btnValidarDados = modalRecuperar.querySelector("#BtnValidar")
     const btnRedefinir = modalRecuperar.querySelector("#BtnRedefinir")
+
+
 
     const createUser = async () => {
 
@@ -156,6 +210,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (senha !== confirmarSenha) {
             return window.showToast("As senhas são divergentes.", "error");
+        }
+
+        if(!usuarioForte(usuario)){
+            return ;
+        }
+
+        if(!senhaForte(senha)){
+            return ;
         }
 
         try {

@@ -23,6 +23,58 @@ const limparFormularioCriarAcesso = () => {
 
 // Ação para criar o usuário
 
+const senhaForte = (senha) => {
+
+    if (!senha) {
+        console.log("Não foi possivel validar a senha");
+        return false;
+    }
+
+    if (senha.length === 0) {
+        window.showToast("[ERRO|] a senha deve conter no minimo 6 caracters", "error")
+        return false;
+    }
+
+    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]~`]).+$/;
+
+    if (!regex.test(senha)) {
+        window.showToast(
+            "[ERRO]A senha deve possuir pelo menos uma letra maiúscula, um número e um caractere especial",
+            "error"
+        );
+
+        return false;
+    }
+
+    return true
+    
+}
+
+const usuarioForte = (usuario) => {
+    if (!usuario) {
+        return false;
+    }
+
+    if (usuario.length === 0) {
+        window.showToast("[ERRO|] O usuario deve conter no minimo 6 caracters", "error")
+        return false;
+    }
+
+    const regexUsuario = /^(?=.*\d.*\d)[a-z0-9]{8,}$/;
+
+    if (!regexUsuario.test(usuario)) {
+        window.showToast(
+            "[ERRO] O usuario deve possuir todos caracters de letra em minusculo e no minimo 2 caracters de numero", "error",
+            "error"
+        );
+
+        return false;
+    }
+
+    return true;
+
+}
+
 const cadastrarUsuario = async () => {
 
     const form = modalCriarAcesso.querySelector("#form-criar-acesso")
@@ -78,6 +130,14 @@ const cadastrarUsuario = async () => {
         return;
     }
 
+
+    if (!senhaForte(senha)) {
+        return;
+    }
+    if (!usuarioForte(usuario)) {
+        return;
+    }
+
     try {
 
         const usuarioCriado = await criarUsuario(
@@ -90,19 +150,27 @@ const cadastrarUsuario = async () => {
 
         window.showToast(usuarioCriado.message, "success")
 
+        
+
+        form.querySelector("#criar-acesso-nome").value = "";
+
+        form.querySelector("#criar-acesso-nascimento").value ="";
+
+        form.querySelector("#criar-acesso-email").value ="";
+
+        form.querySelector("#criar-acesso-usuario").value ="";
+
+        form.querySelector("#criar-acesso-confirmar-usuario").value ="";
+
+        form.querySelector("#criar-acesso-senha").value ="";
+
+        form.querySelector("#criar-acesso-confirmar-senha").value ="";
     } catch (error) {
         console.error(error)
         return window.showToast(error.message, "error");
     }
 
 }
-
-const modal = document.querySelector("#modal-criar-acesso")
-const form = modal.querySelector("#form-criar-acesso")
-
-form.querySelector("#btn-cadastrar").addEventListener("click", () => {
-    cadastrarUsuario()
-})
 
 if (modalCriarAcesso && formCriarAcesso) {
 
@@ -118,18 +186,11 @@ if (modalCriarAcesso && formCriarAcesso) {
 
 
 
-    formCriarAcesso.addEventListener("submit", (event) => {
+    formCriarAcesso.addEventListener("submit",async (event) => {
         event.preventDefault();
 
-        if (typeof window.showToast === "function") {
-            window.showToast("Acesso criado!", "success");
-        }
+        await cadastrarUsuario()
 
-        limparFormularioCriarAcesso();
-
-        if (typeof window.fecharModal === "function") {
-            window.fecharModal("modal-criar-acesso");
-        }
     });
 
     const aoFechar = new MutationObserver(() => {
