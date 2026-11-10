@@ -1,4 +1,3 @@
-import { json } from "sequelize";
 import { DatabasePostgres } from "../database/users-repository.js";
 import bcrypt from 'bcrypt'
 

@@ -91,7 +91,7 @@ export const recuperarSenha = async (newSenha, idUser) => {
 
         }
 
-        const response = await fetch($`${API_URL}/auth/${idUser}`, {
+        const response = await fetch(`${API_URL}/auth/${idUser}`, {
 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -108,7 +108,6 @@ export const recuperarSenha = async (newSenha, idUser) => {
             throw new Error(
                 data.msg || data.error || "Erro ao redefinir senha do usuario."
             )
-
         }
 
     } catch (error) {

@@ -1,4 +1,7 @@
-import { criarUsuario } from "./usuarios.js";
+import { criarUsuario, validarDados, recuperarSenha, autentincarDados, mudarSenha, atualizarInformacoes, listarUsuarios } from "./usuarios.js";
+
+
+let userId = null
 
 const modalCriarAcesso = document.getElementById("modal-criar-acesso");
 const formCriarAcesso = document.getElementById("form-criar-acesso");
@@ -47,7 +50,7 @@ const senhaForte = (senha) => {
     }
 
     return true
-    
+
 }
 
 const usuarioForte = (usuario) => {
@@ -150,21 +153,19 @@ const cadastrarUsuario = async () => {
 
         window.showToast(usuarioCriado.message, "success")
 
-        
-
         form.querySelector("#criar-acesso-nome").value = "";
 
-        form.querySelector("#criar-acesso-nascimento").value ="";
+        form.querySelector("#criar-acesso-nascimento").value = "";
 
-        form.querySelector("#criar-acesso-email").value ="";
+        form.querySelector("#criar-acesso-email").value = "";
 
-        form.querySelector("#criar-acesso-usuario").value ="";
+        form.querySelector("#criar-acesso-usuario").value = "";
 
-        form.querySelector("#criar-acesso-confirmar-usuario").value ="";
+        form.querySelector("#criar-acesso-confirmar-usuario").value = "";
 
-        form.querySelector("#criar-acesso-senha").value ="";
+        form.querySelector("#criar-acesso-senha").value = "";
 
-        form.querySelector("#criar-acesso-confirmar-senha").value ="";
+        form.querySelector("#criar-acesso-confirmar-senha").value = "";
     } catch (error) {
         console.error(error)
         return window.showToast(error.message, "error");
@@ -186,7 +187,7 @@ if (modalCriarAcesso && formCriarAcesso) {
 
 
 
-    formCriarAcesso.addEventListener("submit",async (event) => {
+    formCriarAcesso.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         await cadastrarUsuario()
@@ -206,6 +207,86 @@ if (modalCriarAcesso && formCriarAcesso) {
 }
 
 // Ação para recuperar o acesso
+
+
+const validarDadosRecuperarSenha = async () => {
+
+    const usuario = document.getElementById("UsuarioRec").value.trim();
+    const nascimento = document.getElementById("NascimentoRec").value;
+    const email = document.getElementById("EmailRec").value.trim();
+
+    if (!usuario) {
+        window.showToast("[ERRO!] Preencha o campo de usuario", "error")
+        return false;
+    }
+
+    if (!nascimento) {
+        window.showToast("[ERRO!] Preencha o campo data")
+        return false;
+    }
+
+    if (!email) {
+        window.showToast("[ERRO] Preencha o campo de email")
+        return false;
+    }
+
+    try {
+
+        const id = await validarDados(
+            usuario,
+            email,
+            nascimento
+        )
+        if (id) {
+            window.showToast("[SUCESSO!] Os dados foram validados com sucesso ", "success");
+        }
+
+        userId = id;
+        return true;
+    } catch (error) {
+        console.error(error);
+        return window.showToast(error.message, "error", false);
+    }
+
+}
+const criarNovaSenha = async () => {
+
+    const novaSenha = document.getElementById("NovaSenha").value;
+    const confirmarNovaSenha = document.getElementById("ConfirmarNovaSenha").value;
+
+    if (!novaSenha || !confirmarNovaSenha) {
+        if (typeof window.showToast === "function") {
+            window.showToast("[ERRO!]Informe a nova senha e sua confirmação.", "error");
+        }
+        return false;
+    }
+
+    if (novaSenha !== confirmarNovaSenha) {
+        if (typeof window.showToast === "function") {
+            window.showToast("[ERRO!] Senhas divergentes.", "error");
+        }
+        return false;
+    }
+
+    if (!senhaForte(novaSenha)) {
+        return false;
+    }
+
+    try {
+        console.log(userId)
+        const senhaAtualizada = await recuperarSenha(
+            novaSenha,
+            userId
+        )
+        console.log(senhaAtualizada)
+        window.showToast("[SUCESSO!] Nova senha gerada com suceso!", "success")
+        return true
+    } catch (error) {
+        console.error(error)
+        return window.showToast(error.msg, "error" || "Erro ao mudar senha", "error")
+    }
+
+}
 const modalRecuperarAcesso = document.getElementById("modal-recuperar-acesso");
 const formRecuperarAcesso = document.getElementById("form-recuperar-acesso");
 const areaValidacaoRecuperar = document.getElementById("recuperar-validacao");
@@ -254,49 +335,33 @@ if (modalRecuperarAcesso && formRecuperarAcesso) {
         icone.click();
     });
 
-    botaoValidar.addEventListener("click", () => {
-        const usuario = document.getElementById("UsuarioRec").value.trim();
-        const nascimento = document.getElementById("NascimentoRec").value;
-        const email = document.getElementById("EmailRec").value.trim();
+    botaoValidar.addEventListener("click", async () => {
 
-        if (!usuario || !nascimento || !email) {
-            if (typeof window.showToast === "function") {
-                window.showToast("Preencha usuário, data de nascimento e e-mail.", "error");
+        if (containerRecuperar) {
+            containerRecuperar.classList.add("carregando");
+        }
+
+        if (mensagemCarregamento) {
+            mensagemCarregamento.textContent = "validando as informações...";
+        }
+
+        window.setTimeout(() => {
+            if (containerRecuperar) {
+                containerRecuperar.classList.remove("carregando");
             }
-            return;
-        }
 
-        if (!email.includes("@")) {
-            if (typeof window.showToast === "function") {
-                window.showToast("Informe um e-mail válido.", "error");
+            if (!validarDadosRecuperarSenha()) {
+                return definirEstadoRecuperacao(false);
+
             }
-            return;
-        }
+            definirEstadoRecuperacao(true);
 
-        definirEstadoRecuperacao(true);
+        })
 
-        if (typeof window.showToast === "function") {
-            window.showToast("Dados validados com sucesso!", "success");
-        }
+
     });
 
-    botaoRedefinir.addEventListener("click", () => {
-        const novaSenha = document.getElementById("NovaSenha").value;
-        const confirmarNovaSenha = document.getElementById("ConfirmarNovaSenha").value;
-
-        if (!novaSenha || !confirmarNovaSenha) {
-            if (typeof window.showToast === "function") {
-                window.showToast("Informe a nova senha e sua confirmação.", "error");
-            }
-            return;
-        }
-
-        if (novaSenha !== confirmarNovaSenha) {
-            if (typeof window.showToast === "function") {
-                window.showToast("As senhas não conferem.", "error");
-            }
-            return;
-        }
+    botaoRedefinir.addEventListener("click", async () => {
 
         if (containerRecuperar) {
             containerRecuperar.classList.add("carregando");
@@ -306,20 +371,19 @@ if (modalRecuperarAcesso && formRecuperarAcesso) {
             mensagemCarregamento.textContent = "Atualizando senha...";
         }
 
-        window.setTimeout(() => {
+        window.setTimeout(async () => {
+
             if (containerRecuperar) {
                 containerRecuperar.classList.remove("carregando");
             }
 
-            if (typeof window.showToast === "function") {
-                window.showToast("Senha redefinida com sucesso!", "success");
-            }
+            const sucesso = await criarNovaSenha();
+
+            if (!sucesso) {
+                return;
+            };
 
             limparFormularioRecuperarAcesso();
-
-            if (typeof window.fecharModal === "function") {
-                window.fecharModal("modal-recuperar-acesso");
-            }
         }, 600);
     });
 
