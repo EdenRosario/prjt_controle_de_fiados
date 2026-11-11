@@ -117,23 +117,24 @@ export const recuperarSenha = async (newSenha, idUser) => {
 
 }
 
-export const autentincarDados = async (user, senhaAntiga) => {
+export const autentincarDados = async (user, senha) => {
 
     try {
 
-        if (!user || !senhaAntiga) {
+        if (!user || !senha) {
             throw new Error("Preencha todos os campos")
         };
 
-        const response = await fetch(`http://localhost:3000/auth/autenticar`, {
+        const response = await fetch(`${API_URL}/auth/login`, {
 
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
             body: JSON.stringify({
-                user,
-                senhaAntiga
+                "user": user,
+                "senha": password
             })
-
         });
 
         const data = await response.json();

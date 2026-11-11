@@ -1,4 +1,4 @@
-import { criarUsuario, validarDados, recuperarSenha, autentincarDados, mudarSenha, atualizarInformacoes, listarUsuarios } from "./usuarios.js";
+import { criarUsuario, autentincarDados, mudarSenha, atualizarInformacoes, listarUsuarios } from "./usuarios.js";
 
 
 let userId = null
@@ -232,11 +232,7 @@ const validarDadosRecuperarSenha = async () => {
 
     try {
 
-        const id = await validarDados(
-            usuario,
-            email,
-            nascimento
-        )
+
         if (id) {
             window.showToast("[SUCESSO!] Os dados foram validados com sucesso ", "success");
         }
@@ -274,10 +270,7 @@ const criarNovaSenha = async () => {
 
     try {
         console.log(userId)
-        const senhaAtualizada = await recuperarSenha(
-            novaSenha,
-            userId
-        )
+
         console.log(senhaAtualizada)
         window.showToast("[SUCESSO!] Nova senha gerada com suceso!", "success")
         return true
@@ -429,9 +422,79 @@ const limparFormularioAtualizacao = () => {
     definirEstadoAtualizacao(false);
 };
 
+const validarDadosAtualizarInfo = async () => {
+
+    const usuario = document.getElementById("AtualizarUsuario").value.trim();
+    const senhaAtual = document.getElementById("AtualizarSenhaAtual").value;
+
+    console.log({
+        usuario,
+        senhaAtual
+    })
+
+    if (!usuario || !senhaAtual.trim()) {
+        if (typeof window.showToast === "function") {
+            window.showToast("Informe seu usuário e sua senha atual.", "error");
+        }
+        return;
+    }
+
+    try {
+
+        const autenticacao = await autentincarDados(
+            usuario,
+            senhaAtual
+        )
+
+        console.log(autenticacao)
+
+        window.showToast(autenticacao.msg, "success")
+
+        if (typeof window.showToast === "function") {
+            window.showToast("Dados validados com sucesso!", "success");
+        }
+    } catch (error) {
+        console.error(error)
+        return window.showToast(error.msg, "error");
+    }
+}
+
+const atualizarInformacoes = () => {
+
+    const email = document.getElementById("AtualizarEmail").value.trim();
+    const nascimento = document.getElementById("AtualizarNascimento").value;
+    const nome = document.getElementById("AtualizarNomeCompleto").value.trim();
+
+    if (!email || !nascimento || !nome) {
+        if (typeof window.showToast === "function") {
+            window.showToast("Preencha e-mail, nome completo e data de nascimento.", "error");
+        }
+        return;
+    }
+
+    if (!email.includes("@")) {
+        if (typeof window.showToast === "function") {
+            window.showToast("Informe um e-mail válido.", "error");
+        }
+        return;
+    }
+
+    if (typeof window.showToast === "function") {
+        window.showToast("Informações atualizadas com sucesso!", "success");
+    }
+
+    limparFormularioAtualizacao();
+
+    if (typeof window.fecharModal === "function") {
+        window.fecharModal("modal-atualizar-informacoes");
+    }
+
+}
+
+document.getElementById("BtnValidarAtualizacao").addEventListener("click", async () => {
+    validarDadosAtualizarInfo()
+})
 if (modalAtualizarInformacoes && formAtualizarInformacoes) {
-    const botaoValidarAtualizacao = document.getElementById("BtnValidarAtualizacao");
-    const botaoSalvarAtualizacao = document.getElementById("BtnSalvarAtualizacao");
 
     definirEstadoAtualizacao(false);
 
@@ -441,54 +504,6 @@ if (modalAtualizarInformacoes && formAtualizarInformacoes) {
 
         event.preventDefault();
         icone.click();
-    });
-
-    botaoValidarAtualizacao.addEventListener("click", () => {
-        const usuario = document.getElementById("AtualizarUsuario").value.trim();
-        const senhaAtual = document.getElementById("AtualizarSenhaAtual").value;
-
-        if (!usuario || !senhaAtual.trim()) {
-            if (typeof window.showToast === "function") {
-                window.showToast("Informe seu usuário e sua senha atual.", "error");
-            }
-            return;
-        }
-
-        definirEstadoAtualizacao(true);
-
-        if (typeof window.showToast === "function") {
-            window.showToast("Dados validados com sucesso!", "success");
-        }
-    });
-
-    botaoSalvarAtualizacao.addEventListener("click", () => {
-        const email = document.getElementById("AtualizarEmail").value.trim();
-        const nascimento = document.getElementById("AtualizarNascimento").value;
-        const nome = document.getElementById("AtualizarNomeCompleto").value.trim();
-
-        if (!email || !nascimento || !nome) {
-            if (typeof window.showToast === "function") {
-                window.showToast("Preencha e-mail, nome completo e data de nascimento.", "error");
-            }
-            return;
-        }
-
-        if (!email.includes("@")) {
-            if (typeof window.showToast === "function") {
-                window.showToast("Informe um e-mail válido.", "error");
-            }
-            return;
-        }
-
-        if (typeof window.showToast === "function") {
-            window.showToast("Informações atualizadas com sucesso!", "success");
-        }
-
-        limparFormularioAtualizacao();
-
-        if (typeof window.fecharModal === "function") {
-            window.fecharModal("modal-atualizar-informacoes");
-        }
     });
 
     const aoFecharAtualizacao = new MutationObserver(() => {
