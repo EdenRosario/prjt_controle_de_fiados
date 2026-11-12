@@ -320,7 +320,7 @@ export const atualizarInformacoes = async (req, res) => {
             })
         }
 
-        return res.json(sucesso)
+        return res.status(200).json(sucesso)
 
     } catch (error) {
         console.error(error)
