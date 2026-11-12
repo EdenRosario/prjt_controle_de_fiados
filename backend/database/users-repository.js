@@ -2,11 +2,11 @@ import sql from "../conect.js"
 
 export class DatabasePostgres {
 
- async create(usuario) {
-    const { name, date, user, senha, email } = usuario;
+    async create(usuario) {
+        const { name, date, user, senha, email } = usuario;
 
-    try {
-        await sql`
+        try {
+            await sql`
             INSERT INTO usuarios(
                 nome,
                 usuario,
@@ -23,20 +23,20 @@ export class DatabasePostgres {
             );
         `;
 
-        return {
-            sucesso: true,
-            mensagem: "Usuário cadastrado com sucesso!"
-        };
+            return {
+                sucesso: true,
+                mensagem: "Usuário cadastrado com sucesso!"
+            };
 
-    } catch (error) {
+        } catch (error) {
 
-        if (error.code === "23505") {
-            throw new Error("Este nome de usuário ou e-mail  já está cadastrado.");
+            if (error.code === "23505") {
+                throw new Error("Este nome de usuário ou e-mail  já está cadastrado.");
+            }
+
+            throw error;
         }
-
-        throw error;
     }
-}
 
     async validateRecovery(usuario) {
         const { user, email, date } = usuario
@@ -61,9 +61,9 @@ export class DatabasePostgres {
         return result
     }
 
-    async listarTodosUsuarios(){
+    async listarTodosUsuarios() {
 
-        const usuarios = await sql `
+        const usuarios = await sql`
             SELECT * FROM usuarios 
             ORDER BY nome
         `;
@@ -109,7 +109,7 @@ export class DatabasePostgres {
         const dados = {
             nome,
             email,
-            nascimento
+            data_nascimento: nascimento
         };
 
         const colunasAlteradas = [];
@@ -133,12 +133,12 @@ export class DatabasePostgres {
         valores.push(userId);
 
         const query = `
-        UPDATE usuarios
-        SET ${setClause},
-        atualizado_em = CURRENT_TIMESTAMP
-        WHERE id = $${valores.length}
-        RETURNING *;
-    `;
+            UPDATE usuarios
+            SET ${setClause},
+            atualizado_em = CURRENT_TIMESTAMP
+            WHERE id = $${valores.length}
+            RETURNING *;
+        `;
 
         const resultado = await sql.unsafe(query, valores);
 

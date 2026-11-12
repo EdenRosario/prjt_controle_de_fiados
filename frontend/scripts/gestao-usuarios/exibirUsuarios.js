@@ -696,7 +696,7 @@ const atualizarInformacoesUsuario = async () => {
 
     } catch (error) {
         console.error(error)
-        return window.showToast("Falha ao tentar atualizar informações", "error")
+        return window.showToast(error.message, "error");
     }
 }
 

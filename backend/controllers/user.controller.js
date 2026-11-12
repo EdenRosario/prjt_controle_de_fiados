@@ -307,7 +307,7 @@ export const atualizarInformacoes = async (req, res) => {
             })
         }
 
-        const sucesso = await userRepository({
+        const sucesso = await userRepository.atualizarInformacoes({
             userId,
             nome,
             email,
@@ -315,7 +315,7 @@ export const atualizarInformacoes = async (req, res) => {
         })
 
         if (!sucesso) {
-            return res.status(4040).json({
+            return res.status(404).json({
                 msg: "Não foi possivel atualizar os dados do usuarios"
             })
         }
