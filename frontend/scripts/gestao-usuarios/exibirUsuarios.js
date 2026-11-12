@@ -438,11 +438,10 @@ const validarDadosAtualizarInfo = async () => {
             usuario,
             senhaAtual
         )
-        if(autenticacao){
-            console.log(autenticacao.usuario.id);
-        }
-        userIdModalAttInformacoes = autenticacao.usuario.id;
 
+        console.log("Resposta completa:", autenticacao);
+        console.log("Objeto usuário:", autenticacao.usuario);
+        
         definirEstadoAtualizacao(true)
         if (typeof window.showToast === "function") {
             window.showToast(autenticacao.message, "success");
@@ -454,7 +453,7 @@ const validarDadosAtualizarInfo = async () => {
 }
 
 
-const atualizarInformacoesUsuario =  () => {
+const atualizarInformacoesUsuario = () => {
 
     const email = document.getElementById("AtualizarEmail").value.trim();
     const nascimento = document.getElementById("AtualizarNascimento").value;
@@ -490,15 +489,15 @@ const atualizarInformacoesUsuario =  () => {
     // if (typeof window.fecharModal === "function") {
     //     window.fecharModal("modal-atualizar-informacoes");
     // }
-    
-}   
+
+}
 
 const modalAttnformacoes = document.querySelector("#modal-atualizar-informacoes")
 const formAttInformacoes = modalAttnformacoes.querySelector("#form-atualizar-informacoes")
 
 const btnValidarAtualizarInformacoes = formAttInformacoes.querySelector("#BtnValidarAtualizacao")
 
-btnValidarAtualizarInformacoes.addEventListener("click", ()=>{
+btnValidarAtualizarInformacoes.addEventListener("click", () => {
     validarDadosAtualizarInfo()
 })
 
@@ -508,10 +507,10 @@ if (modalAtualizarInformacoes && formAtualizarInformacoes) {
 
     const BtnSalvarAtualizacao = formAttInformacoes.querySelector("#BtnSalvarAtualizacao")
 
-    if(BtnSalvarAtualizacao){
-        BtnSalvarAtualizacao.addEventListener("click",()=>{
-                console.log("click")
-                atualizarInformacoesUsuario()
+    if (BtnSalvarAtualizacao) {
+        BtnSalvarAtualizacao.addEventListener("click", () => {
+            console.log("click")
+            atualizarInformacoesUsuario()
         })
     }
 

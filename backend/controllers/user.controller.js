@@ -91,6 +91,10 @@ export async function searchUser(req, res) {
 
         const usuario = result[0]
 
+        console.log("Resultado do repository:", result);
+        console.log("Usuário:", usuario);
+        console.log("ID:", usuario?.id);
+
         if (!usuario) {
             return res.status(404).json({
                 error: "usuario não encontrado"
@@ -115,10 +119,11 @@ export async function searchUser(req, res) {
         }
 
         return res.status(200).send({
-        message: "Login realizado com sucesso",
-        usuario : {
-                id : usuario.id
-        } })
+            message: "Login realizado com sucesso",
+            usuario: {
+                id: usuario.id
+            }
+        })
 
     } catch (error) {
         console.error(error)
@@ -128,26 +133,26 @@ export async function searchUser(req, res) {
     }
 }
 
-export const listarTodosUsuarios = async (req, res)=>{
+export const listarTodosUsuarios = async (req, res) => {
 
-    try{
+    try {
 
         const usuarios = await userRepository();
 
-        if(!usuarios){
+        if (!usuarios) {
             return res.status(404).json({
-                msg : "Falha na busca dos usuarios"
+                msg: "Falha na busca dos usuarios"
             })
         }
 
         return res.status(200).json(usuarios)
 
-    }catch(error){
+    } catch (error) {
         console.error(error)
         return res.status(500).json({
             error: "Erro interno no servidor"
         })
-    }   
+    }
 
 }
 
@@ -297,9 +302,9 @@ export const atualizarInformacoes = async (req, res) => {
             })
         }
 
-        if(!nome){
+        if (!nome) {
             return res.status(400).json({
-                msg : "nome não recebido"
+                msg: "nome não recebido"
             })
         }
 
@@ -310,9 +315,9 @@ export const atualizarInformacoes = async (req, res) => {
             nome
         })
 
-        if(!sucesso){
+        if (!sucesso) {
             return res.status(4040).json({
-                msg : "Não foi possivel atualizar os dados do usuarios"
+                msg: "Não foi possivel atualizar os dados do usuarios"
             })
         }
 
