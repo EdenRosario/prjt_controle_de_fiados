@@ -104,12 +104,12 @@ export class DatabasePostgres {
 
     }
 
-    async atualizarInformacoes({ userId, usuario, email, nome }) {
+    async atualizarInformacoes({ userId, nome, email, nascimento }) {
 
         const dados = {
-            usuario,
+            nome,
             email,
-            nome
+            nascimento
         };
 
         const colunasAlteradas = [];

@@ -696,10 +696,8 @@ const atualizarInformacoesUsuario = async () => {
 
     } catch (error) {
         console.error(error)
-        return window.showToast(error.msg, "error")
+        return window.showToast("Falha ao tentar atualizar informações", "error")
     }
-
-
 }
 
 const modalAttnformacoes = document.querySelector("#modal-atualizar-informacoes")

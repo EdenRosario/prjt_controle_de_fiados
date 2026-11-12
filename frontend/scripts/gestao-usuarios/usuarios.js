@@ -125,7 +125,7 @@ export const autentincarDados = async (user, senha) => {
             throw new Error("Preencha todos os campos")
         };
 
-        const response = await fetch(`http://localhost:3000/auth/login`, {
+        const response = await fetch(`${API_URL}/auth/login`, {
 
             method: "POST",
             headers: {
@@ -163,7 +163,7 @@ export const mudarSenha = async (id, novaSenha) => {
             throw new Error("Preencha todos os campos")
         };
 
-        const response = await fetch(`http://localhost:3000/users/${id}`, {
+        const response = await fetch(`http://localhost:3000/auth/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -189,7 +189,7 @@ export const mudarSenha = async (id, novaSenha) => {
 }
 
 export const atualizarInformacoes = async (userId, nome, email, nascimento) => {
-
+    
     try {
 
         if (!userId) {
@@ -200,7 +200,7 @@ export const atualizarInformacoes = async (userId, nome, email, nascimento) => {
             throw new Error("Preencha todos campos")
         }
 
-        const response = await fetch(`http://localhost:3000/auth/atualizar/${userId}`, {
+        const response = await fetch(`${API_URL}/auth/atualizar/${userId}`, {
 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
