@@ -438,10 +438,7 @@ const validarDadosAtualizarInfo = async () => {
             usuario,
             senhaAtual
         )
-
-        console.log("Resposta completa:", autenticacao);
-        console.log("Objeto usuário:", autenticacao.usuario);
-        
+        userIdModalAttInformacoes = autenticacao.usuario.id
         definirEstadoAtualizacao(true)
         if (typeof window.showToast === "function") {
             window.showToast(autenticacao.message, "success");
@@ -465,30 +462,40 @@ const atualizarInformacoesUsuario = () => {
         nome
     })
 
+    if(!userIdModalAttInformacoes){
+        console.log("Id do usario não informado")
+        return ;
+    }
 
-    // if (!email || !nascimento || !nome) {
-    //     if (typeof window.showToast === "function") {
-    //         window.showToast("Preencha e-mail, nome completo e data de nascimento.", "error");
-    //     }
-    //     return;
-    // }
+    if (!email || !nascimento || !nome) {
+        if (typeof window.showToast === "function") {
+            window.showToast("Preencha e-mail, nome completo e data de nascimento.", "error");
+        }
+        return;
+    }
 
-    // if (!email.includes("@")) {
-    //     if (typeof window.showToast === "function") {
-    //         window.showToast("Informe um e-mail válido.", "error");
-    //     }
-    //     return;
-    // }
+    if (!email.includes("@")) {
+        if (typeof window.showToast === "function") {
+            window.showToast("Informe um e-mail válido.", "error");
+        }
+        return;
+    }
 
-    // if (typeof window.showToast === "function") {
-    //     window.showToast("Informações atualizadas com sucesso!", "success");
-    // }
+    try{
 
-    // limparFormularioAtualizacao();
+    }catch(error){
+        
+    }
 
-    // if (typeof window.fecharModal === "function") {
-    //     window.fecharModal("modal-atualizar-informacoes");
-    // }
+    if (typeof window.showToast === "function") {
+        window.showToast("Informações atualizadas com sucesso!", "success");
+    }
+
+    limparFormularioAtualizacao();
+
+    if (typeof window.fecharModal === "function") {
+        window.fecharModal("modal-atualizar-informacoes");
+    }
 
 }
 
