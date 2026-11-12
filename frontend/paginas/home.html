@@ -430,7 +430,7 @@
                     <i class="fa-solid fa-key gestao-usuarios-card-icone gestao-usuarios-card-icone--alerta" aria-hidden="true"></i>
                     <span class="gestao-usuarios-card-conteudo">
                         <span class="gestao-usuarios-card-titulo">Recuperar Acesso</span>
-                        <span class="gestao-usuarios-card-descricao">Valide os dados e redefina a senha de um acesso.</span>
+                        <span class="gestao-usuarios-card-descricao">Recupere o usuário ou inicie a redefinição de senha.</span>
                     </span>
                 </button>
 
@@ -460,78 +460,168 @@
             </div>
         </section>
 
-        <div class="modal-overlay" id="modal-recuperar-acesso" role="presentation">
-            <div class="modal-content modal-content--recuperar-acesso" id="ContainerRecuperar" role="dialog"
-                aria-modal="true" aria-labelledby="modal-recuperar-acesso-titulo">
-                <div id="loading-usuarios">
-                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-                    <p id="msg-carregamento">Validando seus dados...</p>
+        <div class="modal-overlay modal-recuperar-acesso" id="modal-recuperar-acesso" role="presentation">
+            <div class="modal-content modal-recuperar-dialog" role="dialog" aria-modal="true"
+                aria-labelledby="modal-recuperar-acesso-titulo">
+                <div class="modal-recuperar-header">
+                    <div>
+                        <h2 id="modal-recuperar-acesso-titulo">Recuperar acesso</h2>
+                        <p>Recupere suas credenciais para voltar a acessar sua conta.</p>
+                    </div>
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <button class="btn-close" type="button" data-fechar-modal aria-label="Fechar recuperar acesso">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
                 </div>
 
-                <div id="conteudo-recuperar">
-                    <div class="modal-header">
-                        <h2 id="modal-recuperar-acesso-titulo">Recuperar Acesso</h2>
-                        <button class="btn-close" type="button" data-fechar-modal aria-label="Fechar recuperar acesso">
-                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                        </button>
+                <div class="modal-recuperar-body">
+                    <div class="recuperacao-sessoes">
+                        <section class="sessao-recuperar-usuario" aria-labelledby="titulo-recuperar-usuario">
+                            <div class="sessao-header">
+                                <i class="fa-solid fa-user-magnifying-glass" aria-hidden="true"></i>
+                                <h3 id="titulo-recuperar-usuario">Recuperar usuário</h3>
+                            </div>
+                            <p class="sessao-descricao">
+                                Esqueceu seu nome de usuário?
+                                Informe o e-mail cadastrado para iniciar a recuperação.
+                            </p>
+                            <div class="campo-recuperacao">
+                                <label for="email-recuperar-usuario">E-mail cadastrado:</label>
+                                <input type="email" id="email-recuperar-usuario" placeholder="seu@email.com"
+                                    autocomplete="email" required>
+                            </div>
+                            <button type="button" id="btn-recuperar-usuario" class="btn-recuperacao">
+                                Recuperar usuário
+                            </button>
+                            <p class="mensagem-recuperacao" id="mensagem-recuperar-usuario" role="status"
+                                aria-live="polite" hidden></p>
+                        </section>
+
+                        <div class="divisor-sessoes" aria-hidden="true"></div>
+
+                        <section class="sessao-recuperar-senha" aria-labelledby="titulo-recuperar-senha">
+                            <div class="sessao-header">
+                                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                                <h3 id="titulo-recuperar-senha">Recuperar senha</h3>
+                            </div>
+                            <p class="sessao-descricao">
+                                Não lembra sua senha?
+                                Informe seu usuário ou e-mail para iniciar a redefinição.
+                            </p>
+                            <div class="campo-recuperacao">
+                                <label for="usuario-recuperar-senha">Usuário ou e-mail:</label>
+                                <input type="text" id="usuario-recuperar-senha"
+                                    placeholder="Digite seu usuário ou e-mail" autocomplete="username" required>
+                            </div>
+                            <button type="button" id="btn-solicitar-recuperacao-senha" class="btn-recuperacao">
+                                Recuperar senha
+                            </button>
+                            <p class="mensagem-recuperacao" id="mensagem-recuperar-senha" role="status"
+                                aria-live="polite" hidden></p>
+                        </section>
                     </div>
 
-                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
-                        Valide seus dados para redefinir o acesso.
-                    </p>
-
-                    <form id="form-recuperar-acesso" novalidate>
-                        <div class="recuperar-validacao recuperar-validacao--bloqueado" id="recuperar-validacao">
-                            <div class="form-grid">
-                                <div class="input-group">
-                                    <label for="UsuarioRec">Usuário:</label>
-                                    <input type="text" id="UsuarioRec" class="form-control" placeholder="Seu usuário" autocomplete="username">
-                                </div>
-
-                                <div class="input-group">
-                                    <label for="NascimentoRec">Data de nascimento:</label>
-                                    <input type="date" id="NascimentoRec" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="EmailRec">Email cadastrado:</label>
-                                <input type="email" id="EmailRec" class="form-control" placeholder="seu@email.com" autocomplete="email">
-                            </div>
-
-                            <button id="BtnValidar" type="button" class="btn-main">
-                                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-                                Validar Dados
-                            </button>
-                        </div>
-
-                        <hr style="border: none; border-top: 1px solid var(--border); margin: 24px 0;">
-
-                        <h3 style="font-size: 16px; color: var(--text-main); margin-bottom: 16px;">
-                            Redefinir Senha
-                        </h3>
-
-                        <div class="form-grid">
-                            <div class="input-group gestao-usuarios-senha">
-                                <label for="NovaSenha">Nova senha:</label>
-                                <input type="password" id="NovaSenha" class="form-control senha" placeholder="Ex: Senha@123" disabled autocomplete="new-password">
-                                <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0" aria-label="Mostrar nova senha"></i>
-                            </div>
-
-                            <div class="input-group gestao-usuarios-senha">
-                                <label for="ConfirmarNovaSenha">Confirmar nova senha:</label>
-                                <input type="password" id="ConfirmarNovaSenha" class="form-control senha" placeholder="••••••••" disabled autocomplete="new-password">
-                                <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0" aria-label="Mostrar confirmação de senha"></i>
-                            </div>
-                        </div>
-
-                        <button id="BtnRedefinir" type="button" class="btn-main" disabled>
-                            <i class="fa-solid fa-key" aria-hidden="true"></i>
-                            Alterar Senha
+                    <div class="modal-recuperar-footer">
+                        <button type="button" id="btn-voltar-login" class="btn-voltar-login" data-fechar-modal>
+                            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                            Voltar para o login
                         </button>
-                    </form>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <div class="modal-overlay modal-recuperar-senha" id="modal-recuperar-senha" role="presentation">
+            <section class="modal-content modal-recuperar-senha-dialog" role="dialog" aria-modal="true"
+                aria-labelledby="modal-recuperar-senha-titulo">
+                <div class="modal-recuperar-header">
+                    <div>
+                        <h2 id="modal-recuperar-senha-titulo">Recuperar senha</h2>
+                        <p>Defina uma nova senha para recuperar o acesso à sua conta.</p>
+                    </div>
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <button class="btn-close" type="button" data-fechar-modal aria-label="Fechar recuperar senha">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="modal-recuperar-body">
+                    <div class="codigo-expiracao">
+                        <span>Este código expira em:</span>
+                        <span class="contador-expiracao" id="contador-expiracao" aria-live="off">
+                            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                            <span>02:00</span>
+                        </span>
+                    </div>
+
+                    <div class="grupo-codigo">
+                        <h3>Digite ou cole o código de verificação</h3>
+                        <p>
+                            Enviamos um código de 6 dígitos para o e-mail cadastrado.
+                            Insira-o abaixo para confirmar sua identidade.
+                        </p>
+                        <div class="codigo-inputs" id="codigo-inputs" role="group"
+                            aria-label="Código de verificação com seis dígitos">
+                            <input type="text" maxlength="1" inputmode="numeric" class="codigo-digit"
+                                autocomplete="one-time-code" aria-label="Dígito 1">
+                            <input type="text" maxlength="1" inputmode="numeric" class="codigo-digit"
+                                aria-label="Dígito 2">
+                            <input type="text" maxlength="1" inputmode="numeric" class="codigo-digit"
+                                aria-label="Dígito 3">
+                            <input type="text" maxlength="1" inputmode="numeric" class="codigo-digit"
+                                aria-label="Dígito 4">
+                            <input type="text" maxlength="1" inputmode="numeric" class="codigo-digit"
+                                aria-label="Dígito 5">
+                            <input type="text" maxlength="1" inputmode="numeric" class="codigo-digit"
+                                aria-label="Dígito 6">
+                        </div>
+                    </div>
+
+                    <div class="divisor-recuperacao"></div>
+
+                    <div class="grupo-nova-senha">
+                        <h3>Crie sua nova senha</h3>
+                        <p>Sua senha deve conter:</p>
+                        <ul class="requisitos-senha">
+                            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> No mínimo 6 caracteres.</li>
+                            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Pelo menos uma letra maiúscula.</li>
+                            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Pelo menos um número.</li>
+                            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Pelo menos um caractere especial.</li>
+                        </ul>
+
+                        <div class="campo-senha">
+                            <label for="NovaSenha">Nova senha:</label>
+                            <div class="input-senha">
+                                <input type="password" id="NovaSenha" placeholder="Digite sua nova senha"
+                                    autocomplete="new-password">
+                                <i class="fa-regular fa-eye toggle-senha" role="button" tabindex="0"
+                                    aria-label="Mostrar nova senha"></i>
+                            </div>
+                        </div>
+
+                        <div class="campo-senha">
+                            <label for="ConfirmarNovaSenha">Confirmar nova senha:</label>
+                            <div class="input-senha">
+                                <input type="password" id="ConfirmarNovaSenha" placeholder="Confirme sua nova senha"
+                                    autocomplete="new-password">
+                                <i class="fa-regular fa-eye toggle-senha" role="button" tabindex="0"
+                                    aria-label="Mostrar confirmação de senha"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="btn-recuperar-senha" class="btn-recuperar-senha">
+                        Recuperar senha
+                    </button>
+
+                    <p class="reenviar-codigo">
+                        Não recebeu o código?
+                        <button type="button" id="btn-reenviar-codigo">Solicitar novo código</button>
+                    </p>
+                    <p class="mensagem-recuperacao mensagem-recuperacao-senha" id="mensagem-modal-recuperar-senha"
+                        role="status" aria-live="polite" hidden></p>
+                </div>
+            </section>
         </div>
 
         <div class="modal-overlay" id="modal-atualizar-informacoes" role="presentation">

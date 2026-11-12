@@ -37,7 +37,7 @@ Content-Type: application/json
 
 {
   "user": "@Exemplo",
-  "senhaAntiga: "*******"
+  "senhaAntiga": "*******"
 }
 
 
@@ -62,11 +62,12 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/users/atualizar/1
+PUT http://localhost:3000/auth/atualizar/1
 Content-Type: application/json
 
 {
-   usuario,
-   email,
-   nome     
+   "nome" : "teste2222",
+   "email" :"teste22@gmail
+   ds.com",
+   "data" : "2026-11-09"     
 }

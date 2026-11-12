@@ -91,10 +91,6 @@ export async function searchUser(req, res) {
 
         const usuario = result[0]
 
-        console.log("Resultado do repository:", result);
-        console.log("Usuário:", usuario);
-        console.log("ID:", usuario?.id);
-
         if (!usuario) {
             return res.status(404).json({
                 error: "usuario não encontrado"
@@ -121,7 +117,10 @@ export async function searchUser(req, res) {
         return res.status(200).send({
             message: "Login realizado com sucesso",
             usuario: {
-                id: usuario.id
+                id: usuario.id,
+                nome : usuario.nome,
+                email : usuario.email,
+                data : usuario.data_nascimento
             }
         })
 
@@ -276,8 +275,8 @@ export const atualizarInformacoes = async (req, res) => {
     try {
 
         const userId = req.params.userId
-        const { usuario, email, nome } = req.body
-
+        const { nome, email, nascimento } = req.body
+        
         if (!userId) {
             return res.status(400).json({
                 msg: "ID do usuario não recebido"
@@ -290,9 +289,9 @@ export const atualizarInformacoes = async (req, res) => {
             })
         }
 
-        if (!usuario) {
+        if (!nome) {
             return res.status(400).json({
-                msg: "usuario não recebido"
+                msg: "nome não recebido"
             })
         }
 
@@ -302,17 +301,17 @@ export const atualizarInformacoes = async (req, res) => {
             })
         }
 
-        if (!nome) {
+        if (!nascimento) {
             return res.status(400).json({
-                msg: "nome não recebido"
+                msg: "data não recebido"
             })
         }
 
         const sucesso = await userRepository({
             userId,
-            usuario,
+            nome,
             email,
-            nome
+            nascimento
         })
 
         if (!sucesso) {

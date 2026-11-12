@@ -205,186 +205,344 @@ if (modalCriarAcesso && formCriarAcesso) {
     });
 }
 
-// Ação para recuperar o acesso
-
-const validarDadosRecuperarSenha = async () => {
-
-    const usuario = document.getElementById("UsuarioRec").value.trim();
-    const nascimento = document.getElementById("NascimentoRec").value;
-    const email = document.getElementById("EmailRec").value.trim();
-
-    if (!usuario) {
-        window.showToast("[ERRO!] Preencha o campo de usuario", "error")
-        return false;
-    }
-
-    if (!nascimento) {
-        window.showToast("[ERRO!] Preencha o campo data")
-        return false;
-    }
-
-    if (!email) {
-        window.showToast("[ERRO] Preencha o campo de email")
-        return false;
-    }
-
-    try {
-
-
-        if (id) {
-            window.showToast("[SUCESSO!] Os dados foram validados com sucesso ", "success");
-        }
-
-        userId = id;
-        return true;
-    } catch (error) {
-        console.error(error);
-        return window.showToast(error.message, "error", false);
-    }
-
-}
-const criarNovaSenha = async () => {
-
-    const novaSenha = document.getElementById("NovaSenha").value;
-    const confirmarNovaSenha = document.getElementById("ConfirmarNovaSenha").value;
-
-    if (!novaSenha || !confirmarNovaSenha) {
-        if (typeof window.showToast === "function") {
-            window.showToast("[ERRO!]Informe a nova senha e sua confirmação.", "error");
-        }
-        return false;
-    }
-
-    if (novaSenha !== confirmarNovaSenha) {
-        if (typeof window.showToast === "function") {
-            window.showToast("[ERRO!] Senhas divergentes.", "error");
-        }
-        return false;
-    }
-
-    if (!senhaForte(novaSenha)) {
-        return false;
-    }
-
-    try {
-        console.log(userId)
-
-        console.log(senhaAtualizada)
-        window.showToast("[SUCESSO!] Nova senha gerada com suceso!", "success")
-        return true
-    } catch (error) {
-        console.error(error)
-        return window.showToast(error.msg, "error" || "Erro ao mudar senha", "error")
-    }
-
-}
 const modalRecuperarAcesso = document.getElementById("modal-recuperar-acesso");
-const formRecuperarAcesso = document.getElementById("form-recuperar-acesso");
-const areaValidacaoRecuperar = document.getElementById("recuperar-validacao");
+const emailRecuperarUsuario = document.getElementById("email-recuperar-usuario");
+const usuarioRecuperarSenha = document.getElementById("usuario-recuperar-senha");
+const mensagemRecuperarUsuario = document.getElementById("mensagem-recuperar-usuario");
+const mensagemRecuperarSenha = document.getElementById("mensagem-recuperar-senha");
 
-const definirEstadoRecuperacao = (ativo) => {
-    if (!formRecuperarAcesso) return;
+const exibirMensagemRecuperacao = (area, mensagem) => {
+    if (!area) return;
 
-    const campos = [
-        document.getElementById("NovaSenha"),
-        document.getElementById("ConfirmarNovaSenha"),
-        document.getElementById("BtnRedefinir")
-    ];
-
-    campos.forEach((campo) => {
-        if (!campo) return;
-        campo.disabled = !ativo;
-    });
-
-    if (areaValidacaoRecuperar) {
-        areaValidacaoRecuperar.classList.toggle("recuperar-validacao--desbloqueado", ativo);
-        areaValidacaoRecuperar.classList.toggle("recuperar-validacao--bloqueado", !ativo);
-    }
+    area.textContent = mensagem;
+    area.hidden = false;
 };
 
-const limparFormularioRecuperarAcesso = () => {
-    if (!formRecuperarAcesso) return;
+const limparMensagemRecuperacao = (area) => {
+    if (!area) return;
 
-    formRecuperarAcesso.reset();
-    restaurarVisibilidadeDasSenhas(formRecuperarAcesso);
-    definirEstadoRecuperacao(false);
+    area.textContent = "";
+    area.hidden = true;
 };
 
-if (modalRecuperarAcesso && formRecuperarAcesso) {
-    const containerRecuperar = document.getElementById("ContainerRecuperar");
-    const mensagemCarregamento = document.getElementById("msg-carregamento");
-    const botaoValidar = document.getElementById("BtnValidar");
-    const botaoRedefinir = document.getElementById("BtnRedefinir");
+//area de recuperar usuario
+const solicitarRecuperacaoUsuario = async (email) => {
+    //ponto de integração com API
+    if (!email) throw new Error("Informe o e-mail cadastrado.");
+    throw new Error("O servidor ainda não possui uma operação para enviar o usuário ao e-mail cadastrado.");
+};
 
-    definirEstadoRecuperacao(false);
+if (modalRecuperarAcesso) {
+    const botaoRecuperarUsuario = document.getElementById("btn-recuperar-usuario");
+    const botaoSolicitarRecuperacaoSenha = document.getElementById("btn-solicitar-recuperacao-senha");
 
-    formRecuperarAcesso.addEventListener("keydown", (event) => {
-        const icone = event.target.closest(".toggle-senha");
-        if (!icone || (event.key !== "Enter" && event.key !== " ")) return;
+    botaoRecuperarUsuario?.addEventListener("click", async () => {
+        limparMensagemRecuperacao(mensagemRecuperarUsuario);
 
-        event.preventDefault();
-        icone.click();
+        if (!emailRecuperarUsuario?.value.trim()) {
+            exibirMensagemRecuperacao(mensagemRecuperarUsuario, "Informe o e-mail cadastrado.");
+            emailRecuperarUsuario?.focus();
+            return;
+        }
+
+        if (!emailRecuperarUsuario.checkValidity()) {
+            exibirMensagemRecuperacao(mensagemRecuperarUsuario, "Informe um endereço de e-mail válido.");
+            emailRecuperarUsuario.focus();
+            return;
+        }
+
+        try {
+            await solicitarRecuperacaoUsuario(emailRecuperarUsuario.value.trim());
+        } catch (error) {
+            exibirMensagemRecuperacao(mensagemRecuperarUsuario, error.message);
+        }
     });
 
-    botaoValidar.addEventListener("click", async () => {
+    botaoSolicitarRecuperacaoSenha?.addEventListener("click", async () => {
+        limparMensagemRecuperacao(mensagemRecuperarSenha);
 
-        if (containerRecuperar) {
-            containerRecuperar.classList.add("carregando");
+        if (!usuarioRecuperarSenha?.value.trim()) {
+            exibirMensagemRecuperacao(mensagemRecuperarSenha, "Informe seu usuário ou e-mail.");
+            usuarioRecuperarSenha?.focus();
+            return;
         }
 
-        if (mensagemCarregamento) {
-            mensagemCarregamento.textContent = "validando as informações...";
+        try {
+            const usuarioOuEmail = usuarioRecuperarSenha.value.trim();
+            await solicitarCodigoRecuperacaoSenha(usuarioOuEmail);
+            identificadorRecuperacaoSenha = usuarioOuEmail;
+            window.fecharModal?.("modal-recuperar-acesso");
+            focoRetornoRecuperacaoSenha = document.activeElement;
+            modalRecuperarSenha?.classList.add("show");
+        } catch (error) {
+            exibirMensagemRecuperacao(mensagemRecuperarSenha, error.message);
         }
-
-        window.setTimeout(() => {
-            if (containerRecuperar) {
-                containerRecuperar.classList.remove("carregando");
-            }
-
-            if (!validarDadosRecuperarSenha()) {
-                return definirEstadoRecuperacao(false);
-
-            }
-            definirEstadoRecuperacao(true);
-
-        })
-
-
     });
 
-    botaoRedefinir.addEventListener("click", async () => {
-
-        if (containerRecuperar) {
-            containerRecuperar.classList.add("carregando");
-        }
-
-        if (mensagemCarregamento) {
-            mensagemCarregamento.textContent = "Atualizando senha...";
-        }
-
-        window.setTimeout(async () => {
-
-            if (containerRecuperar) {
-                containerRecuperar.classList.remove("carregando");
-            }
-
-            const sucesso = await criarNovaSenha();
-
-            if (!sucesso) {
-                return;
-            };
-
-            limparFormularioRecuperarAcesso();
-        }, 600);
+    emailRecuperarUsuario?.addEventListener("input", () => {
+        limparMensagemRecuperacao(mensagemRecuperarUsuario);
+    });
+    usuarioRecuperarSenha?.addEventListener("input", () => {
+        limparMensagemRecuperacao(mensagemRecuperarSenha);
     });
 
     const aoFecharRecuperar = new MutationObserver(() => {
-        if (!modalRecuperarAcesso.classList.contains("show")) {
-            limparFormularioRecuperarAcesso();
-        }
+        if (modalRecuperarAcesso.classList.contains("show")) return;
+
+        if (emailRecuperarUsuario) emailRecuperarUsuario.value = "";
+        if (usuarioRecuperarSenha) usuarioRecuperarSenha.value = "";
+        limparMensagemRecuperacao(mensagemRecuperarUsuario);
+        limparMensagemRecuperacao(mensagemRecuperarSenha);
     });
 
     aoFecharRecuperar.observe(modalRecuperarAcesso, {
+        attributes: true,
+        attributeFilter: ["class"]
+    });
+}
+
+//area de recuperar senha
+const modalRecuperarSenha = document.getElementById("modal-recuperar-senha");
+const camposCodigoRecuperacao = modalRecuperarSenha
+    ? Array.from(modalRecuperarSenha.querySelectorAll(".codigo-digit"))
+    : [];
+const mensagemModalRecuperarSenha = document.getElementById("mensagem-modal-recuperar-senha");
+const campoNovaSenhaRecuperacao = document.getElementById("NovaSenha");
+const campoConfirmarSenhaRecuperacao = document.getElementById("ConfirmarNovaSenha");
+const contadorExpiracao = document.getElementById("contador-expiracao");
+let intervaloExpiracaoCodigo = null;
+let expiracaoCodigo = 0;
+let focoRetornoRecuperacaoSenha = null;
+let identificadorRecuperacaoSenha = "";
+
+const notificarErroRecuperacaoSenha = (mensagem) => {
+    if (typeof window.showToast === "function") {
+        window.showToast(mensagem, "error");
+    }
+
+    exibirMensagemRecuperacao(mensagemModalRecuperarSenha, mensagem);
+};
+
+const atualizarContadorExpiracao = () => {
+    const segundosRestantes = Math.max(0, Math.ceil((expiracaoCodigo - Date.now()) / 1000));
+    const minutos = String(Math.floor(segundosRestantes / 60)).padStart(2, "0");
+    const segundos = String(segundosRestantes % 60).padStart(2, "0");
+
+    if (contadorExpiracao) {
+        contadorExpiracao.querySelector("span").textContent = `${minutos}:${segundos}`;
+    }
+
+    if (segundosRestantes === 0) {
+        window.clearInterval(intervaloExpiracaoCodigo);
+        intervaloExpiracaoCodigo = null;
+    }
+};
+
+const iniciarContadorExpiracao = () => {
+    window.clearInterval(intervaloExpiracaoCodigo);
+    expiracaoCodigo = Date.now() + 2 * 60 * 1000;
+    atualizarContadorExpiracao();
+    intervaloExpiracaoCodigo = window.setInterval(atualizarContadorExpiracao, 1000);
+};
+
+const limparModalRecuperarSenha = () => {
+    window.clearInterval(intervaloExpiracaoCodigo);
+    intervaloExpiracaoCodigo = null;
+    expiracaoCodigo = 0;
+    camposCodigoRecuperacao.forEach((campo) => {
+        campo.value = "";
+    });
+
+    if (campoNovaSenhaRecuperacao) campoNovaSenhaRecuperacao.value = "";
+    if (campoConfirmarSenhaRecuperacao) campoConfirmarSenhaRecuperacao.value = "";
+    if (contadorExpiracao) {
+        contadorExpiracao.querySelector("span").textContent = "02:00";
+    }
+    if (mensagemModalRecuperarSenha) limparMensagemRecuperacao(mensagemModalRecuperarSenha);
+    identificadorRecuperacaoSenha = "";
+    modalRecuperarSenha?.querySelectorAll(".toggle-senha").forEach((icone) => {
+        const campo = icone.parentElement?.querySelector("input");
+        if (campo) campo.type = "password";
+        icone.classList.remove("fa-eye-slash");
+        icone.classList.add("fa-eye");
+    });
+};
+
+const solicitarCodigoRecuperacaoSenha = async (usuarioOuEmail) => {
+    //ponto de integração com API
+    if (!usuarioOuEmail) throw new Error("Informe seu usuário ou e-mail.");
+    throw new Error("O servidor ainda não envia códigos de recuperação. Nenhum código foi solicitado.");
+};
+
+const validarCodigoEAtualizarSenha = async (codigo, novaSenha) => {
+    //ponto de integração com API
+    if (!codigo || !novaSenha) {
+        throw new Error("Informe o código de verificação e a nova senha.");
+    }
+
+    throw new Error(
+        "O servidor ainda não valida códigos de recuperação. A senha não foi alterada."
+    );
+};
+
+const senhaAtendeRequisitosRecuperacao = (senha) => (
+    senha.length >= 6
+    && /[A-Z]/.test(senha)
+    && /\d/.test(senha)
+    && /[^A-Za-z0-9\s]/.test(senha)
+);
+
+if (modalRecuperarSenha) {
+    const grupoCodigo = document.getElementById("codigo-inputs");
+    const botaoRedefinirSenha = document.getElementById("btn-recuperar-senha");
+    const botaoReenviarCodigo = document.getElementById("btn-reenviar-codigo");
+
+    grupoCodigo?.addEventListener("beforeinput", (event) => {
+        if (event.data && /\D/.test(event.data) && event.inputType !== "insertFromPaste") {
+            event.preventDefault();
+        }
+    });
+
+    grupoCodigo?.addEventListener("input", (event) => {
+        const campo = event.target.closest(".codigo-digit");
+        if (!campo) return;
+
+        const indice = camposCodigoRecuperacao.indexOf(campo);
+        const digitos = campo.value.replace(/\D/g, "");
+        campo.value = digitos.slice(-1);
+
+        if (digitos.length > 1) {
+            digitos.slice(0, camposCodigoRecuperacao.length - indice).split("").forEach((digito, posicao) => {
+                camposCodigoRecuperacao[indice + posicao].value = digito;
+            });
+        }
+
+        const proximoCampo = camposCodigoRecuperacao[Math.min(indice + Math.max(digitos.length, 1), camposCodigoRecuperacao.length - 1)];
+        if (campo.value && proximoCampo !== campo) proximoCampo.focus();
+    });
+
+    grupoCodigo?.addEventListener("keydown", (event) => {
+        const campo = event.target.closest(".codigo-digit");
+        if (!campo || event.key !== "Backspace" || campo.value) return;
+
+        const indice = camposCodigoRecuperacao.indexOf(campo);
+        if (indice > 0) {
+            event.preventDefault();
+            camposCodigoRecuperacao[indice - 1].focus();
+            camposCodigoRecuperacao[indice - 1].value = "";
+        }
+    });
+
+    grupoCodigo?.addEventListener("paste", (event) => {
+        const campo = event.target.closest(".codigo-digit");
+        if (!campo) return;
+
+        event.preventDefault();
+        const indice = camposCodigoRecuperacao.indexOf(campo);
+        const digitos = event.clipboardData.getData("text").replace(/\D/g, "")
+            .slice(0, camposCodigoRecuperacao.length);
+        const codigoCompleto = digitos.length === camposCodigoRecuperacao.length;
+        const indiceInicial = codigoCompleto ? 0 : indice;
+
+        if (codigoCompleto) {
+            camposCodigoRecuperacao.forEach((input) => {
+                input.value = "";
+            });
+        }
+
+        digitos.split("").forEach((digito, posicao) => {
+            const campoDestino = camposCodigoRecuperacao[indiceInicial + posicao];
+            if (campoDestino) campoDestino.value = digito;
+        });
+
+        const foco = Math.min(indiceInicial + digitos.length, camposCodigoRecuperacao.length - 1);
+        camposCodigoRecuperacao[foco].focus();
+    });
+
+    modalRecuperarSenha.addEventListener("click", (event) => {
+        const iconeVisibilidade = event.target.closest(".toggle-senha");
+        if (!iconeVisibilidade) return;
+
+        const campo = iconeVisibilidade.parentElement?.querySelector("input");
+        if (!campo) return;
+
+        campo.type = campo.type === "password" ? "text" : "password";
+        iconeVisibilidade.classList.toggle("fa-eye");
+        iconeVisibilidade.classList.toggle("fa-eye-slash");
+        iconeVisibilidade.setAttribute(
+            "aria-label",
+            campo.type === "password" ? "Mostrar senha" : "Ocultar senha"
+        );
+    });
+
+    modalRecuperarSenha.addEventListener("keydown", (event) => {
+        const iconeVisibilidade = event.target.closest(".toggle-senha");
+        if (!iconeVisibilidade || (event.key !== "Enter" && event.key !== " ")) return;
+
+        event.preventDefault();
+        iconeVisibilidade.click();
+    });
+
+    botaoRedefinirSenha?.addEventListener("click", async () => {
+        limparMensagemRecuperacao(mensagemModalRecuperarSenha);
+        const codigo = camposCodigoRecuperacao.map((campo) => campo.value).join("");
+        const novaSenha = campoNovaSenhaRecuperacao?.value || "";
+        const confirmarSenha = campoConfirmarSenhaRecuperacao?.value || "";
+
+        if (codigo.length !== camposCodigoRecuperacao.length || !/^\d{6}$/.test(codigo)) {
+            notificarErroRecuperacaoSenha("Informe os seis dígitos do código de verificação.");
+            camposCodigoRecuperacao.find((campo) => !campo.value)?.focus();
+            return;
+        }
+
+        if (!senhaAtendeRequisitosRecuperacao(novaSenha)) {
+            notificarErroRecuperacaoSenha(
+                "A nova senha deve ter no mínimo 6 caracteres, uma letra maiúscula, um número e um caractere especial."
+            );
+            campoNovaSenhaRecuperacao?.focus();
+            return;
+        }
+
+        if (novaSenha !== confirmarSenha) {
+            notificarErroRecuperacaoSenha("As senhas não conferem.");
+            campoConfirmarSenhaRecuperacao?.focus();
+            return;
+        }
+
+        try {
+            await validarCodigoEAtualizarSenha(codigo, novaSenha);
+            if (typeof window.showToast === "function") {
+                window.showToast("Senha redefinida com sucesso!", "success");
+            }
+            limparModalRecuperarSenha();
+            window.fecharModal?.("modal-recuperar-senha");
+        } catch (error) {
+            notificarErroRecuperacaoSenha(error.message);
+        }
+    });
+
+    botaoReenviarCodigo?.addEventListener("click", async () => {
+        try {
+            await solicitarCodigoRecuperacaoSenha(identificadorRecuperacaoSenha);
+            iniciarContadorExpiracao();
+        } catch (error) {
+            notificarErroRecuperacaoSenha(error.message);
+        }
+    });
+
+    const observarEstadoModalRecuperarSenha = new MutationObserver(() => {
+        if (modalRecuperarSenha.classList.contains("show")) {
+            iniciarContadorExpiracao();
+            camposCodigoRecuperacao[0]?.focus();
+            return;
+        }
+
+        limparModalRecuperarSenha();
+        focoRetornoRecuperacaoSenha?.focus();
+        focoRetornoRecuperacaoSenha = null;
+    });
+
+    observarEstadoModalRecuperarSenha.observe(modalRecuperarSenha, {
         attributes: true,
         attributeFilter: ["class"]
     });
@@ -395,7 +553,7 @@ const modalAtualizarInformacoes = document.getElementById("modal-atualizar-infor
 const formAtualizarInformacoes = document.getElementById("form-atualizar-informacoes");
 const etapaAutenticacaoAtualizacao = document.getElementById("atualizar-etapa-autenticacao");
 
-const definirEstadoAtualizacao = (ativo) => {
+const definirEstadoAtualizacao = async (ativo) => {
     if (!formAtualizarInformacoes) return;
 
     [
@@ -420,6 +578,25 @@ const limparFormularioAtualizacao = () => {
     definirEstadoAtualizacao(false);
 };
 
+
+
+const preencherCamposModalAtualizar = (nome, email, nascimento) => {
+
+    if (!nome || !email || !nascimento) {
+        return;
+    }
+
+    const form = formAtualizarInformacoes;
+
+    form.querySelector("#AtualizarEmail").value = email;
+    form.querySelector("#AtualizarNascimento").value = nascimento;
+    form.querySelector("#AtualizarNomeCompleto").value = nome;
+
+
+    definirEstadoAtualizacao(true);
+};
+
+
 const validarDadosAtualizarInfo = async () => {
 
     const usuario = document.getElementById("AtualizarUsuario").value.trim();
@@ -439,10 +616,29 @@ const validarDadosAtualizarInfo = async () => {
             senhaAtual
         )
         userIdModalAttInformacoes = autenticacao.usuario.id
-        definirEstadoAtualizacao(true)
+
+        console.log(autenticacao)
+
+        const nome = autenticacao.usuario.nome
+
+        const email = autenticacao.usuario.email
+
+        const dataBanco = autenticacao.usuario.data
+
+        const dataFormatada = dataBanco.split("T")[0];
+
         if (typeof window.showToast === "function") {
-            window.showToast(autenticacao.message, "success");
+            window.showToast("[SUCESSO!] Usuário autenticado com sucesso", "success");
         }
+
+
+
+        preencherCamposModalAtualizar(
+            nome,
+            email,
+            dataFormatada
+        )
+
     } catch (error) {
         console.error(error)
         return window.showToast(error.message, "error");
@@ -450,21 +646,16 @@ const validarDadosAtualizarInfo = async () => {
 }
 
 
-const atualizarInformacoesUsuario = () => {
+const atualizarInformacoesUsuario = async () => {
 
-    const email = document.getElementById("AtualizarEmail").value.trim();
-    const nascimento = document.getElementById("AtualizarNascimento").value;
-    const nome = document.getElementById("AtualizarNomeCompleto").value.trim();
+    const form = formAtualizarInformacoes;
+    const email = form.querySelector("#AtualizarEmail").value;
+    const nascimento = form.querySelector("#AtualizarNascimento").value;
+    const nome = form.querySelector("#AtualizarNomeCompleto").value;
 
-    console.log({
-        email,
-        nascimento,
-        nome
-    })
-
-    if(!userIdModalAttInformacoes){
+    if (!userIdModalAttInformacoes) {
         console.log("Id do usario não informado")
-        return ;
+        return;
     }
 
     if (!email || !nascimento || !nome) {
@@ -481,21 +672,33 @@ const atualizarInformacoesUsuario = () => {
         return;
     }
 
-    try{
+    try {
 
-    }catch(error){
+        const sucesso = await atualizarInformacoes(
+            userIdModalAttInformacoes,
+            nome,
+            email,
+            nascimento
+        )
+
+        console.log(sucesso)
+
+        if (typeof window.showToast === "function") {
+            window.showToast("Informações atualizadas com sucesso!", "success");
+        }
+
         
+    // limparFormularioAtualizacao();
+
+    // if (typeof window.fecharModal === "function") {
+    //     window.fecharModal("modal-atualizar-informacoes");
+    // }
+
+    } catch (error) {
+        console.error(error)
+        return window.showToast(error.msg, "error")
     }
 
-    if (typeof window.showToast === "function") {
-        window.showToast("Informações atualizadas com sucesso!", "success");
-    }
-
-    limparFormularioAtualizacao();
-
-    if (typeof window.fecharModal === "function") {
-        window.fecharModal("modal-atualizar-informacoes");
-    }
 
 }
 

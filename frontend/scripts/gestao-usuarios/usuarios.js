@@ -125,7 +125,7 @@ export const autentincarDados = async (user, senha) => {
             throw new Error("Preencha todos os campos")
         };
 
-        const response = await fetch(`${API_URL}/auth/login`, {
+        const response = await fetch(`http://localhost:3000/auth/login`, {
 
             method: "POST",
             headers: {
@@ -188,7 +188,7 @@ export const mudarSenha = async (id, novaSenha) => {
 
 }
 
-export const atualizarInformacoes = async (userId, usuario, email, nome) => {
+export const atualizarInformacoes = async (userId, nome, email, nascimento) => {
 
     try {
 
@@ -196,18 +196,18 @@ export const atualizarInformacoes = async (userId, usuario, email, nome) => {
             throw new Error("ID do usuario não informado")
         }
 
-        if (!usuario || !email || !nome) {
+        if (!nome || !email || !nascimento) {
             throw new Error("Preencha todos campos")
         }
 
-        const response = await fetch(`http://localhost:3000/users/atualizar/${userId}`, {
+        const response = await fetch(`http://localhost:3000/auth/atualizar/${userId}`, {
 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                usuario,
+                nome,
                 email,
-                nome
+                nascimento
             })
 
         })
