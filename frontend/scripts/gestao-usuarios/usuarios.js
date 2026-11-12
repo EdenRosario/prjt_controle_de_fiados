@@ -132,8 +132,8 @@ export const autentincarDados = async (user, senha) => {
                 "Content-type": "application/json"
             },
             body: JSON.stringify({
-                "user": user,
-                "senha": password
+                user,
+                senha
             })
         });
 
@@ -141,7 +141,7 @@ export const autentincarDados = async (user, senha) => {
 
         if (!response.ok) {
             throw new Error(
-                data.msg || data.error || "Erro ao autenticar dados do usuario."
+                data.message || data.error || "Erro ao autenticar dados do usuario."
             )
         };
 

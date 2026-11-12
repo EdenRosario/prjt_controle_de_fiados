@@ -1,8 +1,7 @@
 import { criarUsuario, autentincarDados, mudarSenha, atualizarInformacoes, listarUsuarios } from "./usuarios.js";
 
 
-let userId = null
-
+let userIdModalAttInformacoes = null
 const modalCriarAcesso = document.getElementById("modal-criar-acesso");
 const formCriarAcesso = document.getElementById("form-criar-acesso");
 
@@ -207,7 +206,6 @@ if (modalCriarAcesso && formCriarAcesso) {
 }
 
 // Ação para recuperar o acesso
-
 
 const validarDadosRecuperarSenha = async () => {
 
@@ -427,11 +425,6 @@ const validarDadosAtualizarInfo = async () => {
     const usuario = document.getElementById("AtualizarUsuario").value.trim();
     const senhaAtual = document.getElementById("AtualizarSenhaAtual").value;
 
-    console.log({
-        usuario,
-        senhaAtual
-    })
-
     if (!usuario || !senhaAtual.trim()) {
         if (typeof window.showToast === "function") {
             window.showToast("Informe seu usuário e sua senha atual.", "error");
@@ -445,58 +438,82 @@ const validarDadosAtualizarInfo = async () => {
             usuario,
             senhaAtual
         )
+        if(autenticacao){
+            console.log(autenticacao.usuario.id);
+        }
+        userIdModalAttInformacoes = autenticacao.usuario.id;
 
-        console.log(autenticacao)
-
-        window.showToast(autenticacao.msg, "success")
-
+        definirEstadoAtualizacao(true)
         if (typeof window.showToast === "function") {
-            window.showToast("Dados validados com sucesso!", "success");
+            window.showToast(autenticacao.message, "success");
         }
     } catch (error) {
         console.error(error)
-        return window.showToast(error.msg, "error");
+        return window.showToast(error.message, "error");
     }
 }
 
-const atualizarInformacoes = () => {
+
+const atualizarInformacoesUsuario =  () => {
 
     const email = document.getElementById("AtualizarEmail").value.trim();
     const nascimento = document.getElementById("AtualizarNascimento").value;
     const nome = document.getElementById("AtualizarNomeCompleto").value.trim();
 
-    if (!email || !nascimento || !nome) {
-        if (typeof window.showToast === "function") {
-            window.showToast("Preencha e-mail, nome completo e data de nascimento.", "error");
-        }
-        return;
-    }
+    console.log({
+        email,
+        nascimento,
+        nome
+    })
 
-    if (!email.includes("@")) {
-        if (typeof window.showToast === "function") {
-            window.showToast("Informe um e-mail válido.", "error");
-        }
-        return;
-    }
 
-    if (typeof window.showToast === "function") {
-        window.showToast("Informações atualizadas com sucesso!", "success");
-    }
+    // if (!email || !nascimento || !nome) {
+    //     if (typeof window.showToast === "function") {
+    //         window.showToast("Preencha e-mail, nome completo e data de nascimento.", "error");
+    //     }
+    //     return;
+    // }
 
-    limparFormularioAtualizacao();
+    // if (!email.includes("@")) {
+    //     if (typeof window.showToast === "function") {
+    //         window.showToast("Informe um e-mail válido.", "error");
+    //     }
+    //     return;
+    // }
 
-    if (typeof window.fecharModal === "function") {
-        window.fecharModal("modal-atualizar-informacoes");
-    }
+    // if (typeof window.showToast === "function") {
+    //     window.showToast("Informações atualizadas com sucesso!", "success");
+    // }
 
-}
+    // limparFormularioAtualizacao();
 
-document.getElementById("BtnValidarAtualizacao").addEventListener("click", async () => {
+    // if (typeof window.fecharModal === "function") {
+    //     window.fecharModal("modal-atualizar-informacoes");
+    // }
+    
+}   
+
+const modalAttnformacoes = document.querySelector("#modal-atualizar-informacoes")
+const formAttInformacoes = modalAttnformacoes.querySelector("#form-atualizar-informacoes")
+
+const btnValidarAtualizarInformacoes = formAttInformacoes.querySelector("#BtnValidarAtualizacao")
+
+btnValidarAtualizarInformacoes.addEventListener("click", ()=>{
     validarDadosAtualizarInfo()
 })
+
 if (modalAtualizarInformacoes && formAtualizarInformacoes) {
 
     definirEstadoAtualizacao(false);
+
+    const BtnSalvarAtualizacao = formAttInformacoes.querySelector("#BtnSalvarAtualizacao")
+
+    if(BtnSalvarAtualizacao){
+        BtnSalvarAtualizacao.addEventListener("click",()=>{
+                console.log("click")
+                atualizarInformacoesUsuario()
+        })
+    }
 
     formAtualizarInformacoes.addEventListener("keydown", (event) => {
         const icone = event.target.closest(".toggle-senha");

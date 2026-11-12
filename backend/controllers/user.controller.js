@@ -114,7 +114,11 @@ export async function searchUser(req, res) {
             })
         }
 
-        return res.status(200).send({ message: "Login realizado com sucesso" })
+        return res.status(200).send({
+        message: "Login realizado com sucesso",
+        usuario : {
+                id : usuario.id
+        } })
 
     } catch (error) {
         console.error(error)
