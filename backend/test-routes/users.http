@@ -40,6 +40,14 @@ Content-Type: application/json
   "senhaAntiga": "*******"
 }
 
+###
+POST http://localhost:3000/auth/teste-token/1
+Content-Type: application/json
+
+{
+    "token": "TOKEN_GERADO",
+    "finalidade": "recuperar_usuario"
+}
 
 ###
 GET http://localhost:3000/users

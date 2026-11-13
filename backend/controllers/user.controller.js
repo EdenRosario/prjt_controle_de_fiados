@@ -1,9 +1,10 @@
 import { DatabasePostgres } from "../database/users-repository.js";
+import { tokensRopository } from "../database/tokens-recuperacao-repository.js";
 import bcrypt from 'bcrypt'
 import crypto from 'node:crypto';
 
 const userRepository = new DatabasePostgres()
-
+const tokensrepository = new tokensRopository()
 const gerarToken = () => {
 
     return crypto.randomBytes(32).toString('hex');
@@ -11,7 +12,7 @@ const gerarToken = () => {
 };
 
 const gerarHashToken = (token) => {
-    
+
     return crypto
         .createHash('sha256')
         .update(token)
@@ -378,3 +379,56 @@ export const recuperarUsuario = async (req, res) => {
         })
     }
 }
+
+export const testeToken = async (req, res) => {
+
+    try {
+
+        const id = Number(req.params.id);
+
+        const { token, finalidade } = req.body;
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({
+                message: 'ID do usuário inválido'
+            });
+        }
+
+        if (!token || !finalidade) {
+            return res.status(400).json({
+                message: 'Token ou finalidade não recebidos'
+            });
+        }
+
+
+
+        // Gerar hash do token recebido
+        const tokenHash = gerarHashToken(token);
+
+        // Consultar token no banco
+        const resultado = await tokensrepository.buscarToken({
+            usuarioId: id,
+            tokenHash,
+            finalidade
+        });
+        
+        if (!resultado) {
+            return res.status(400).json({
+                message: 'Token inválido, expirado ou já utilizado'
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Token válido!',
+            finalidade: resultado.finalidade
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+            message: 'Erro interno no servidor'
+        });
+    }
+};
