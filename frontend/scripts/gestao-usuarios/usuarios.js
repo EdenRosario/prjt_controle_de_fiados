@@ -41,21 +41,19 @@ export const criarUsuario = async (name, date, user, senha, email) => {
 
 }
 
-export const validarDados = async (user, email, date) => {
+export const recuperarUsuario = async (email) => {
 
     try {
 
-        if (!user || !email || !date) {
-            throw new Erro("Preencha todos os campos")
+        if (!email) {
+            throw new Erro("Preencha o campo email")
         }
 
-        const response = await fetch(`${API_URL}/auth/recover`, {
+        const response = await fetch(`${API_URL}/auth/recuperar-usuario`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                user,
                 email,
-                date
             })
         })
 
@@ -67,7 +65,7 @@ export const validarDados = async (user, email, date) => {
             )
         }
 
-        return data.id
+        return data
 
     } catch (error) {
         console.error("Falha na validação de dados do usuario", error)

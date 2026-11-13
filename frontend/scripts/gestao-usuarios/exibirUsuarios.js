@@ -1,4 +1,4 @@
-import { criarUsuario, autentincarDados, mudarSenha, atualizarInformacoes, listarUsuarios } from "./usuarios.js";
+import { criarUsuario, autentincarDados, mudarSenha, atualizarInformacoes, listarUsuarios, recuperarUsuario } from "./usuarios.js";
 
 
 let userIdModalAttInformacoes = null
@@ -227,19 +227,32 @@ const limparMensagemRecuperacao = (area) => {
 
 //area de recuperar usuario
 const solicitarRecuperacaoUsuario = async (email) => {
-    //ponto de integração com API
+
     if (!email) throw new Error("Informe o e-mail cadastrado.");
-    throw new Error("O servidor ainda não possui uma operação para enviar o usuário ao e-mail cadastrado.");
+    console.log(email)
+
+    try{
+
+        const usuario = await recuperarUsuario(email)
+
+    }catch(error){
+        console.error(error)
+        return window.showToast(error.message, "error")
+    }
+
 };
+
 
 if (modalRecuperarAcesso) {
     const botaoRecuperarUsuario = document.getElementById("btn-recuperar-usuario");
     const botaoSolicitarRecuperacaoSenha = document.getElementById("btn-solicitar-recuperacao-senha");
 
     botaoRecuperarUsuario?.addEventListener("click", async () => {
+
         limparMensagemRecuperacao(mensagemRecuperarUsuario);
 
         if (!emailRecuperarUsuario?.value.trim()) {
+
             exibirMensagemRecuperacao(mensagemRecuperarUsuario, "Informe o e-mail cadastrado.");
             emailRecuperarUsuario?.focus();
             return;
@@ -256,6 +269,7 @@ if (modalRecuperarAcesso) {
         } catch (error) {
             exibirMensagemRecuperacao(mensagemRecuperarUsuario, error.message);
         }
+
     });
 
     botaoSolicitarRecuperacaoSenha?.addEventListener("click", async () => {
@@ -617,8 +631,6 @@ const validarDadosAtualizarInfo = async () => {
         )
         userIdModalAttInformacoes = autenticacao.usuario.id
 
-        console.log(autenticacao)
-
         const nome = autenticacao.usuario.nome
 
         const email = autenticacao.usuario.email
@@ -630,8 +642,6 @@ const validarDadosAtualizarInfo = async () => {
         if (typeof window.showToast === "function") {
             window.showToast("[SUCESSO!] Usuário autenticado com sucesso", "success");
         }
-
-
 
         preencherCamposModalAtualizar(
             nome,
@@ -674,25 +684,23 @@ const atualizarInformacoesUsuario = async () => {
 
     try {
 
-        const sucesso = await atualizarInformacoes(
+        await atualizarInformacoes(
             userIdModalAttInformacoes,
             nome,
             email,
             nascimento
         )
 
-        console.log(sucesso)
-
         if (typeof window.showToast === "function") {
             window.showToast("Informações atualizadas com sucesso!", "success");
         }
 
-        
-    // limparFormularioAtualizacao();
 
-    // if (typeof window.fecharModal === "function") {
-    //     window.fecharModal("modal-atualizar-informacoes");
-    // }
+        limparFormularioAtualizacao();
+
+        if (typeof window.fecharModal === "function") {
+            window.fecharModal("modal-atualizar-informacoes");
+        }
 
     } catch (error) {
         console.error(error)

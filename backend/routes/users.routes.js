@@ -11,6 +11,8 @@ router.post('/recover', userController.validateRecovery)
 
 router.post('/autenticar', userController.autentincarDados)    
 
+router.post('/recuperar-usuario', userController.recuperarUsuario)
+
 router.get('/', userController.listarTodosUsuarios)
 
 router.put('/:id', userController.update)

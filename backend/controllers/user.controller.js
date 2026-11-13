@@ -1,7 +1,22 @@
 import { DatabasePostgres } from "../database/users-repository.js";
 import bcrypt from 'bcrypt'
+import crypto from 'node:crypto';
 
 const userRepository = new DatabasePostgres()
+
+const gerarToken = () => {
+
+    return crypto.randomBytes(32).toString('hex');
+
+};
+
+const gerarHashToken = (token) => {
+    
+    return crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+};
 
 export async function createUser(req, res) {
 
@@ -118,9 +133,9 @@ export async function searchUser(req, res) {
             message: "Login realizado com sucesso",
             usuario: {
                 id: usuario.id,
-                nome : usuario.nome,
-                email : usuario.email,
-                data : usuario.data_nascimento
+                nome: usuario.nome,
+                email: usuario.email,
+                data: usuario.data_nascimento
             }
         })
 
@@ -276,7 +291,7 @@ export const atualizarInformacoes = async (req, res) => {
 
         const userId = req.params.userId
         const { nome, email, nascimento } = req.body
-        
+
         if (!userId) {
             return res.status(400).json({
                 msg: "ID do usuario não recebido"
@@ -320,7 +335,41 @@ export const atualizarInformacoes = async (req, res) => {
             })
         }
 
-        return res.status(200).json(sucesso)
+        return res.status(200).json({
+            message: "Dados atualizados com sucesso"
+        })
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            error: "Erro interno no servidor"
+        })
+    }
+}
+
+export const recuperarUsuario = async (req, res) => {
+
+    try {
+
+        const { email } = req.body
+
+        if (!email) {
+            return res.status(400).json({
+                message: "Email não recebido"
+            })
+        }
+
+        const usuario = await userRepository.recuperarUsuario(email)
+
+        if (!usuario) {
+            return res.status(404).json({
+                message: "Houve uma falha ao tentar buscar o usuario"
+            })
+        }
+
+        return res.status(200).json({
+            message: "email validado com sucesso"
+        })
 
     } catch (error) {
         console.error(error)
