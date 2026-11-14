@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 
 const userRepository = new DatabasePostgres()
 const tokensrepository = new tokensRopository()
+
 const gerarToken = () => {
 
     return crypto.randomBytes(32).toString('hex');
@@ -19,8 +20,43 @@ const gerarHashToken = (token) => {
         .digest('hex');
 };
 
-const atualizarToken = async (token_hash, tokenId) => {
-    //pendente
+const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade) => {
+
+
+    if (!token || !tokenNovoHash || !tokenPendenteId || !finalidade) {
+        return false;
+    }
+
+    const finalidadesPermitidas = [
+        "recuperar_usuario",
+        "recuperar_senha",
+        "editar_dados"
+    ];
+
+    if (!finalidadesPermitidas.includes(finalidade)) {
+        return false;
+    };
+
+    try {
+        const tokenAtualizado = await tokensrepository.atualizarToken({
+            tokenNovoHash,
+            tokenPendenteId,
+            finalidade
+        })
+
+        if (!tokenAtualizado) {
+            return false;
+        }
+
+        return {
+            token,
+            registro: tokenAtualizado
+        }
+
+    } catch (error) {
+        console.error("Falha ao atualizar token", error)
+        return false;
+    }
 }
 
 const reaproveitarToken = async (userId, finalidade) => {
@@ -36,28 +72,34 @@ const reaproveitarToken = async (userId, finalidade) => {
     }
 
     try {
-        const tokenpendente = await tokensrepository.buscarTokenPendentePorUsuario({
+        const tokenPendente = await tokensrepository.buscarTokenPendentePorUsuario({
             userId,
             finalidade
         })
 
-        if (!tokenpendente) {
-            return "não há nenhum token pendente vinculado a este usuario ou não há token com a mesma finalidade requisitada", false;
+        if (!tokenPendente) {
+            return false;
         }
 
-        return tokenpendente
+        return tokenPendente;
 
     } catch (error) {
-        console.error(error)
-        return `Falaha ao verificar token pendente ${false}`;
+        console.error("Falha ao verificar token pendente", error);
+        return false;
     }
 
 }
 
-const manipularToken = async (usuarioId, finalidade) => {
+const criarSalvarToken = async (usuarioId, finalidade) => {
 
     let token = ""
     let tokenHash = ""
+
+    const finalidadesPermitidas = [
+        "recuperar_usuario",
+        "recuperar_senha",
+        "editar_dados"
+    ];
 
     if (!usuarioId) {
         return false;
@@ -67,7 +109,12 @@ const manipularToken = async (usuarioId, finalidade) => {
         return false;
     }
 
-    token = gerarToken()
+    if (!finalidadesPermitidas.includes(finalidade)) {
+        return false;
+    }
+
+
+    token = gerarToken();
 
     if (!token) {
         return false;
@@ -81,13 +128,25 @@ const manipularToken = async (usuarioId, finalidade) => {
 
     try {
 
+        const tokenSalvo = await tokensrepository.criarNovoToken({
+            usuarioId,
+            tokenHash,
+            finalidade
+        })
 
+        if (!tokenSalvo) {
+            return false;
+        }
+
+        return {
+            token,
+            registro: tokenSalvo
+        }
 
     } catch (error) {
         console.error(error)
-        return `Falha ao gerar token ${false}`
+        return false;
     }
-
 }
 
 export async function createUser(req, res) {
@@ -424,8 +483,13 @@ export const atualizarInformacoes = async (req, res) => {
 export const recuperarUsuario = async (req, res) => {
 
     try {
-        const finalidade = "recuperar_usuario"
+
         const { email } = req.body
+        const finalidade = "recuperar_usuario"
+
+        let novoToken = ""
+        let tokenHash = ""
+
         if (!email) {
             return res.status(400).json({
                 message: "Email não recebido"
@@ -440,28 +504,41 @@ export const recuperarUsuario = async (req, res) => {
             })
         }
 
-        const tokenPendente = reaproveitarToken(usuario.id, finalidade)
+        const tokenPendente = await reaproveitarToken(usuario.id, finalidade)
 
         if (!tokenPendente) {
-            let token = manipularToken(usuario.id, finalidade)
-        } else {
 
-            let tokenParaReutilizar = reaproveitarToken()
-
-            let novoToken = atualizarToken(
-                tokenPendente.token_hash,
-                tokenPendente.id
+            const resultado = await criarSalvarToken(
+                usuario.id,
+                finalidade
             )
 
+            if (!resultado) {
+                return res.status(500).json({
+                    message: "Falha ao gerar token"
+                });
+            }
+
+            return res.status(200).json({
+                message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
+            })
+
+        } else {
+
+            novoToken = gerarToken()
+            tokenHash = gerarHashToken(novoToken)
+
+            const resuldado = await atualizarToken(
+                novoToken,
+                tokenHash,
+                tokenPendente.id,
+                finalidade
+            )
+
+            return res.status(200).json({
+                message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
+            })
         }
-
-        manipularToken(usuario.id, finalidade)
-
-
-        // return res.status(200).json({
-        //     message: "email validado com sucesso",
-        //     id : usuario.id
-        // })
 
     } catch (error) {
         console.error(error)
@@ -470,56 +547,3 @@ export const recuperarUsuario = async (req, res) => {
         })
     }
 }
-
-export const testeToken = async (req, res) => {
-
-    try {
-
-        const id = Number(req.params.id);
-
-        const { finalidade } = req.body;
-
-        if (!Number.isInteger(id) || id <= 0) {
-            return res.status(400).json({
-                message: 'ID do usuário inválido'
-            });
-        }
-
-        if (!finalidade) {
-            return res.status(400).json({
-                message: 'Token ou finalidade não recebidos'
-            });
-        }
-
-
-
-        // Gerar hash do token recebido
-        const tokenHash = gerarHashToken(token);
-
-        // Consultar token no banco
-        const resultado = await tokensrepository.buscarToken({
-            usuarioId: id,
-            tokenHash,
-            finalidade
-        });
-
-        if (!resultado) {
-            return res.status(400).json({
-                message: 'Token inválido, expirado ou já utilizado'
-            });
-        }
-
-        return res.status(200).json({
-            message: 'Token válido!',
-            finalidade: resultado.finalidade
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        return res.status(500).json({
-            message: 'Erro interno no servidor'
-        });
-    }
-};

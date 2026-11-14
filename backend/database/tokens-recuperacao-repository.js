@@ -9,6 +9,10 @@ export class tokensRopository {
 
     async criarNovoToken({ usuarioId, tokenHash, finalidade }) {
 
+        if (!usuarioId || !tokenHash || !finalidade) {
+            throw new Error("Parametros não informados")
+        }
+
         const [token] = await sql`
 
         INSERT INTO tokens_recuperacao (
@@ -35,7 +39,11 @@ export class tokensRopository {
         return token;
     }
 
-    async buscarToken({tokenHash, usuarioId, finalidade }) {
+    async buscarToken({ tokenHash, usuarioId, finalidade }) {
+
+        if (!tokenHash || !usuarioId || !finalidade) {
+            throw new Error("Parametros não informados")
+        }
 
         const [token] = await sql`
 
@@ -54,7 +62,11 @@ export class tokensRopository {
 
     async buscarTokenPendentePorUsuario({ userId, finalidade }) {
 
-        const tokenValido = await sql`
+        if (!userId || !finalidade) {
+            throw new Error("Parametros não informados")
+        }
+
+        const [token] = await sql`
         SELECT *
         FROM tokens_recuperacao
         WHERE usuario_id = ${userId}
@@ -63,26 +75,45 @@ export class tokensRopository {
         LIMIT 1
     `;
 
-        return tokenValido
+        return token;
     }
 
-    async atualizarToken({ tokenHassh, tokenId}) {
+    async atualizarToken({ tokenNovoHash, tokenPendenteId, finalidade }) {
 
-        const novoToken = await sql`
+        if (!tokenNovoHash || !tokenPendenteId || !finalidade) {
+            throw new Error("Parametros não informados")
+        }
+
+        const [token] = await sql`
         
             UPDATE tokens_recuperacao
-            SET token_hash = ${tokenHassh},
-            expiracao = NOW(),
-            criado_em = NOW()
-            WHERE id = ${tokenId};
+            SET token_hash = ${tokenNovoHash},
+            expiracao = NOW() + 'INTERVAL '15 minutes' ,
+            criado_em = NOW(),
+            WHERE id = ${tokenPendenteId}
+               AND finalidade = ${finalidade}
+          AND utilizado = FALSE
+
+        RETURNING
+            id,
+            usuario_id,
+            finalidade,
+            expiracao,
+            utilizado,
+            criado_em;
+            ;
 
         `;
-        return novoToken;
+        return token;
     }
 
 
 
     async marcarTokenUtilizado({ tokenHash, usuarioId, finalidade }) {
+
+        if (!tokenHash || !usuarioId || !finalidade) {
+            throw new Error("Parametros não informados")
+        }
 
         const [token] = await sql`
         UPDATE tokens_recuperacao
