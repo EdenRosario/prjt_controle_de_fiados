@@ -146,19 +146,20 @@ export class DatabasePostgres {
 
     }
 
-    async recuperarUsuario(email){
+    async recuperarUsuario(email) {
 
-        if(!email){
-            return ;
+        if (!email) {
+            return;
         }
 
-        const usuario = await sql `
-            SELECT * FROM usuarios
-            WHERE email = ${email}
-        `;
+        const [usuario] = await sql`
+        SELECT *
+        FROM usuarios
+        WHERE email = ${email}
+    `;
 
         return usuario;
-        
+
     }
 
 }

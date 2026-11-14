@@ -66,13 +66,13 @@ export class tokensRopository {
         return tokenValido
     }
 
-    async atualizarToken({ tokenHassh, expiracao,tokenId}) {
+    async atualizarToken({ tokenHassh, tokenId}) {
 
         const novoToken = await sql`
         
             UPDATE tokens_recuperacao
             SET token_hash = ${tokenHassh},
-            expiracao = ${expiracao},
+            expiracao = NOW(),
             criado_em = NOW()
             WHERE id = ${tokenId};
 

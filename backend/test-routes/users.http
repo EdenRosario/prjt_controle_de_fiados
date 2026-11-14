@@ -62,7 +62,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/users/1
+PUT http://localhost:3000/auth/1
 Content-Type: application/json
 
 {
@@ -78,4 +78,12 @@ Content-Type: application/json
    "email" :"teste22@gmail
    ds.com",
    "data" : "2026-11-09"     
+}
+
+###
+POST  http://localhost:3000/auth/recuperar-usuario
+Content-Type: application/json
+
+{
+        "email": "teste22@gmail.com"
 }
