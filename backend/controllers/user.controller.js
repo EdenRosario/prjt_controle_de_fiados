@@ -353,7 +353,7 @@ export const recuperarUsuario = async (req, res) => {
     try {
 
         const { email } = req.body
-
+        
         if (!email) {
             return res.status(400).json({
                 message: "Email não recebido"
@@ -386,7 +386,7 @@ export const testeToken = async (req, res) => {
 
         const id = Number(req.params.id);
 
-        const { token, finalidade } = req.body;
+        const {finalidade } = req.body;
 
         if (!Number.isInteger(id) || id <= 0) {
             return res.status(400).json({
@@ -394,7 +394,7 @@ export const testeToken = async (req, res) => {
             });
         }
 
-        if (!token || !finalidade) {
+        if (!finalidade) {
             return res.status(400).json({
                 message: 'Token ou finalidade não recebidos'
             });

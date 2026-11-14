@@ -1,4 +1,5 @@
 import sql from "../conect.js";
+
 export class tokensRopository {
 
     //finalidade
@@ -6,7 +7,7 @@ export class tokensRopository {
     //recuperar_senha
     //editar_dados
 
-    async atribuirToken({ usuarioId, tokenHash, finalidade }) {
+    async criarNovoToken({ usuarioId, tokenHash, finalidade }) {
 
         const [token] = await sql`
 
@@ -34,7 +35,7 @@ export class tokensRopository {
         return token;
     }
 
-    async buscarToken({ tokenHash, usuarioId, finalidade }) {
+    async buscarToken({tokenHash, usuarioId, finalidade }) {
 
         const [token] = await sql`
 
@@ -51,7 +52,37 @@ export class tokensRopository {
 
     }
 
-    async invalidarToken({ tokenHash, usuarioId, finalidade }) {
+    async buscarTokenPendentePorUsuario({ userId, finalidade }) {
+
+        const tokenValido = await sql`
+        SELECT *
+        FROM tokens_recuperacao
+        WHERE usuario_id = ${userId}
+          AND finalidade = ${finalidade}
+          AND utilizado = false
+        LIMIT 1
+    `;
+
+        return tokenValido
+    }
+
+    async atualizarToken({ tokenHassh, expiracao,tokenId}) {
+
+        const novoToken = await sql`
+        
+            UPDATE tokens_recuperacao
+            SET token_hash = ${tokenHassh},
+            expiracao = ${expiracao},
+            criado_em = NOW()
+            WHERE id = ${tokenId};
+
+        `;
+        return novoToken;
+    }
+
+
+
+    async marcarTokenUtilizado({ tokenHash, usuarioId, finalidade }) {
 
         const [token] = await sql`
         UPDATE tokens_recuperacao
