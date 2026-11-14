@@ -12,8 +12,6 @@ router.post('/recover', userController.validateRecovery)
 router.post('/autenticar', userController.autentincarDados)    
 
 router.post('/recuperar-usuario', userController.recuperarUsuario)
-//teste de tokens
-router.post('/teste-token/:id', userController.testeToken)
 
 router.get('/', userController.listarTodosUsuarios)
 
