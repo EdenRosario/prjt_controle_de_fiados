@@ -541,7 +541,7 @@ export const recuperarUsuario = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error)
+        console.error("Erro ao recuperar usuário:", error);
         return res.status(500).json({
             error: "Erro interno no servidor"
         })
