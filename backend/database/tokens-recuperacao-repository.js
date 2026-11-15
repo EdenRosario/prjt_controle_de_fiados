@@ -88,8 +88,8 @@ export class tokensRopository {
         
             UPDATE tokens_recuperacao
             SET token_hash = ${tokenNovoHash},
-            expiracao = NOW() + 'INTERVAL '15 minutes' ,
-            criado_em = NOW(),
+            expiracao = NOW() + INTERVAL '15 minutes',
+            criado_em = NOW()
             WHERE id = ${tokenPendenteId}
                AND finalidade = ${finalidade}
           AND utilizado = FALSE
@@ -101,8 +101,7 @@ export class tokensRopository {
             expiracao,
             utilizado,
             criado_em;
-            ;
-
+        
         `;
         return token;
     }

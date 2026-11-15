@@ -22,8 +22,10 @@ const gerarHashToken = (token) => {
 
 const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade) => {
 
+    console.log("[TOKEN] Iniciando atualização");
 
     if (!token || !tokenNovoHash || !tokenPendenteId || !finalidade) {
+        console.log("[TOKEN] Parâmetros inválidos para atualização");
         return false;
     }
 
@@ -37,16 +39,25 @@ const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade)
         return false;
     };
 
+    console.log("[TOKEN] Finalidade inválida:", finalidade);
+
     try {
+
+        console.log("[TOKEN] Executando atualização no repository");
+
         const tokenAtualizado = await tokensrepository.atualizarToken({
             tokenNovoHash,
             tokenPendenteId,
             finalidade
-        })
+        });
+
+        console.log("[TOKEN] Resultado do repository:", !!tokenAtualizado);
 
         if (!tokenAtualizado) {
             return false;
         }
+
+        console.log("[TOKEN] Atualização concluída");
 
         return {
             token,
@@ -54,20 +65,22 @@ const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade)
         }
 
     } catch (error) {
-        console.error("Falha ao atualizar token", error)
+        console.error("[TOKEN] Falha ao atualizar token", error)
         return false;
     }
 }
 
 const reaproveitarToken = async (userId, finalidade) => {
 
+    console.log("[TOKEN] Verificando token pendente");
+
     if (!userId) {
-        console.log("Usuario não recebido")
+        console.log("[TOKEN] Usuário não informado");
         return false;
     }
 
     if (!finalidade) {
-        console.log("finalidade não informada")
+        console.log("[TOKEN] finalidade não informada");
         return false;
     }
 
@@ -75,22 +88,27 @@ const reaproveitarToken = async (userId, finalidade) => {
         const tokenPendente = await tokensrepository.buscarTokenPendentePorUsuario({
             userId,
             finalidade
-        })
+        });
+
+        console.log("[TOKEN] Consulta concluída:", !!tokenPendente);
 
         if (!tokenPendente) {
+            console.log("[TOKEN] Nenhum token pendente encontrado");
             return false;
         }
-
+        console.log("[TOKEN] Token pendente encontrado:", tokenPendente.id);
         return tokenPendente;
 
     } catch (error) {
-        console.error("Falha ao verificar token pendente", error);
+        console.error("[TOKEN] Falha ao verificar token pendente:", error);
         return false;
     }
 
 }
 
 const criarSalvarToken = async (usuarioId, finalidade) => {
+
+    console.log("[TOKEN] Iniciando criação");
 
     let token = ""
     let tokenHash = ""
@@ -102,14 +120,17 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
     ];
 
     if (!usuarioId) {
+         console.log("[TOKEN] Usuário não informado");
         return false;
     }
 
     if (!finalidade) {
+         console.log("[TOKEN] finalidade não informada");
         return false;
     }
 
     if (!finalidadesPermitidas.includes(finalidade)) {
+        console.log("[TOKEN] Finalidade inválida:", finalidade);
         return false;
     }
 
@@ -117,16 +138,20 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
     token = gerarToken();
 
     if (!token) {
+        console.log("[TOKEN] Falha ao gerar token");
         return false;
     }
 
     tokenHash = gerarHashToken(token);
 
     if (!tokenHash) {
+        console.log("[TOKEN] Falha ao gerar hash");
         return false;
     }
 
     try {
+
+         console.log("[TOKEN] Salvando registro no banco");
 
         const tokenSalvo = await tokensrepository.criarNovoToken({
             usuarioId,
@@ -134,9 +159,14 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
             finalidade
         })
 
+         console.log("[TOKEN] Resultado da persistência:", !!tokenSalvo);   
+
         if (!tokenSalvo) {
+            console.log("[TOKEN] Registro não foi salvo");
             return false;
         }
+
+        console.log("[TOKEN] Token criado com sucesso");
 
         return {
             token,
@@ -144,7 +174,7 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
         }
 
     } catch (error) {
-        console.error(error)
+        console.error("[TOKEN] Falha ao salvar token:", error);
         return false;
     }
 }
@@ -496,7 +526,11 @@ export const recuperarUsuario = async (req, res) => {
             })
         }
 
+        console.log("[RECUPERAR] Iniciando recuperação");
+
         const usuario = await userRepository.recuperarUsuario(email)
+
+        console.log("[RECUPERAR] Busca de usuário concluída:", !!usuario);
 
         if (!usuario) {
             return res.status(404).json({
@@ -506,12 +540,19 @@ export const recuperarUsuario = async (req, res) => {
 
         const tokenPendente = await reaproveitarToken(usuario.id, finalidade)
 
+        console.log("[RECUPERAR] Token pendente:", !!tokenPendente);
+
         if (!tokenPendente) {
+
+            console.log("[RECUPERAR] Criando novo token");
 
             const resultado = await criarSalvarToken(
                 usuario.id,
                 finalidade
             )
+
+            console.log("[RECUPERAR] Resultado da criação:", resultado);
+
 
             if (!resultado) {
                 return res.status(500).json({
@@ -525,6 +566,8 @@ export const recuperarUsuario = async (req, res) => {
 
         } else {
 
+            console.log("[RECUPERAR] Atualizando token existente");
+
             novoToken = gerarToken()
             tokenHash = gerarHashToken(novoToken)
 
@@ -534,6 +577,9 @@ export const recuperarUsuario = async (req, res) => {
                 tokenPendente.id,
                 finalidade
             )
+
+
+            console.log("[RECUPERAR] Resultado da atualização:", resuldado);
 
             return res.status(200).json({
                 message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
