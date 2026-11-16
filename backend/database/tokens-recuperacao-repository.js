@@ -10,7 +10,7 @@ export class tokensRopository {
     async criarNovoToken({ usuarioId, tokenHash, finalidade }) {
 
         if (!usuarioId || !tokenHash || !finalidade) {
-            throw new Error("Parametros não informados")
+        throw new Error("Parametros não informados")
         }
 
         const [token] = await sql`

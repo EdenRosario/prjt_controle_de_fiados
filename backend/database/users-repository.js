@@ -17,7 +17,7 @@ export class DatabasePostgres {
             VALUES(
                 ${name},
                 ${user},
-                ${senha},
+                ${senha},   
                 ${email},
                 ${date}
             );
@@ -49,7 +49,7 @@ export class DatabasePostgres {
 
         return result
     }
-
+    
     async searchUser(usuario) {
         const { user } = usuario
 

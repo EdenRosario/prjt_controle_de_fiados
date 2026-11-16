@@ -36,10 +36,11 @@ const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade)
     ];
 
     if (!finalidadesPermitidas.includes(finalidade)) {
+        console.log("[TOKEN] Finalidade inválida:", finalidade);
         return false;
     };
 
-    console.log("[TOKEN] Finalidade inválida:", finalidade);
+    console.log("[TOKEN] Finalidade validada:", finalidade);    
 
     try {
 

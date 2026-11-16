@@ -85,5 +85,5 @@ POST  http://localhost:3000/auth/recuperar-usuario
 Content-Type: application/json
 
 {
-        "email": "teste22@gmail.com"
+        "email": "teste14@gmail.com"
 }
