@@ -19,8 +19,8 @@ const transporter = nodemailer.createTransport({
     port: 465,
 
     auth: {
-        user: EMAIL_CADASTRADO,
-        pass: SENHA_CADASTRADA
+        user: process.env.EMAIL_CADASTRADO,
+        pass: process.env.SENHA_CADASTRADA
     }
 
 })
@@ -28,7 +28,7 @@ const transporter = nodemailer.createTransport({
 const emailRecuperarUsuario = async (endereco, assunto, mensagem) => {
 
     return await transporter.sendMail({
-        from: EMAIL_CADASTRADO,
+        from: process.env.EMAIL_CADASTRADO,
         to: endereco,
         subject: assunto,
         html: mensagem
