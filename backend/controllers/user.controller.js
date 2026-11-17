@@ -49,7 +49,7 @@ const montarEmailRecuperarUsuario = async (nome, linkVerificacao) => {
 
     html = html
         .replaceAll("{{nome}}", escaparHtml(nome))
-        .replaceAll("{{linkVerificacao}}", linkVerificacao);
+        .replaceAll("{{linkVerificacao}}", escaparHtml(linkVerificacao));
 
     return html;
 };
@@ -581,7 +581,7 @@ export const recuperarUsuario = async (req, res) => {
 
         let novoToken = ""
         let tokenHash = ""
-         let tokenParaEnviar = "";
+        let tokenParaEnviar = "";
 
         if (!email) {
             return res.status(400).json({
@@ -589,11 +589,7 @@ export const recuperarUsuario = async (req, res) => {
             })
         }
 
-        console.log("[RECUPERAR] Iniciando recuperação");
-
         const usuario = await userRepository.recuperarUsuario(email)
-
-        console.log("[RECUPERAR] Busca de usuário concluída:", !!usuario);
 
         if (!usuario) {
             return res.status(404).json({
@@ -601,9 +597,10 @@ export const recuperarUsuario = async (req, res) => {
             })
         }
 
-        const tokenPendente = await reaproveitarToken(usuario.id, finalidade)
-
-        console.log("[RECUPERAR] Token pendente:", !!tokenPendente);
+        const tokenPendente = await reaproveitarToken(
+            usuario.id,
+            finalidade
+        )
 
         if (!tokenPendente) {
 
@@ -612,10 +609,7 @@ export const recuperarUsuario = async (req, res) => {
                 finalidade
             )
 
-            console.log("[RECUPERAR] Resultado da criação:", resultado);
-
-
-            if (!resultado) {
+            if (!resultado?.token) {
                 return res.status(500).json({
                     message: "Falha ao gerar token"
                 });
@@ -637,17 +631,35 @@ export const recuperarUsuario = async (req, res) => {
                 finalidade
             )
 
-        
-            if(!resuldado.token){
-                return res.status(200).json({
-                    message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
-                })
+
+            if (!resultado?.token) {
+                return res.status(500).json({
+                    message: "Falha ao atualizar token"
+                });
+
             };
 
-                tokenParaEnviar = resultado.token
+            tokenParaEnviar = resultado.token
         }
 
-        
+        const linkVerificacao = `${process.env.FRONTEND_URL}?token=${encodeURIComponent(tokenParaEnviar)}`;
+
+        const html = await montarEmailRecuperarUsuario(
+            usuario.nome,
+            linkVerificacao
+        )
+
+        await emailRecuperarUsuario(
+            usuario.email,
+            "Recuperação de usuário | CFGesão",
+            html
+        )
+
+        console.log("[RECUPERAR] E-mail enviado com sucesso");
+
+        return res.status(200).json({
+            message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
+        });
 
     } catch (error) {
         console.error("Erro ao recuperar usuário:", error);
