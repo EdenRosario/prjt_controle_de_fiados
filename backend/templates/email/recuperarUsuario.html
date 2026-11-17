@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Recuperação de usuário | SisGestão</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        img {
+            border: 0;
+            display: block;
+            outline: none;
+            text-decoration: none;
+        }
+
+        a {
+            color: #0d6efd;
+        }
+
+        @media only screen and (max-width: 620px) {
+            .email-outer {
+                padding: 20px 12px !important;
+            }
+
+            .email-card {
+                width: 100% !important;
+            }
+
+            .email-content {
+                padding: 30px 24px !important;
+            }
+
+            .email-footer {
+                padding: 20px 16px !important;
+            }
+
+            .verify-button {
+                display: block !important;
+                text-align: center !important;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f1f5f9; color: #1e293b; font-family: Inter, Arial, Helvetica, sans-serif;">
+    <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; color: transparent;">
+        Confirme sua identidade para recuperar seu nome de usuário no SisGestão.
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; background-color: #f1f5f9;">
+        <tr>
+            <td class="email-outer" align="center" style="padding: 40px 16px;">
+                <table class="email-card" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+                    style="width: 600px; max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    <tr>
+                        <td style="padding: 24px 32px; border-bottom: 1px solid #e2e8f0;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td width="44" valign="middle" style="width: 44px;">
+                                        <table role="presentation" width="36" height="36" cellpadding="0" cellspacing="0" border="0"
+                                            style="width: 36px; height: 36px; background-color: #0d6efd; border-radius: 9px;">
+                                            <tr>
+                                                <td align="center" valign="middle"
+                                                    style="color: #ffffff; font-family: Arial, Helvetica, sans-serif; font-size: 15px; font-weight: 700;">
+                                                    SG
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td valign="middle" style="font-family: Inter, Arial, Helvetica, sans-serif;">
+                                        <div style="color: #0f172a; font-size: 17px; line-height: 22px; font-weight: 700;">
+                                            SisGestão
+                                        </div>
+                                        <div style="color: #64748b; font-size: 12px; line-height: 18px;">
+                                            Controle de Fiados
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="email-content" style="padding: 40px 40px 36px; font-family: Inter, Arial, Helvetica, sans-serif;">
+                            <p style="margin: 0 0 12px; color: #1e293b; font-size: 16px; line-height: 24px;">
+                                Olá, {{nome}}!
+                            </p>
+
+                            <h1 style="margin: 0 0 18px; color: #0f172a; font-size: 24px; line-height: 32px; font-weight: 700;">
+                                Confirme sua identidade
+                            </h1>
+
+                            <p style="margin: 0 0 14px; color: #475569; font-size: 15px; line-height: 24px;">
+                                Recebemos uma solicitação para recuperar seu acesso ao SisGestão.
+                            </p>
+
+                            <p style="margin: 0 0 28px; color: #475569; font-size: 15px; line-height: 24px;">
+                                Para confirmar sua identidade e recuperar seu nome de usuário, clique no botão abaixo.
+                            </p>
+
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 26px;">
+                                <tr>
+                                    <td align="center" bgcolor="#0d6efd" style="border-radius: 8px; background-color: #0d6efd;">
+                                        <a class="verify-button" href="{{linkVerificacao}}" target="_blank"
+                                            style="display: inline-block; padding: 14px 24px; border: 1px solid #0d6efd; border-radius: 8px; color: #ffffff; background-color: #0d6efd; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 15px; line-height: 20px; font-weight: 700; text-align: center; text-decoration: none;">
+                                            Verificar minha identidade
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                                style="width: 100%; margin-bottom: 20px; background-color: #f8fafc; border-left: 3px solid #0d6efd;">
+                                <tr>
+                                    <td style="padding: 13px 15px; color: #475569; font-size: 13px; line-height: 20px;">
+                                        Este link é válido por 15 minutos e poderá ser utilizado apenas uma vez.
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin: 0; color: #64748b; font-size: 13px; line-height: 21px;">
+                                Se você não solicitou essa recuperação, ignore este e-mail.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="email-footer" align="center"
+                            style="padding: 22px 24px; border-top: 1px solid #e2e8f0; background-color: #f8fafc; border-radius: 0 0 12px 12px;">
+                            <p style="margin: 0 0 5px; color: #334155; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; font-weight: 700;">
+                                SisGestão · Controle de Fiados
+                            </p>
+                            <p style="margin: 0; color: #94a3b8; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 11px; line-height: 17px;">
+                                Esta é uma mensagem automática. Por favor, não responda a este e-mail.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

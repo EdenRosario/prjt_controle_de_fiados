@@ -1,10 +1,71 @@
 import { DatabasePostgres } from "../database/users-repository.js";
 import { tokensRopository } from "../database/tokens-recuperacao-repository.js";
+import dotenv from "dotenv";
+dotenv.config();
 import bcrypt from 'bcrypt'
 import crypto from 'node:crypto';
+import nodemailer from "nodemailer";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
 
 const userRepository = new DatabasePostgres()
 const tokensrepository = new tokensRopository()
+
+const transporter = nodemailer.createTransport({
+
+    secure: true,
+    host: 'smtp.gmail.com',
+    port: 465,
+
+    auth: {
+        user: EMAIL_CADASTRADO,
+        pass: SENHA_CADASTRADA
+    }
+
+})
+
+const emailRecuperarUsuario = async (endereco, assunto, mensagem) => {
+
+    return await transporter.sendMail({
+        from: EMAIL_CADASTRADO,
+        to: endereco,
+        subject: assunto,
+        html: mensagem
+    })
+
+};
+
+const montarEmailRecuperarUsuario = async (nome, linkVerificacao) => {
+
+    const caminhoArquivo = path.join(
+        process.cwd(),
+        "templates",
+        "email",
+        "recuperarUsuario.html"
+    );
+
+    let html = await readFile(caminhoArquivo, "utf-8");
+
+    html = html
+        .replaceAll("{{nome}}", escaparHtml(nome))
+        .replaceAll("{{linkVerificacao}}", linkVerificacao);
+
+    return html;
+};
+
+const escaparHtml = (valor) => {
+
+    return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[caractere]);
+
+};
+
 
 const gerarToken = () => {
 
@@ -40,7 +101,7 @@ const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade)
         return false;
     };
 
-    console.log("[TOKEN] Finalidade validada:", finalidade);    
+    console.log("[TOKEN] Finalidade validada:", finalidade);
 
     try {
 
@@ -121,12 +182,12 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
     ];
 
     if (!usuarioId) {
-         console.log("[TOKEN] Usuário não informado");
+        console.log("[TOKEN] Usuário não informado");
         return false;
     }
 
     if (!finalidade) {
-         console.log("[TOKEN] finalidade não informada");
+        console.log("[TOKEN] finalidade não informada");
         return false;
     }
 
@@ -152,7 +213,7 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
 
     try {
 
-         console.log("[TOKEN] Salvando registro no banco");
+        console.log("[TOKEN] Salvando registro no banco");
 
         const tokenSalvo = await tokensrepository.criarNovoToken({
             usuarioId,
@@ -160,7 +221,7 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
             finalidade
         })
 
-         console.log("[TOKEN] Resultado da persistência:", !!tokenSalvo);   
+        console.log("[TOKEN] Resultado da persistência:", !!tokenSalvo);
 
         if (!tokenSalvo) {
             console.log("[TOKEN] Registro não foi salvo");
@@ -520,6 +581,7 @@ export const recuperarUsuario = async (req, res) => {
 
         let novoToken = ""
         let tokenHash = ""
+         let tokenParaEnviar = "";
 
         if (!email) {
             return res.status(400).json({
@@ -545,8 +607,6 @@ export const recuperarUsuario = async (req, res) => {
 
         if (!tokenPendente) {
 
-            console.log("[RECUPERAR] Criando novo token");
-
             const resultado = await criarSalvarToken(
                 usuario.id,
                 finalidade
@@ -561,9 +621,7 @@ export const recuperarUsuario = async (req, res) => {
                 });
             }
 
-            return res.status(200).json({
-                message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
-            })
+            tokenParaEnviar = resultado.token
 
         } else {
 
@@ -572,20 +630,24 @@ export const recuperarUsuario = async (req, res) => {
             novoToken = gerarToken()
             tokenHash = gerarHashToken(novoToken)
 
-            const resuldado = await atualizarToken(
+            const resultado = await atualizarToken(
                 novoToken,
                 tokenHash,
                 tokenPendente.id,
                 finalidade
             )
 
+        
+            if(!resuldado.token){
+                return res.status(200).json({
+                    message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
+                })
+            };
 
-            console.log("[RECUPERAR] Resultado da atualização:", resuldado);
-
-            return res.status(200).json({
-                message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
-            })
+                tokenParaEnviar = resultado.token
         }
+
+        
 
     } catch (error) {
         console.error("Erro ao recuperar usuário:", error);
