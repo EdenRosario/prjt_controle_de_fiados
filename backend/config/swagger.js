@@ -4,7 +4,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 
 const options = {
 
-        definition: {
+    definition: {
         openapi: "3.0.0",
 
         info: {
@@ -15,13 +15,17 @@ const options = {
 
         servers: [
             {
-                url:"https://prjt-controle-de-fiados-testes.onrender.com",
-                description: "Servidor de desenvolvimento"
+                url: "http://localhost:3000",
+                description: "Servidor local"
+            },
+            {
+                url: "https://prjt-controle-de-fiados-testes.onrender.com",
+                description: "Servidor de testes"
             }
         ]
     },
 
-    apis: ["./routes/*.js"]
+    apis:  [path.join(__dirname, "../routes/*.js")]
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
