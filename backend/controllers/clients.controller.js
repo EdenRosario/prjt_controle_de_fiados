@@ -17,6 +17,12 @@ export async function createCliet(req, res) {
 
         const { name, tel, email, cpf } = req.body
 
+        if(!name || ! tel || !email || !cpf){
+            return res.status(400).json({
+                message : "Todos os campos são obrigatórios."
+            })
+        }
+
         await clientRepository.create({
 
             name,
@@ -43,7 +49,7 @@ export async function searchClient(req, res) {
     try {
 
         if (!req.query.search) {
-            return res.status(400).send("vazio")
+            return res.status(400).json({message : "parametro de busca não informado"})
         }
 
         const search = req.query.search
@@ -51,7 +57,7 @@ export async function searchClient(req, res) {
         const clientSearch = await clientRepository.list(search)
 
         if (clientSearch.length == 0) {
-            return res.status(404).send("cliente não encontrado")
+            return res.status(404).json({message: "cliente não encontrado"})
         }
 
         return res.status(200).json(clientSearch)
@@ -91,6 +97,8 @@ export async function listarTodosClientes(req, res) {
 
 }
 
+
+//utilize para preencher o dashboard geral logo no inicio
 export async function listarTodosClientesTodasComprasTodosPagamentos(req, res) {
 
     try {
@@ -137,7 +145,7 @@ export async function atualizarDados(req, res) {
     try {
 
         if (!req.params.clientId) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: "nenhum id enviado"
             })
         }
@@ -145,7 +153,7 @@ export async function atualizarDados(req, res) {
         const clienteId = req.params.clientId
 
         if (!req.body) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: "body vazio"
             })
         }
@@ -153,25 +161,25 @@ export async function atualizarDados(req, res) {
         const { nome, cpf, tel, email } = req.body
 
         if (!nome) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: "nenhum nome enviado"
             })
         }
 
         if (!cpf) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: "nenhum cpf enviado"
             })
         }
 
         if (!tel) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: "nenhum telefone enviado"
             })
         }
 
         if (!email) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: "nenhum email enviado"
             })
         }
@@ -213,7 +221,7 @@ export async function mudarStatusConta(req, res) {
 
 
         if (!clienteId) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: "Id do cliente não recebido"
             });
         }
@@ -266,6 +274,5 @@ export async function mudarStatusConta(req, res) {
             error: "Erro interno no servidor"
         })
     }
-
 
 }
