@@ -10,7 +10,7 @@ import produtosRouter from './routes/products.routes.js'
 import pagamentosRouter from './routes/pagamentos.routes.js'
 
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./swagger.js";
+import { swaggerSpec } from "./config/swagger.js";
 
 const PORT = process.env.PORT || 3000
 const app = express()

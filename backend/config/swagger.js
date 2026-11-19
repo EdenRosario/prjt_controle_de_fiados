@@ -1,5 +1,5 @@
 import swaggerJsdoc from "swagger-jsdoc";
-import {API_URL} from "../../frontend/config.js"
+
 //Configurações da documentação
 
 const options = {
@@ -15,7 +15,7 @@ const options = {
 
         servers: [
             {
-                url: API_URL,
+                url:"https://prjt-controle-de-fiados-testes.onrender.com",
                 description: "Servidor de desenvolvimento"
             }
         ]
