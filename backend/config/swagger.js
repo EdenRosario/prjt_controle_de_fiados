@@ -1,5 +1,9 @@
 import swaggerJsdoc from "swagger-jsdoc";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 //Configurações da documentação
 
 const options = {
@@ -25,7 +29,7 @@ const options = {
         ]
     },
 
-    apis:  [path.join(__dirname, "../routes/*.js")]
+    apis: [path.join(__dirname, "../routes/*.js")]
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
