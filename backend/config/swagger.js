@@ -19,12 +19,16 @@ const options = {
 
         servers: [
             {
-                url: "http://localhost:3000",
+                url: process.env.SWAGGER_SERVER_LOCAL,
                 description: "Servidor local"
             },
             {
-                url: "https://prjt-controle-de-fiados-testes.onrender.com",
+                url: process.env.SWAGGER_SERVER_TESTES,
                 description: "Servidor de testes"
+            },
+            {
+                url: process.env.SWAGGER_SERVER_PRODUCAO,
+                description: "Servidor de produção"
             }
         ]
     },
