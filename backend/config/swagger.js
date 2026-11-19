@@ -1,6 +1,7 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { url } from "node:inspector";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,12 +20,16 @@ const options = {
 
         servers: [
             {
-                url: "http://localhost:3000",
+                url: process.env.SWAGGER_SERVER_LOCAL,
                 description: "Servidor local"
             },
             {
-                url: "https://prjt-controle-de-fiados-testes.onrender.com",
+                url: process.env.SWAGGER_SERVER_TESTES,
                 description: "Servidor de testes"
+            },
+            {
+                url: process.env.SWAGGER_SERVER_PRODUCAO,
+                description: "Servidor de produção"
             }
         ]
     },

@@ -1,4 +1,4 @@
-import express from  'express'
+import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
 //rotas
@@ -15,31 +15,34 @@ import { swaggerSpec } from "./config/swagger.js";
 const PORT = process.env.PORT || 3000
 const app = express()
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 app.use(cors({
-    origin: ["http://localhost:5500", "http://127.0.0.1:5500"]
-}))    
+    origin: [
+        "http://localhost:5500",
+        "http://127.0.0.1:5500"
+    ]
+}))
 
 app.use(express.json())
 
-app.use('/auth', userRoutes )
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use('/clients', clientRouter )
+app.use('/auth', userRoutes)
+
+app.use('/clients', clientRouter)
 
 app.use('/compras', comprasRouter)
 
 app.use('/itensCompras', itensComprasRouter)
 
-app.use('/produtos', produtosRouter)    
+app.use('/produtos', produtosRouter)
 
 app.use('/pagamentos', pagamentosRouter)
 
-app.use((err,req, res, next)=>{
+app.use((err, req, res, next) => {
     console.error(err)
     return res.status(500).json({
         error: "Erro interno no servidor"
     })
 })
 
-app.listen(PORT, ()=>{console.log("API rodando")})
+app.listen(PORT, () => { console.log("API rodando") })
