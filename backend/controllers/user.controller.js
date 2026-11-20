@@ -642,6 +642,8 @@ export const recuperarUsuario = async (req, res) => {
             tokenParaEnviar = resultado.token
         }
 
+        console.log("[FRONTEND_URL]", process.env.FRONTEND_URL);
+
         const linkVerificacao = `${process.env.FRONTEND_URL}?token=${encodeURIComponent(tokenParaEnviar)}`;
 
         const html = await montarEmailRecuperarUsuario(
@@ -671,48 +673,45 @@ export const recuperarUsuario = async (req, res) => {
 
 export const confirmarRecuperarUsuario = async (req, res) => {
 
-    try{
+    try {
 
-        const token = req.body
+        const { token } = req.body
         const finalidade = "recuperar_usuario"
-        
-        if(!token){
+
+        if (!token) {
             return res.status(400).json({
-                message : "Token não recebido"
+                message: "Token não recebido"
             })
         }
-    
-        if(!finalidade){
-            return res.status(400).json({
-                message : "Finalidade não informada"
-            })
-        }
-    
+        console.log(token)
         const tokenHash = gerarHashToken(token)
-    
-        if(!tokenHash){
+        console.log(tokenHash)
+        if (!tokenHash) {
             return res.status(400).json({
-                message : "Não foi possivel gerar hash para o token"
-            })
-        }
-    
-        const tokenValido = tokensrepository.buscarTokenValido(tokenHash, finalidade)
-    
-        if(!tokenValido){
-            return res.status(404).json({
-                message : "Token invalidado ou já utilizado"
+                message: "Não foi possivel gerar hash para o token"
             })
         }
 
-        return res.status(200).json({
-            infoToken : tokenValido,
-            usuario : tokenValido.usuario     
+        const tokenValido = await tokensrepository.buscarTokenValido({
+            tokenHash,
+            finalidade
         })
-        
-    }catch(error){
+
+        if (!tokenValido) {
+            return res.status(404).json({
+                message: "Token invalidado ou já utilizado"
+            })
+        }
+        console.log("[TOKEN VALIDO]", tokenValido)
+        return res.status(200).json({
+            infoToken: tokenValido,
+            usuario: tokenValido.usuario
+        })
+
+    } catch (error) {
         console.error(error)
         return res.status(500).json({
-            error : "Erro interno no servidor"
+            error: "Erro interno no servidor"
         })
     }
 

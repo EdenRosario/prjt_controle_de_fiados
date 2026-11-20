@@ -80,9 +80,9 @@ Content-Type: application/json
 }
 
 ###
-POST  http://localhost:3000/auth//recuperar-usuario/confirmar
+POST  http://localhost:3000/auth/recuperar-usuario/confirmar
 Content-Type: application/json
 
 {
-        "token": "aasssffbbb5654465"
+        "token": "899c7f628c84aabccd8d3fd3bbc2596f6927061882bb133929b4c41e00546075"
 }
