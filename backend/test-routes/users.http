@@ -41,15 +41,6 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/auth/teste-token/1
-Content-Type: application/json
-
-{
-    "token": "TOKEN_GERADO",
-    "finalidade": "recuperar_usuario"
-}
-
-###
 GET http://localhost:3000/users
 
 ###
@@ -86,4 +77,12 @@ Content-Type: application/json
 
 {
         "email": "kharllos.com.br3@gmail.com"
+}
+
+###
+POST  http://localhost:3000/auth//recuperar-usuario/confirmar
+Content-Type: application/json
+
+{
+        "token": "aasssffbbb5654465"
 }

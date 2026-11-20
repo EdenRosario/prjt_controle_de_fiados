@@ -668,3 +668,52 @@ export const recuperarUsuario = async (req, res) => {
         })
     }
 }
+
+export const confirmarRecuperarUsuario = async (req, res) => {
+
+    try{
+
+        const token = req.body
+        const finalidade = "recuperar_usuario"
+        
+        if(!token){
+            return res.status(400).json({
+                message : "Token não recebido"
+            })
+        }
+    
+        if(!finalidade){
+            return res.status(400).json({
+                message : "Finalidade não informada"
+            })
+        }
+    
+        const tokenHash = gerarHashToken(token)
+    
+        if(!tokenHash){
+            return res.status(400).json({
+                message : "Não foi possivel gerar hash para o token"
+            })
+        }
+    
+        const tokenValido = tokensrepository.buscarTokenValido(tokenHash, finalidade)
+    
+        if(!tokenValido){
+            return res.status(404).json({
+                message : "Token invalidado ou já utilizado"
+            })
+        }
+
+        return res.status(200).json({
+            infoToken : tokenValido,
+            usuario : tokenValido.usuario     
+        })
+        
+    }catch(error){
+        console.error(error)
+        return res.status(500).json({
+            error : "Erro interno no servidor"
+        })
+    }
+
+}

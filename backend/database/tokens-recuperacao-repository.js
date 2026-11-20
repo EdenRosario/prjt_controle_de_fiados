@@ -10,7 +10,7 @@ export class tokensRopository {
     async criarNovoToken({ usuarioId, tokenHash, finalidade }) {
 
         if (!usuarioId || !tokenHash || !finalidade) {
-        throw new Error("Parametros não informados")
+            throw new Error("Parametros não informados")
         }
 
         const [token] = await sql`
@@ -39,23 +39,26 @@ export class tokensRopository {
         return token;
     }
 
-    async buscarToken({ tokenHash, usuarioId, finalidade }) {
+    async buscarTokenValido({ tokenHash, finalidade }) {
 
-        if (!tokenHash || !usuarioId || !finalidade) {
+        if (!tokenHash || !finalidade) {
             throw new Error("Parametros não informados")
         }
 
         const [token] = await sql`
 
-        SELECT *
-        FROM tokens_recuperacao
-        WHERE token_hash = ${tokenHash}
-        AND usuario_id = ${usuarioId}
-        AND finalidade = ${finalidade}
-        AND expiracao > NOW()
-        AND utilizado = FALSE;
+        SELECT
+            tr.*,
+            u.usuario
+        FROM tokens_recuperacao AS tr
+        INNER JOIN usuarios AS u
+            ON tr.usuario_id = u.id
+        WHERE tr.token_hash = ${tokenHash}
+        AND tr.finalidade = ${finalidade}
+        AND tr.expiracao > NOW()
+        AND tr.utilizado = FALSE;
 
-        `;
+    `;
         return token
 
     }

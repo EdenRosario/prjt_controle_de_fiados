@@ -17,7 +17,7 @@ GET http://localhost:3000/produtos/estoquebaixo
 GET http://localhost:3000/produtos/buscarproduto/37
 
 ###
-GET http://localhost:3000/produtos/codigo-barras/2000000000016
+GET http://localhost:3000/produtos/codigo-barras/2000000000030
 
 ###
 PUT  http://localhost:3000/produtos/atualizarestoque

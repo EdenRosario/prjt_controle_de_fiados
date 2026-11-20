@@ -13,6 +13,8 @@ router.post('/autenticar', userController.autentincarDados)
 
 router.post('/recuperar-usuario', userController.recuperarUsuario)
 
+router.post('/recuperar-usuario/confirmar', userController.confirmarRecuperarUsuario)
+
 router.get('/', userController.listarTodosUsuarios)
 
 router.put('/:id', userController.update)

@@ -1,7 +1,6 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { url } from "node:inspector";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,10 +25,6 @@ const options = {
             {
                 url: process.env.SWAGGER_SERVER_TESTES,
                 description: "Servidor de testes"
-            },
-            {
-                url: process.env.SWAGGER_SERVER_PRODUCAO,
-                description: "Servidor de produção"
             }
         ]
     },
