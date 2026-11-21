@@ -7,6 +7,7 @@ import crypto from 'node:crypto';
 import nodemailer from "nodemailer";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import console from "node:console";
 
 
 const userRepository = new DatabasePostgres()
@@ -683,9 +684,9 @@ export const confirmarRecuperarUsuario = async (req, res) => {
                 message: "Token não recebido"
             })
         }
-        console.log(token)
+
         const tokenHash = gerarHashToken(token)
-        console.log(tokenHash)
+
         if (!tokenHash) {
             return res.status(400).json({
                 message: "Não foi possivel gerar hash para o token"
@@ -702,9 +703,28 @@ export const confirmarRecuperarUsuario = async (req, res) => {
                 message: "Token invalidado ou já utilizado"
             })
         }
-        console.log("[TOKEN VALIDO]", tokenValido)
+        const tokenHashValido = tokenValido.token_hash
+        const usuarioId = tokenValido.usuario_id
+
+        const tokenConsumido = await tokensrepository.marcarTokenUtilizado({
+            tokenHashValido,
+            usuarioId,
+            finalidade
+        })
+
+        if (!tokenConsumido) {
+            console.log("[TOKEN] Não foi possivel consumir token")
+            console.log(tokenConsumido)
+
+            return res.status(500).json({
+                message: "Não foi possível concluir a recuperação do usuário."
+            });
+            
+        }
+
+        console.log(`[TOKEN] Token consumido ${tokenConsumido}`)
+
         return res.status(200).json({
-            infoToken: tokenValido,
             usuario: tokenValido.usuario
         })
 

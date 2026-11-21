@@ -47,7 +47,7 @@
     </aside>
 
     <!-- CONTEÃšDO PRINCIPAL -->
-    <main class="main-content"> 
+    <main class="main-content">
 
         <!-- 1. SEÇÃO HOME / DASHBOARD -->
         <section id="secao-home" class="secao active">
@@ -427,10 +427,12 @@
                 </button>
 
                 <button class="gestao-usuarios-card" type="button" data-modal-alvo="modal-recuperar-acesso">
-                    <i class="fa-solid fa-key gestao-usuarios-card-icone gestao-usuarios-card-icone--alerta" aria-hidden="true"></i>
+                    <i class="fa-solid fa-key gestao-usuarios-card-icone gestao-usuarios-card-icone--alerta"
+                        aria-hidden="true"></i>
                     <span class="gestao-usuarios-card-conteudo">
                         <span class="gestao-usuarios-card-titulo">Recuperar Acesso</span>
-                        <span class="gestao-usuarios-card-descricao">Recupere o usuário ou inicie a redefinição de senha.</span>
+                        <span class="gestao-usuarios-card-descricao">Recupere o usuário ou inicie a redefinição de
+                            senha.</span>
                     </span>
                 </button>
 
@@ -443,7 +445,8 @@
                 </button>
 
                 <button class="gestao-usuarios-card" type="button" data-modal-alvo="modal-mudar-senha">
-                    <i class="fa-solid fa-lock gestao-usuarios-card-icone gestao-usuarios-card-icone--sucesso" aria-hidden="true"></i>
+                    <i class="fa-solid fa-lock gestao-usuarios-card-icone gestao-usuarios-card-icone--sucesso"
+                        aria-hidden="true"></i>
                     <span class="gestao-usuarios-card-conteudo">
                         <span class="gestao-usuarios-card-titulo">Mudar Senha</span>
                         <span class="gestao-usuarios-card-descricao">Confirme a senha atual e defina uma nova.</span>
@@ -454,7 +457,8 @@
                     <i class="fa-solid fa-users gestao-usuarios-card-icone" aria-hidden="true"></i>
                     <span class="gestao-usuarios-card-conteudo">
                         <span class="gestao-usuarios-card-titulo">Listar Usuários do Sistema</span>
-                        <span class="gestao-usuarios-card-descricao">Consulte os usuários cadastrados e suas ações.</span>
+                        <span class="gestao-usuarios-card-descricao">Consulte os usuários cadastrados e suas
+                            ações.</span>
                     </span>
                 </button>
             </div>
@@ -478,7 +482,7 @@
                     <div class="recuperacao-sessoes">
                         <section class="sessao-recuperar-usuario" aria-labelledby="titulo-recuperar-usuario">
                             <div class="sessao-header">
-                                <i class="fa-solid fa-user-magnifying-glass" aria-hidden="true"></i>
+                                <i class="fa-solid fa-user" aria-hidden="true"></i>
                                 <h3 id="titulo-recuperar-usuario">Recuperar usuário</h3>
                             </div>
                             <p class="sessao-descricao">
@@ -584,9 +588,11 @@
                         <p>Sua senha deve conter:</p>
                         <ul class="requisitos-senha">
                             <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> No mínimo 6 caracteres.</li>
-                            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Pelo menos uma letra maiúscula.</li>
+                            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Pelo menos uma letra
+                                maiúscula.</li>
                             <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Pelo menos um número.</li>
-                            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Pelo menos um caractere especial.</li>
+                            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Pelo menos um caractere
+                                especial.</li>
                         </ul>
 
                         <div class="campo-senha">
@@ -644,8 +650,8 @@
                         <div class="form-grid">
                             <div class="input-group">
                                 <label for="AtualizarUsuario">Usuário:</label>
-                                <input type="text" id="AtualizarUsuario" class="form-control"
-                                    placeholder="Seu usuário" autocomplete="username">
+                                <input type="text" id="AtualizarUsuario" class="form-control" placeholder="Seu usuário"
+                                    autocomplete="username">
                             </div>
 
                             <div class="input-group gestao-usuarios-modal-senha">
@@ -670,8 +676,8 @@
                     <div class="form-grid">
                         <div class="input-group">
                             <label for="AtualizarEmail">E-mail:</label>
-                            <input type="email" id="AtualizarEmail" class="form-control"
-                                placeholder="email@exemplo.com" autocomplete="email" disabled>
+                            <input type="email" id="AtualizarEmail" class="form-control" placeholder="email@exemplo.com"
+                                autocomplete="email" disabled>
                         </div>
 
                         <div class="input-group">
@@ -695,8 +701,7 @@
         </div>
 
         <div class="modal-overlay" id="modal-mudar-senha" role="presentation">
-            <section class="modal-content" role="dialog" aria-modal="true"
-                aria-labelledby="modal-mudar-senha-titulo">
+            <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-mudar-senha-titulo">
                 <div class="modal-header">
                     <h2 id="modal-mudar-senha-titulo">Mudar Senha</h2>
                     <button class="btn-close" type="button" data-fechar-modal aria-label="Fechar mudança de senha">
@@ -713,8 +718,8 @@
                         <div class="form-grid">
                             <div class="input-group">
                                 <label for="MudarSenhaUsuario">Usuário:</label>
-                                <input type="text" id="MudarSenhaUsuario" class="form-control"
-                                    placeholder="Seu usuário" autocomplete="username">
+                                <input type="text" id="MudarSenhaUsuario" class="form-control" placeholder="Seu usuário"
+                                    autocomplete="username">
                             </div>
 
                             <div class="input-group gestao-usuarios-modal-senha">
@@ -739,8 +744,8 @@
                     <div class="form-grid">
                         <div class="input-group gestao-usuarios-modal-senha">
                             <label for="MudarNovaSenha">Nova senha:</label>
-                            <input type="password" id="MudarNovaSenha" class="form-control senha"
-                                placeholder="••••••••" autocomplete="new-password" disabled>
+                            <input type="password" id="MudarNovaSenha" class="form-control senha" placeholder="••••••••"
+                                autocomplete="new-password" disabled>
                             <i class="fa-solid fa-eye toggle-senha" role="button" tabindex="0"
                                 aria-label="Mostrar nova senha"></i>
                         </div>
@@ -783,8 +788,8 @@
 
                 <label class="gestao-usuarios-lista-busca" for="busca-usuarios-sistema">
                     <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input type="search" id="busca-usuarios-sistema"
-                        placeholder="Buscar por nome, usuário ou e-mail" autocomplete="off">
+                    <input type="search" id="busca-usuarios-sistema" placeholder="Buscar por nome, usuário ou e-mail"
+                        autocomplete="off">
                 </label>
 
                 <div class="gestao-usuarios-lista-scroll" role="region" aria-label="Lista de usuários" tabindex="0">
