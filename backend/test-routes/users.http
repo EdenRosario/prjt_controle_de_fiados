@@ -84,5 +84,5 @@ POST  http://localhost:3000/auth/recuperar-usuario/confirmar
 Content-Type: application/json
 
 {
-        "token": "899c7f628c84aabccd8d3fd3bbc2596f6927061882bb133929b4c41e00546075"
+        "token": "559dc190448e1c497691a72557ac655b7c113f8c0e242cb43cd4bf642e12b672"
 }

@@ -333,7 +333,7 @@
 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 
-            font-family: Arial, sans-serif;
+            font-family: Arial, sans-serif; 
             font-size: 14px;
 
             animation: toastEntrada 0.3s ease forwards;
@@ -569,7 +569,7 @@
             };
 
             const pNome = document.querySelector("#nome-usuario-recuperado");
-
+            console.log(usuario, "na funcao sucesso")
             pNome.innerHTML = usuario;
         };
 
@@ -578,9 +578,7 @@
             try {
 
                 const retorno = await obterUsuario();
-
-                window.showToast("[SUCESSO!] Usuário recuperado", "success");
-
+                showToast("Usuario recuperado com sucesso", "success")
                 usuarioAutenticadoSucesso(retorno.usuario);
 
             } catch (error) {

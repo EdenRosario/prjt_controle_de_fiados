@@ -705,21 +705,19 @@ export const confirmarRecuperarUsuario = async (req, res) => {
         }
         const tokenHashValido = tokenValido.token_hash
         const usuarioId = tokenValido.usuario_id
-
+     
         const tokenConsumido = await tokensrepository.marcarTokenUtilizado({
             tokenHashValido,
             usuarioId,
             finalidade
         })
 
-        if (!tokenConsumido) {
-            console.log("[TOKEN] Não foi possivel consumir token")
-            console.log(tokenConsumido)
 
+        if (!tokenConsumido) {
             return res.status(500).json({
                 message: "Não foi possível concluir a recuperação do usuário."
             });
-            
+
         }
 
         console.log(`[TOKEN] Token consumido ${tokenConsumido}`)
@@ -734,5 +732,4 @@ export const confirmarRecuperarUsuario = async (req, res) => {
             error: "Erro interno no servidor"
         })
     }
-
 }

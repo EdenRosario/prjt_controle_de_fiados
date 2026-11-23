@@ -48,7 +48,7 @@ export const recuperarUsuario = async (email) => {
         if (!email) {
             throw new Erro("Preencha o campo email")
         }
-
+        console.log("email recebido", email)
         const response = await fetch(`${API_URL}/auth/recuperar-usuario`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

@@ -205,7 +205,7 @@ if (modalCriarAcesso && formCriarAcesso) {
     });
 }
 
-const modalRecuperarAcesso = document.getElementById("modal-recuperar-acesso");
+const modalRecuperarAcesso = document.querySelector("#modal-recuperar-acesso")
 const emailRecuperarUsuario = document.getElementById("email-recuperar-usuario");
 const usuarioRecuperarSenha = document.getElementById("usuario-recuperar-senha");
 const mensagemRecuperarUsuario = document.getElementById("mensagem-recuperar-usuario");
@@ -235,6 +235,8 @@ const solicitarRecuperacaoUsuario = async (email) => {
 
         const usuario = await recuperarUsuario(email)
 
+        console.log(usuario)
+
     }catch(error){
         console.error(error)
         return window.showToast(error.message, "error")
@@ -251,13 +253,6 @@ if (modalRecuperarAcesso) {
 
         limparMensagemRecuperacao(mensagemRecuperarUsuario);
 
-        if (!emailRecuperarUsuario?.value.trim()) {
-
-            exibirMensagemRecuperacao(mensagemRecuperarUsuario, "Informe o e-mail cadastrado.");
-            emailRecuperarUsuario?.focus();
-            return;
-        }
-
         if (!emailRecuperarUsuario.checkValidity()) {
             exibirMensagemRecuperacao(mensagemRecuperarUsuario, "Informe um endereço de e-mail válido.");
             emailRecuperarUsuario.focus();
@@ -265,9 +260,13 @@ if (modalRecuperarAcesso) {
         }
 
         try {
-            await solicitarRecuperacaoUsuario(emailRecuperarUsuario.value.trim());
+            console.log(emailRecuperarUsuario.value)
+            await solicitarRecuperacaoUsuario(emailRecuperarUsuario.value);
+            window.showToast("VERIFIQUE O SEU EMAIL", "success")
         } catch (error) {
             exibirMensagemRecuperacao(mensagemRecuperarUsuario, error.message);
+            console.error("Erro ao tentar recuperar usuario", error)
+            window.showToast("Erro ao tentar recuperar usuario", "error")
         }
 
     });

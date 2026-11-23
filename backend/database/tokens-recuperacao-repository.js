@@ -111,16 +111,16 @@ export class tokensRopository {
 
 
 
-    async marcarTokenUtilizado({ tokenHash, usuarioId, finalidade }) {
+    async marcarTokenUtilizado({ tokenHashValido, usuarioId, finalidade }) {
 
-        if (!tokenHash || !usuarioId || !finalidade) {
+        if (!tokenHashValido || !usuarioId || !finalidade) {
             throw new Error("Parametros não informados")
         }
 
         const [token] = await sql`
         UPDATE tokens_recuperacao
         SET utilizado = TRUE
-        WHERE token_hash = ${tokenHash}
+        WHERE token_hash = ${tokenHashValido}
         AND usuario_id = ${usuarioId}
         AND finalidade = ${finalidade}
         AND expiracao > NOW()
