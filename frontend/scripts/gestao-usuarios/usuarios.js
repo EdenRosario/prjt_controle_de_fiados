@@ -49,6 +49,7 @@ export const recuperarUsuario = async (email) => {
             throw new Erro("Preencha o campo email")
         }
         console.log("email recebido", email)
+
         const response = await fetch(`${API_URL}/auth/recuperar-usuario`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -58,7 +59,7 @@ export const recuperarUsuario = async (email) => {
         })
 
         const data = await response.json();
-
+        console.log(data)
         if (!response.ok) {
             throw new Error(
                 data.message || data.error || "Erro ao validar dados."
