@@ -46,6 +46,24 @@ const montarEmailRecuperarUsuario = async (nome, linkVerificacao) => {
     return html;
 };
 
+const montarEmailRecuperarSenha = async (nome, linkVerificacao) => {
+
+    const caminhoArquivo = path.join(
+        process.cwd(),
+        "templates",
+        "email",
+        "recuperarSenha.html"
+    );
+
+    let html = await readFile(caminhoArquivo, "utf-8");
+
+    html = html
+        .replaceAll("{{nome}}", escaparHtml(nome))
+        .replaceAll("{{linkVerificacao}}", escaparHtml(linkVerificacao));
+
+    return html;
+};
+
 const escaparHtml = (valor) => {
 
     return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
@@ -174,12 +192,10 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
     ];
 
     if (!usuarioId) {
-        console.log("[TOKEN] Usuário não informado");
         return false;
     }
 
     if (!finalidade) {
-        console.log("[TOKEN] finalidade não informada");
         return false;
     }
 
@@ -205,7 +221,6 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
 
     try {
 
-        console.log("[TOKEN] Salvando registro no banco");
 
         const tokenSalvo = await tokensrepository.criarNovoToken({
             usuarioId,
@@ -213,14 +228,13 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
             finalidade
         })
 
-        console.log("[TOKEN] Resultado da persistência:", !!tokenSalvo);
 
         if (!tokenSalvo) {
-            console.log("[TOKEN] Registro não foi salvo");
+
             return false;
         }
 
-        console.log("[TOKEN] Token criado com sucesso");
+
 
         return {
             token,
@@ -567,12 +581,7 @@ export const atualizarInformacoes = async (req, res) => {
 
 export const recuperarUsuario = async (req, res) => {
 
-    console.log("\n========== INÍCIO RECUPERAÇÃO DE USUÁRIO ==========");
-
     try {
-
-        console.log("[RECUPERAR] 1. Iniciando processo");
-        console.log("[RECUPERAR] 2. Body recebido:", req.body);
 
         const { email } = req.body;
         const finalidade = "recuperar_usuario";
@@ -582,64 +591,35 @@ export const recuperarUsuario = async (req, res) => {
         let tokenParaEnviar = "";
 
         if (!email) {
-            console.error("[RECUPERAR] ERRO: Email não recebido");
 
             return res.status(400).json({
                 message: "Email não recebido"
             });
         }
 
-        console.log("[RECUPERAR] 3. Email recebido:", email);
-
-        // BUSCAR USUÁRIO
-        console.log("[RECUPERAR] 4. Buscando usuário no banco...");
-
         const usuario = await userRepository.recuperarUsuario(email);
 
-        console.log("[RECUPERAR] 5. Resultado da busca:", {
-            encontrado: !!usuario,
-            id: usuario?.id,
-            email: usuario?.email
-        });
-
         if (!usuario) {
-            console.error("[RECUPERAR] ERRO: Usuário não encontrado");
 
             return res.status(404).json({
                 message: "Houve uma falha ao tentar buscar o usuario"
             });
         }
 
-        // VERIFICAR TOKEN PENDENTE
-        console.log("[RECUPERAR] 6. Verificando token pendente...");
 
         const tokenPendente = await reaproveitarToken(
             usuario.id,
             finalidade
         );
 
-        console.log("[RECUPERAR] 7. Resultado do token pendente:", {
-            existe: !!tokenPendente,
-            id: tokenPendente?.id
-        });
-
-        // CRIAR NOVO TOKEN
         if (!tokenPendente) {
-
-            console.log("[RECUPERAR] 8. Nenhum token pendente. Criando novo token...");
 
             const resultado = await criarSalvarToken(
                 usuario.id,
                 finalidade
             );
 
-            console.log("[RECUPERAR] 9. Resultado da criação:", {
-                sucesso: !!resultado?.token
-            });
-
             if (!resultado?.token) {
-                console.error("[RECUPERAR] ERRO: Falha ao gerar token");
-
                 return res.status(500).json({
                     message: "Falha ao gerar token"
                 });
@@ -649,27 +629,18 @@ export const recuperarUsuario = async (req, res) => {
 
         } else {
 
-            console.log("[RECUPERAR] 8. Atualizando token existente...");
-            console.log("[RECUPERAR] ID do token:", tokenPendente.id);
-
             novoToken = gerarToken();
             tokenHash = gerarHashToken(novoToken);
 
-            console.log("[RECUPERAR] 9. Novo token gerado e hash calculado");
+            const resultado = await atualizarToken({
 
-            const resultado = await atualizarToken(
-                novoToken,
-                tokenHash,
-                tokenPendente.id,
+                tokenNovoHash: tokenHash,
+                tokenPendenteId: tokenPendente.id,
                 finalidade
-            );
 
-            console.log("[RECUPERAR] 10. Resultado da atualização:", {
-                sucesso: !!resultado?.token
             });
 
             if (!resultado?.token) {
-                console.error("[RECUPERAR] ERRO: Falha ao atualizar token");
 
                 return res.status(500).json({
                     message: "Falha ao atualizar token"
@@ -679,11 +650,6 @@ export const recuperarUsuario = async (req, res) => {
             tokenParaEnviar = resultado.token;
         }
 
-        // MONTAGEM DO LINK
-        console.log("[RECUPERAR] 11. Verificando FRONTEND_URL:", {
-            existe: !!process.env.FRONTEND_URL,
-            url: process.env.FRONTEND_URL
-        });
 
         if (!process.env.FRONTEND_URL) {
             throw new Error("FRONTEND_URL não definida no ambiente do Render");
@@ -691,27 +657,10 @@ export const recuperarUsuario = async (req, res) => {
 
         const linkVerificacao = `${process.env.FRONTEND_URL}?token=${encodeURIComponent(tokenParaEnviar)}`;
 
-        console.log("[RECUPERAR] 12. Link de verificação montado:", {
-            url: process.env.FRONTEND_URL,
-            tokenPresente: !!tokenParaEnviar,
-            linkMontado: !!linkVerificacao
-        });
-
-        // MONTAGEM DO EMAIL
-        console.log("[RECUPERAR] 13. Montando HTML do email...");
-
         const html = await montarEmailRecuperarUsuario(
             usuario.nome,
             linkVerificacao
         );
-
-        console.log("[RECUPERAR] 14. HTML do email montado:", {
-            sucesso: !!html,
-            tamanho: html?.length
-        });
-
-        // ENVIO DO EMAIL
-        console.log("[RECUPERAR] 15. Enviando email...");
 
         await emailRecuperarUsuario(
             usuario.email,
@@ -719,22 +668,12 @@ export const recuperarUsuario = async (req, res) => {
             html
         );
 
-        console.log("[RECUPERAR] 16. E-mail enviado com sucesso");
-
-        console.log("========== FIM RECUPERAÇÃO DE USUÁRIO ==========\n");
-
         return res.status(200).json({
             message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
         });
 
     } catch (error) {
-
-        console.error("\n========== ERRO NA RECUPERAÇÃO DE USUÁRIO ==========");
-        console.error("[RECUPERAR] Mensagem:", error.message);
-        console.error("[RECUPERAR] Stack:", error.stack);
         console.error("[RECUPERAR] Erro completo:", error);
-        console.error("====================================================\n");
-
         return res.status(500).json({
             error: "Erro interno no servidor"
         });
@@ -800,6 +739,91 @@ export const confirmarRecuperarUsuario = async (req, res) => {
         console.error(error)
         return res.status(500).json({
             error: "Erro interno no servidor"
+        })
+    }
+}
+
+export const recuperarSenha = async (req, res) => {
+
+    try {
+
+        const { parametro } = req.body;
+        const finalidade = "recuperar_senha";
+
+        let novoToken = "";
+        let tokenHash = "";
+        let tokenParaEnviar = "";
+
+        if (!dado) {
+            return res.status(400).json({
+                message: "body vazio"
+            });
+        };
+
+        const usuario = userRepository.recSenha(parametro)
+
+        if (!usuario) {
+            return res.status(404).json({
+                message: "usuario não encontrado em nossa base de dados"
+            })
+        };
+        console.log(
+            usuario.id,
+            usuario.email
+        )
+
+        const tokenPendente = await reaproveitarToken(
+            usuario.id,
+            finalidade
+        )
+
+        if (!tokenPendente) {
+
+            const resultado = await criarSalvarToken(
+                usuario.id,
+                finalidade
+            )
+
+            if (!resultado?.token) {
+                return res.status(500).json({
+                    message: "Falha ao gerar token"
+                })
+            }
+
+            tokenParaEnviar = resultado.token
+        } else {
+
+            novoToken = gerarToken();
+            tokenHash = gerarHashToken(novoToken)
+
+            const resultado = await atualizarToken({
+                tokenNovoHash: tokenHash,
+                tokenPendenteId: tokenPendente.id,
+                finalidade
+            });
+
+            if (!resultado) {
+                return res.status(500).json({
+                    message: "Falha ao atualizar token"
+                });
+            };
+            tokenParaEnviar = resultado.token
+        };
+
+        // if(!process.env.FRONTEND_URL){
+        //     throw new Error("FRONTEND_URL não definida no ambiente do Render")
+        // }
+
+        return res.status(200).json({
+            "Token": tokenParaEnviar,
+            "idUser": usuario.id,
+            "email": usuario.email
+        })
+
+    } catch (error) {
+        console.error("[RECUPERAR SENHA] Erro completo: ", error)
+        return res.status(500).json({
+            message: "Erro interno no servidor"
         })
     }
 }

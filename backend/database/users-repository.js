@@ -49,7 +49,7 @@ export class DatabasePostgres {
 
         return result
     }
-    
+
     async searchUser(usuario) {
         const { user } = usuario
 
@@ -162,4 +162,19 @@ export class DatabasePostgres {
 
     }
 
-}
+    async recSenha(parametro) {
+
+        if(!parametro){
+            return;
+        };
+
+        const [usuario] = await sql`
+        SELECT *
+        FROM usuarios
+        WHERE usuario = ${parametro}
+        OR email = ${parametro}
+     `;
+        return usuario
+    };
+
+};

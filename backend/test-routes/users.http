@@ -76,7 +76,7 @@ POST  http://localhost:3000/auth/recuperar-usuario
 Content-Type: application/json
 
 {
-        "email": "kharllos.com.br3@gmail.com"
+        "email": "teste22@gmail.com"
 }
 
 ###
@@ -85,4 +85,12 @@ Content-Type: application/json
 
 {
         "token": "ca94798119de1101bcde6a3958d101cf295ac82876c9cff1fe7cded7657ea982"
+}
+
+###
+POST  http://localhost:3000/auth/recuperar-senha
+Content-Type: application/json
+
+{
+        "parametro": "teste22@gmail.com"
 }
