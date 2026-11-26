@@ -2,6 +2,171 @@
     padding: 24px;
 }
 
+/* Confirmação de envio de e-mail para recuperação de usuário ou senha. */
+#modal-check-email {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+#modal-check-email.ativo {
+    display: flex;
+    opacity: 1;
+}
+
+#modal-check-email .modal-check-email-dialog {
+    position: relative;
+    width: min(100%, 480px);
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    padding: 36px 32px 30px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: var(--radius-lg);
+    background: #172033;
+    color: var(--text-light);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45);
+    text-align: center;
+}
+
+#modal-check-email .modal-check-email-fechar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: inline-grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+#modal-check-email .modal-check-email-fechar:hover,
+#modal-check-email .modal-check-email-fechar:focus-visible {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    outline: none;
+    transform: rotate(90deg);
+}
+
+#modal-check-email .modal-check-email-icone {
+    position: relative;
+    display: grid;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 18px;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.16);
+    color: #6ee7b7;
+    font-size: 2rem;
+}
+
+#modal-check-email .modal-check-email-icone-confirmacao {
+    position: absolute;
+    right: -3px;
+    bottom: -2px;
+    color: var(--success);
+    font-size: 1.25rem;
+    text-shadow: 0 0 0 #172033, 0 0 0 #172033;
+}
+
+#modal-check-email h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.45rem;
+    line-height: 1.25;
+}
+
+#modal-check-email .modal-check-email-mensagem {
+    margin: 10px auto 24px;
+    color: #cbd5e1;
+    font-size: 0.92rem;
+    line-height: 1.55;
+}
+
+#modal-check-email .modal-check-email-instrucoes {
+    padding: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: var(--radius-md);
+    background: rgba(15, 23, 42, 0.5);
+    text-align: left;
+}
+
+#modal-check-email .modal-check-email-instrucoes h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: #f8fafc;
+    font-size: 0.95rem;
+}
+
+#modal-check-email .modal-check-email-instrucoes h3 i {
+    color: #6ee7b7;
+}
+
+#modal-check-email .modal-check-email-instrucoes ol {
+    display: grid;
+    gap: 9px;
+    margin: 15px 0;
+    padding-left: 22px;
+    color: #dbeafe;
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+#modal-check-email .modal-check-email-instrucoes li::marker {
+    color: #6ee7b7;
+    font-weight: 700;
+}
+
+#modal-check-email .modal-check-email-instrucoes p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+#modal-check-email .modal-check-email-entendi {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.38);
+    border-radius: 10px;
+    background: #334155;
+    color: #ffffff;
+    font: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#modal-check-email .modal-check-email-entendi:hover,
+#modal-check-email .modal-check-email-entendi:focus-visible {
+    background: #475569;
+    outline: none;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 560px) {
+    #modal-check-email {
+        padding: 16px;
+    }
+
+    #modal-check-email .modal-check-email-dialog {
+        padding: 34px 20px 20px;
+    }
+}
+
 #modal-recuperar-acesso .modal-recuperar-dialog {
     width: min(100%, 860px);
     max-width: 860px;

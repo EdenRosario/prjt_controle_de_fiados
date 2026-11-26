@@ -333,7 +333,7 @@
 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 
-            font-family: Arial, sans-serif; 
+            font-family: Arial, sans-serif;
             font-size: 14px;
 
             animation: toastEntrada 0.3s ease forwards;
@@ -434,7 +434,7 @@
                         <strong id="nome-usuario-recuperado"></strong>
                     </div>
 
-                    <a class="botao-principal" href="../login.html">
+                    <a class="botao-principal" href="../login.html" onclick="window.close(); return false;">
                         Voltar para o login
                         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -508,7 +508,7 @@
                 toast.remove();
             }, 5000);
         }
-        
+
         const API_URL = "https://prjt-controle-de-fiados-testes.onrender.com";
 
         const obterUsuario = async () => {
@@ -520,8 +520,6 @@
                 const parametros = new URLSearchParams(window.location.search);
 
                 const token = parametros.get("token");
-
-                console.log(token)
 
                 if (!token) {
                     throw new Error("Token não informado")
@@ -537,13 +535,13 @@
                 });
 
                 const data = await response.json();
-                console.log("Retorno", data)
+            
                 if (!response.ok) {
                     throw new Error(
                         data.message || data.error || "Erro ao buscar usuario."
                     )
                 }
-                console.log(data)
+               
                 return data;
 
             } catch (error) {

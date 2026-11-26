@@ -23,6 +23,64 @@ const limparFormularioCriarAcesso = () => {
     restaurarVisibilidadeDasSenhas(formCriarAcesso);
 }
 
+//MODAL e FUNCOES : essas funcoes para este modal servem para mostrar as instruções tanto para recuperar usuario quanto para recuperar a senha
+
+const modal = document.getElementById("modal-check-email");
+const botaoFecharModalEmail = document.getElementById("btn-fechar-modal-email");
+const botaoEntendiModalEmail = document.getElementById("btn-entendi-modal-email");
+
+const fecharModalCheckEmail = () => {
+    modal?.classList.remove("ativo");
+};
+
+botaoFecharModalEmail?.addEventListener("click", fecharModalCheckEmail);
+botaoEntendiModalEmail?.addEventListener("click", fecharModalCheckEmail);
+
+modal?.addEventListener("click", (event) => {
+    if (event.target === modal) fecharModalCheckEmail();
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && modal?.classList.contains("ativo")) {
+        fecharModalCheckEmail();
+    }
+});
+
+
+
+const mensagemModalEmail = {
+
+    msgRecuperarUsuario: {
+
+        titulo: "Verifique seu e-mail!",
+        mensagem: "Enviamos um link para recuperar seu usuário."
+
+    },
+    msgRecuperarSenha: {
+        titulo: "Verifique seu e-mail!",
+        mensagem: "Enviamos as instruções para redefinir sua senha."
+    }
+
+};
+
+const preecherModalCheckEmail = (finalidade) => {
+
+    const tituloModal = document.getElementById("tituloModal");
+    const mensagemModal = document.getElementById("mensagemModal");
+
+    const configuracao = mensagemModalEmail[finalidade];
+
+    if (!configuracao) {
+        return;
+    }
+
+    tituloModal.textContent = configuracao.titulo;
+    mensagemModal.textContent = configuracao.mensagem;
+
+    modal.classList.add("ativo");
+
+}
+
 // Ação para criar o usuário
 
 const senhaForte = (senha) => {
@@ -226,24 +284,6 @@ const limparMensagemRecuperacao = (area) => {
 };
 
 //area de recuperar usuario
-const solicitarRecuperacaoUsuario = async (email) => {
-
-    if (!email) throw new Error("Informe o e-mail cadastrado.");
-    console.log(email)
-
-    try{
-
-        const usuario = await recuperarUsuario(email)
-
-        console.log(usuario)
-
-    }catch(error){
-        console.error(error)
-        return window.showToast(error.message, "error")
-    }
-
-};
-
 
 if (modalRecuperarAcesso) {
     const botaoRecuperarUsuario = document.getElementById("btn-recuperar-usuario");
@@ -260,9 +300,16 @@ if (modalRecuperarAcesso) {
         }
 
         try {
-            console.log(emailRecuperarUsuario.value)
-            await solicitarRecuperacaoUsuario(emailRecuperarUsuario.value);
-            window.showToast("VERIFIQUE O SEU EMAIL", "success")
+            console.log(" valor passado dentro do botao", emailRecuperarUsuario.value)
+
+            const res = await recuperarUsuario(emailRecuperarUsuario.value)
+
+            document.querySelector("#modal-recuperar-acesso").style.display = "none";
+
+            window.showToast("[SUCESSO] verifique seu EMAIL", "success")
+
+            preecherModalCheckEmail("msgRecuperarUsuario");
+
         } catch (error) {
             exibirMensagemRecuperacao(mensagemRecuperarUsuario, error.message);
             console.error("Erro ao tentar recuperar usuario", error)
@@ -287,6 +334,7 @@ if (modalRecuperarAcesso) {
             window.fecharModal?.("modal-recuperar-acesso");
             focoRetornoRecuperacaoSenha = document.activeElement;
             modalRecuperarSenha?.classList.add("show");
+            preecherModalCheckEmail("msgRecuperarSenha");
         } catch (error) {
             exibirMensagemRecuperacao(mensagemRecuperarSenha, error.message);
         }

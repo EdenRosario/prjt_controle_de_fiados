@@ -25,7 +25,7 @@
     <!-- SIDEBAR (MENU LATERAL) -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <i class="fa-solid fa-layer-group"></i> SisGestão
+            <i class="fa-solid fa-layer-group"></i> CFGestão
         </div>
         <ul class="sidebar-nav">
             <li class="nav-item active" onclick="navegar('secao-home', this)">
@@ -463,6 +463,39 @@
                 </button>
             </div>
         </section>
+
+        <div class="modal-overlay modal-check-email" id="modal-check-email" role="presentation">
+            <section class="modal-content modal-check-email-dialog" role="dialog" aria-modal="true"
+                aria-labelledby="tituloModal" aria-describedby="mensagemModal">
+                <button class="modal-check-email-fechar" type="button" id="btn-fechar-modal-email"
+                    aria-label="Fechar confirmação de envio de e-mail">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+
+                <div class="modal-check-email-icone" aria-hidden="true">
+                    <i class="fa-solid fa-envelope"></i>
+                    <i class="fa-solid fa-circle-check modal-check-email-icone-confirmacao"></i>
+                </div>
+
+                <h2 id="tituloModal"></h2>
+                <p class="modal-check-email-mensagem" id="mensagemModal"></p>
+
+                <section class="modal-check-email-instrucoes" aria-labelledby="modal-check-email-instrucoes-titulo">
+                    <h3 id="modal-check-email-instrucoes-titulo">
+                        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                        O que fazer agora?
+                    </h3>
+                    <ol>
+                        <li>Acesse sua caixa de entrada.</li>
+                        <li>Procure pelo e-mail do FCGestão.</li>
+                        <li>Clique no link de recuperação recebido.</li>
+                    </ol>
+                    <p>Não encontrou? Verifique também a pasta de spam ou lixo eletrônico.</p>
+                </section>
+
+                <button class="modal-check-email-entendi" type="button" id="btn-entendi-modal-email">Entendi</button>
+            </section>
+        </div>
 
         <div class="modal-overlay modal-recuperar-acesso" id="modal-recuperar-acesso" role="presentation">
             <div class="modal-content modal-recuperar-dialog" role="dialog" aria-modal="true"
