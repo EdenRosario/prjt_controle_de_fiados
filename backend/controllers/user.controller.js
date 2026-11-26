@@ -4,37 +4,28 @@ import dotenv from "dotenv";
 dotenv.config();
 import bcrypt from 'bcrypt'
 import crypto from 'node:crypto';
-import nodemailer from "nodemailer";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import console from "node:console";
+import { Resend } from "resend";
 
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const userRepository = new DatabasePostgres()
 const tokensrepository = new tokensRopository()
 
-const transporter = nodemailer.createTransport({
-
-    secure: true,
-    host: 'smtp.gmail.com',
-    port: 465,
-
-    auth: {
-        user: process.env.EMAIL_CADASTRADO,
-        pass: process.env.SENHA_CADASTRADA
-    }
-
-})
-
 const emailRecuperarUsuario = async (endereco, assunto, mensagem) => {
 
-    return await transporter.sendMail({
+    const { data, error } = await resend.emails.send({
         from: process.env.EMAIL_CADASTRADO,
         to: endereco,
         subject: assunto,
         html: mensagem
     })
+    if (error) {
+        throw new Error(error.message);
+    }
 
+    return data;
 };
 
 const montarEmailRecuperarUsuario = async (nome, linkVerificacao) => {
@@ -784,7 +775,7 @@ export const confirmarRecuperarUsuario = async (req, res) => {
         }
         const tokenHashValido = tokenValido.token_hash
         const usuarioId = tokenValido.usuario_id
-     
+
         const tokenConsumido = await tokensrepository.marcarTokenUtilizado({
             tokenHashValido,
             usuarioId,
