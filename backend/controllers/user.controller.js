@@ -754,13 +754,13 @@ export const recuperarSenha = async (req, res) => {
         let tokenHash = "";
         let tokenParaEnviar = "";
 
-        if (!dado) {
+        if (!parametro) {
             return res.status(400).json({
                 message: "body vazio"
             });
         };
 
-        const usuario = userRepository.recSenha(parametro)
+        const usuario = await userRepository.recSenha(parametro)
 
         if (!usuario) {
             return res.status(404).json({
