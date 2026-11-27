@@ -7,13 +7,14 @@ import crypto from 'node:crypto';
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { Resend } from "resend";
+import { json } from "sequelize";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const userRepository = new DatabasePostgres()
 const tokensrepository = new tokensRopository()
 
-const emailRecuperarUsuario = async (endereco, assunto, mensagem) => {
+const enviarEmail = async (endereco, assunto, mensagem) => {
 
     const { data, error } = await resend.emails.send({
         from: process.env.EMAIL_CADASTRADO,
@@ -76,6 +77,20 @@ const escaparHtml = (valor) => {
 
 };
 
+
+const gerarCodigoRecuperacao = () => {
+
+    return crypto.randomInt(0, 1000000)
+        .toString()
+        .padStart(6, "0");
+};
+
+const gerarHashCodigo = (codigo) => {
+    return crypto
+        .createHash("sha256")
+        .update(codigo)
+        .digest("hex");
+};
 
 const gerarToken = () => {
 
@@ -662,9 +677,9 @@ export const recuperarUsuario = async (req, res) => {
             linkVerificacao
         );
 
-        await emailRecuperarUsuario(
+        await enviarEmail(
             usuario.email,
-            "Recuperação de usuário | FCGestão",
+            "Recuperação de usuário | CFGestão",
             html
         );
 
@@ -759,7 +774,7 @@ export const recuperarSenha = async (req, res) => {
                 message: "body vazio"
             });
         };
-
+        
         const usuario = await userRepository.recSenha(parametro)
 
         if (!usuario) {
@@ -810,14 +825,25 @@ export const recuperarSenha = async (req, res) => {
             tokenParaEnviar = resultado.token
         };
 
-        // if(!process.env.FRONTEND_URL){
-        //     throw new Error("FRONTEND_URL não definida no ambiente do Render")
-        // }
+        if (!process.env.PAGINA_REC_SENHA_URL) {
+            throw new Error("FRONTEND_URL não definida no ambiente do Render")
+        }
+
+        const linkVerificacao = `${process.env.PAGINA_REC_SENHA_URL}?token=${encodeURIComponent(tokenParaEnviar)}`;
+
+        const html = await montarEmailRecuperarSenha(
+            usuario.nome,
+            linkVerificacao
+        );
+
+        await enviarEmail(
+            usuario.email,
+            "Recuperação de senha | CFGestão",
+            html
+        )
 
         return res.status(200).json({
-            "Token": tokenParaEnviar,
-            "idUser": usuario.id,
-            "email": usuario.email
+            message: "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."
         })
 
     } catch (error) {
