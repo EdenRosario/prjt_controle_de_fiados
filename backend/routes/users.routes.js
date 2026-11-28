@@ -15,7 +15,7 @@ router.post('/recuperar-usuario', userController.recuperarUsuario)
 
 router.post('/recuperar-usuario/confirmar', userController.confirmarRecuperarUsuario)
 
-router.post('/recuperar-senha', userController.recuperarSenha)
+router.post('/solicitar-codigo-recuperacao', userController.solicitarCodigoRecuperacaoSenha)
 
 router.get('/', userController.listarTodosUsuarios)
 

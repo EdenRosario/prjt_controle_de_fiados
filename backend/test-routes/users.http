@@ -88,7 +88,7 @@ Content-Type: application/json
 }
 
 ###
-POST  http://localhost:3000/auth/recuperar-senha
+POST  http://localhost:3000/auth/solicitar-codigo-recuperacao
 Content-Type: application/json
 
 {

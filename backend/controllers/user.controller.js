@@ -768,7 +768,7 @@ export const confirmarRecuperarUsuario = async (req, res) => {
         })
     }
 }
-
+//funcionando
 export const solicitarCodigoRecuperacaoSenha = async (req, res) => {
 
     try {
@@ -844,20 +844,26 @@ export const solicitarCodigoRecuperacaoSenha = async (req, res) => {
 
 };
 
+
 export const recuperarSenha = async (req, res) => {
 
     try {
 
-        let novoToken = "";
-        let tokenHash = "";
+        const {codigoRecuperacao, email} = req.body
+
+        if(!codigoRecuperacao || !email){
+            return res.status(400).json({
+                message: "codigo ou email não recebidos"
+            })
+        }
+
+        const hashCodigoRecuperacao = gerarHashCodigo(codigoRecuperacao);
+        
+       const registro = await codigoRecuperacaoRepository.buscarCodigoRecuperacaoNaoUtilizado(hashCodigoRecuperacao) 
+
         let tokenParaEnviar = "";
 
-        if (!parametro) {
-            return res.status(400).json({
-                message: "body vazio"
-            });
-        };
-
+        
         const usuario = await userRepository.recSenha(parametro)
 
         if (!usuario) {
@@ -941,5 +947,3 @@ export const recuperarSenha = async (req, res) => {
         })
     }
 }
-
-export const confirmarRecuperarSenha = (req, req)

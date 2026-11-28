@@ -82,4 +82,29 @@ export class codigosRecuperacao {
         return codigoAtualizado
     }
 
+    async buscarCodigoNaoExipiradoNaoValidado(hashCodigoRecuperacao){
+
+            const resultado = await sql`
+        SELECT
+            cr.id,
+            cr.usuario_id,
+            cr.codigo,
+            cr.expiracao,
+            cr.validado,
+            cr.utilizado,
+            cr.tentativas,
+            cr.criado_em,
+            u.email
+        FROM codigos_recuperacao cr
+        INNER JOIN usuarios u ON u.id = cr.usuario_id
+        WHERE cr.codigo_hash = ${hashCodigoRecuperacao}
+        AND cr.validado = FALSE
+        AND cr.expiracao > NOW()
+        AND cr.utilizado = FALSE;
+    `;
+
+    return resultado[0] || null;
+
+    }
+
 }
