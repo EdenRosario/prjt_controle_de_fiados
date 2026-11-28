@@ -1,5 +1,6 @@
 import { DatabasePostgres } from "../database/users-repository.js";
 import { tokensRopository } from "../database/tokens-recuperacao-repository.js";
+import { codigosRecuperacao } from "../database/codigos_recueperacao-repository.js";
 import dotenv from "dotenv";
 dotenv.config();
 import bcrypt from 'bcrypt'
@@ -7,12 +8,13 @@ import crypto from 'node:crypto';
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { Resend } from "resend";
-import { json } from "sequelize";
+
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const userRepository = new DatabasePostgres()
-const tokensrepository = new tokensRopository()
+const userRepository = new DatabasePostgres();
+const tokensrepository = new tokensRopository();
+const codigoRecuperacaoRepository = new codigosRecuperacao();
 
 const enviarEmail = async (endereco, assunto, mensagem) => {
 
@@ -108,7 +110,6 @@ const gerarHashToken = (token) => {
 
 const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade) => {
 
-    console.log("[TOKEN] Iniciando atualização");
 
     if (!token || !tokenNovoHash || !tokenPendenteId || !finalidade) {
         console.log("[TOKEN] Parâmetros inválidos para atualização");
@@ -122,29 +123,21 @@ const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade)
     ];
 
     if (!finalidadesPermitidas.includes(finalidade)) {
-        console.log("[TOKEN] Finalidade inválida:", finalidade);
         return false;
     };
 
-    console.log("[TOKEN] Finalidade validada:", finalidade);
+
 
     try {
-
-        console.log("[TOKEN] Executando atualização no repository");
-
         const tokenAtualizado = await tokensrepository.atualizarToken({
             tokenNovoHash,
             tokenPendenteId,
             finalidade
         });
 
-        console.log("[TOKEN] Resultado do repository:", !!tokenAtualizado);
-
         if (!tokenAtualizado) {
             return false;
         }
-
-        console.log("[TOKEN] Atualização concluída");
 
         return {
             token,
@@ -159,15 +152,13 @@ const atualizarToken = async (token, tokenNovoHash, tokenPendenteId, finalidade)
 
 const reaproveitarToken = async (userId, finalidade) => {
 
-    console.log("[TOKEN] Verificando token pendente");
-
     if (!userId) {
-        console.log("[TOKEN] Usuário não informado");
+
         return false;
     }
 
     if (!finalidade) {
-        console.log("[TOKEN] finalidade não informada");
+
         return false;
     }
 
@@ -177,13 +168,10 @@ const reaproveitarToken = async (userId, finalidade) => {
             finalidade
         });
 
-        console.log("[TOKEN] Consulta concluída:", !!tokenPendente);
-
         if (!tokenPendente) {
-            console.log("[TOKEN] Nenhum token pendente encontrado");
             return false;
         }
-        console.log("[TOKEN] Token pendente encontrado:", tokenPendente.id);
+
         return tokenPendente;
 
     } catch (error) {
@@ -194,8 +182,6 @@ const reaproveitarToken = async (userId, finalidade) => {
 }
 
 const criarSalvarToken = async (usuarioId, finalidade) => {
-
-    console.log("[TOKEN] Iniciando criação");
 
     let token = ""
     let tokenHash = ""
@@ -219,7 +205,6 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
         return false;
     }
 
-
     token = gerarToken();
 
     if (!token) {
@@ -236,21 +221,16 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
 
     try {
 
-
         const tokenSalvo = await tokensrepository.criarNovoToken({
             usuarioId,
             tokenHash,
             finalidade
         })
 
-
         if (!tokenSalvo) {
 
             return false;
         }
-
-
-
         return {
             token,
             registro: tokenSalvo
@@ -260,6 +240,37 @@ const criarSalvarToken = async (usuarioId, finalidade) => {
         console.error("[TOKEN] Falha ao salvar token:", error);
         return false;
     }
+}
+
+
+const criarSalvarHashCodigoRecuperacao = async (codigoOriginal, hashCodigoRecuperacao, usuarioId) => {
+
+    try {
+
+        if (!hashCodigoRecuperacao) {
+            return false;
+        }
+
+        const codigo = await codigoRecuperacaoRepository.salvarCodigoRecuperacao(
+            hashCodigoRecuperacao,
+            usuarioId
+        )
+
+        if (!codigo) {
+            return false;
+        }
+
+        return {
+            codigoOriginal,
+            registro: codigo
+        }
+
+    } catch (error) {
+        console.error("[CODIGO] Falha ao salvar codigo:", error)
+        return false;
+    }
+
+
 }
 
 export async function createUser(req, res) {
@@ -662,7 +673,7 @@ export const recuperarUsuario = async (req, res) => {
                 });
             }
 
-            tokenParaEnviar = resultado.token;
+            tokenParaEnviar = novoToken;
         }
 
 
@@ -758,12 +769,84 @@ export const confirmarRecuperarUsuario = async (req, res) => {
     }
 }
 
-export const recuperarSenha = async (req, res) => {
+export const solicitarCodigoRecuperacaoSenha = async (req, res) => {
 
     try {
 
+        let codigoRecuperacaoParaEnviar = "";
+
         const { parametro } = req.body;
-        const finalidade = "recuperar_senha";
+
+        if (!parametro) {
+            return res.status(400).json({
+                message: "parametro de busca não recebido"
+            });
+        };
+
+        const usuario = await userRepository.buscarUsuarioRecuperarSenha(parametro);
+
+        if (!usuario) {
+            return res.status(404).json({
+                message: "usuario não encontrado"
+            });
+        };
+
+        const codigoRecuperacaoPendente = await codigoRecuperacaoRepository.buscarCodigoRecuperacaoNaoUtilizado(usuario.id)
+
+        if (!codigoRecuperacaoPendente) {
+
+            const codigoRecuperacao = gerarCodigoRecuperacao();
+            const hashCodigoRecuperacao = gerarHashCodigo(codigoRecuperacao);
+
+            const registroCodigoRecuperacaoSalvo = await criarSalvarHashCodigoRecuperacao(
+                codigoRecuperacao,
+                hashCodigoRecuperacao,
+                usuario.id
+            )
+
+            if (!registroCodigoRecuperacaoSalvo) {
+                return res.status(500).json({
+                    message: "Falha ao gerar codigo"
+                })
+            }
+            codigoRecuperacaoParaEnviar = registroCodigoRecuperacaoSalvo.codigoOriginal;
+
+        } else {
+
+            const codigoRecuperacao = gerarCodigoRecuperacao();
+            const hashCodigoRecuperacao = gerarHashCodigo(codigoRecuperacao);
+
+            const codigoAtualizado = await codigoRecuperacaoRepository.atualizarCodigoRecuperacaoNaoUtilizado(
+                hashCodigoRecuperacao,
+                codigoRecuperacaoPendente.id
+            )
+
+            if (!codigoAtualizado) {
+                return res.status(500).json({
+                    message: "não foi possivel atualizar codigo pendente"
+                })
+            }
+
+            codigoRecuperacaoParaEnviar = codigoRecuperacao;
+        }
+
+        return res.status(200).json({
+            message: "Se os dados corresponderem a uma conta, enviaremos um código de recuperação para o e-mail cadastrado.",
+            codigo : codigoRecuperacaoParaEnviar
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: "Erro interno no servidor"
+        });
+    };
+
+};
+
+export const recuperarSenha = async (req, res) => {
+
+    try {
 
         let novoToken = "";
         let tokenHash = "";
@@ -774,7 +857,7 @@ export const recuperarSenha = async (req, res) => {
                 message: "body vazio"
             });
         };
-        
+
         const usuario = await userRepository.recSenha(parametro)
 
         if (!usuario) {
@@ -782,10 +865,15 @@ export const recuperarSenha = async (req, res) => {
                 message: "usuario não encontrado em nossa base de dados"
             })
         };
+
         console.log(
             usuario.id,
             usuario.email
         )
+
+
+
+
 
         const tokenPendente = await reaproveitarToken(
             usuario.id,
@@ -853,3 +941,5 @@ export const recuperarSenha = async (req, res) => {
         })
     }
 }
+
+export const confirmarRecuperarSenha = (req, req)

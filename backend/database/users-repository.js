@@ -162,7 +162,7 @@ export class DatabasePostgres {
 
     }
 
-    async recSenha(parametro) {
+    async buscarUsuarioRecuperarSenha(parametro) {
 
         if(!parametro){
             return;
